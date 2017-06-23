@@ -1,2 +1,2 @@
 # rtunaatlas
-rtunaatlas
+rtunaatlas R package
