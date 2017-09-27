@@ -6,9 +6,10 @@ Date: 2017-06-23
 Authors@R: person("Paul", "Taconet", email = "paul.taconet@ird.fr",
   role = c("aut", "cre"))
 Maintainer: Paul Taconet <paul.taconet@ird.fr>
-Description: Description of the package
+Description: This package offers facilities to handle datasets from tuna Regional Fisheries Management Organizations (tRFMOs). It provides functions to:
+- transform the structures of the public domain tRFMOs datasets 
 Depends: R (>= 3.1.0)
-Imports: dplyr
+Imports: dplyr, data.table
 Suggests: testthat, roxygen2
 URL: https://github.com/ptaconet/rtunaatlas
 BugReports: https://github.com/ptaconet/rtunaatlas/issues
