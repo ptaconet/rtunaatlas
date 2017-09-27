@@ -17,14 +17,14 @@ map_codelist(df_input, df_mapping, dimension_to_map)
 a list with two objects:
 \itemize{
  \item{"df": }{The input data.frame of fact, where the dimension_to_map has been mapped using the df_mapping}
- \item{"stats": }{A data.frame with some information regarding the data not mapped. It provides, by unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the code list mapping dataset}
+ \item{"stats": }{A data.frame with some information regarding the data not mapped. It provides, for each unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the dataset of mappings between code lists}
 }
 }
 \description{
-This function maps one dimension (i.e. column with codes) of a fact dataset using a dataset of code list mapping. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of code list mapping.
+This function maps one dimension (i.e. column with codes) of a fact dataset to a target code list using a dataset of mappings between code lists. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of mappings between code lists.
 }
 \details{
-The data frames of fact and code list mapping must be properly structured. For structures of data frames, see here: \url{http://}. Note that the dataset of code list mapping can have several dimensions that are used for mapping. However, the single dimension that will be mapped must be indicated in the dimension_to_map parameter. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset, these unmapped codes are set to NA.
+The data frames of fact and code list mapping must be properly structured. For structures of data frames, see here: \url{http://}. Note that the dataset of code list mapping can have several dimensions that are used for the mapping. However, one single dimension will be mapped - this dimension is the one specified in the dimension_to_map parameter. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.
 }
 \examples{
   # Open a data.frame of fact
@@ -38,9 +38,9 @@ The data frames of fact and code list mapping must be properly structured. For s
   # Map code lists. Output is a list with two elements (see section "return")
   df_mapped<-map_codelist(df_input,df_mapping,"gear")
   
-  # Get df_input mapped
+  # Get df_input with dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
   df_input<-df_mapped$df
-  head(df_input)  # Note that the column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the code list mapping dataset had both dimensions.
+  head(df_input) 
   
   # Get information regarding the data that were not mapped.
   df_mapped$stats
