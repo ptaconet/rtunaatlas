@@ -3,12 +3,14 @@ Type: Package
 Title: IRD Sardara Tuna Atlas R facilities
 Version: 1.0.0
 Date: 2017-06-23
-Author: Paul Taconet <paul.taconet@ird.fr>
+Authors@R: person("Paul", "Taconet", email = "paul.taconet@ird.fr",
+  role = c("aut", "cre"))
 Maintainer: Paul Taconet <paul.taconet@ird.fr>
 Description: Description of the package
 Depends: R (>= 3.1.0)
-Imports: 
+Imports: dplyr
 Suggests: testthat, roxygen2
-URL: https://github.com/eblondel/rtunaatlas
-BugReports: https://github.com/eblondel/rtunaatlas/issues
+URL: https://github.com/ptaconet/rtunaatlas
+BugReports: https://github.com/ptaconet/rtunaatlas/issues
 LazyLoad: yes
+RoxygenNote: 6.0.1
