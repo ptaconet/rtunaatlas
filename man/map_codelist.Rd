@@ -11,13 +11,13 @@ map_codelist(df_input, df_mapping, dimension_to_map)
 
 \item{df_mapping}{a data.frame of code list mapping}
 
-\item{dimension_to_map}{the name (string) of the dimension to map}
+\item{dimension_to_map}{the name (string) of the dimension to map.}
 }
 \value{
 a list with two objects:
 \itemize{
- \item{"df"}{The input data.frame of fact, where the dimension_to_map has been mapped using the df_mapping}
- \item{"stats"}{A data.frame with some information regarding the data not mapped. It provides, by unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the code list mapping dataset}
+ \item{"df": }{The input data.frame of fact, where the dimension_to_map has been mapped using the df_mapping}
+ \item{"stats": }{A data.frame with some information regarding the data not mapped. It provides, by unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the code list mapping dataset}
 }
 }
 \description{
@@ -27,14 +27,12 @@ This function maps one dimension (i.e. column with codes) of a fact dataset usin
 The data frames of fact and code list mapping must be properly structured. For structures of data frames, see here: \url{http://}. Note that the dataset of code list mapping can have several dimensions that are used for mapping. However, the single dimension that will be mapped must be indicated in the dimension_to_map parameter. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset, these unmapped codes are set to NA.
 }
 \examples{
-  # Read a data.frame of fact
-  df_input<-
-  
+  # Open a data.frame of fact
+  df_input<-read.csv("inst/extdata/fact_table_example.csv",stringsAsFactors = F)
   head(df_input)
   
-  # Read a data.frame of code list mapping (in this case, mapping between codes for fishing gears used by the tuna RFMOs and the International Standard Statistical Classification of Fishing Gear)
-  df_mapping<-read.csv("https://goo.gl/s94zYN",stringsAsFactors = F,colClasses = "character")
-  
+  # Open a data.frame of mapping between code lists (in this case, mapping between codes for fishing gears used by the tuna RFMOs and the International Standard Statistical Classification of Fishing Gear)
+  df_mapping<-read.csv("inst/extdata/gear_mapping_to_standard.csv",stringsAsFactors = F,colClasses = "character")
   head(df_mapping)
  
   # Map code lists. Output is a list with two elements (see section "return")
@@ -42,10 +40,9 @@ The data frames of fact and code list mapping must be properly structured. For s
   
   # Get df_input mapped
   df_input<-df_mapped$df
-  
   head(df_input)  # Note that the column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the code list mapping dataset had both dimensions.
   
-  # Get information regarding the data not mapped.
+  # Get information regarding the data that were not mapped.
   df_mapped$stats
  
 }

@@ -2,7 +2,6 @@
 #' @aliases myfunction
 #' @title myfunction
 #' @description \code{myfunction} is the function to perform ....
-#' @export
 #'
 #' @usage myfunction(a, b, c)
 #'                 
