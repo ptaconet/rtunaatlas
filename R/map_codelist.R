@@ -48,6 +48,9 @@
 
 map_codelist<-function(df_input,df_mapping,dimension_to_map){
   
+  library(dplyr)
+  library(data.table)
+  
   df_input<-left_join(df_input,df_mapping)
   df_input[,dimension_to_map]<-df_input$codetarget
   df_input$codetarget<-NULL
