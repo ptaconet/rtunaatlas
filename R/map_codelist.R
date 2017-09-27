@@ -1,7 +1,9 @@
 #' @name map_codelist
+#' @aliases map_codelist
 #' @title Maps and replaces one dimension of a fact dataset using a dataset of code list mapping
 #' @description This function maps one dimension (i.e. column with codes) of a fact dataset using a dataset of code list mapping. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of code list mapping.
 #' @export
+#'
 #'
 #' @usage map_codelist(df_input, df_mapping, dimension_to_map)
 #'                 
