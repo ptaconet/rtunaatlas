@@ -1,6 +1,6 @@
 #' @name map_codelist
 #' @aliases map_codelist
-#' @title Maps and replaces one dimension of a fact dataset using a dataset of code list mapping
+#' @title Maps and replaces one dimension of a fact dataset using a dataset of mappings between code lists
 #' @description This function maps one dimension (i.e. column with codes) of a fact dataset to a target code list using a dataset of mappings between code lists. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of mappings between code lists.
 #' @export
 #'
@@ -53,7 +53,7 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map){
   df_input$codetarget<-NULL
   
   # statistics on the percentage of data that are not mapped
-  stats_data_not_mapped <- df_input %>% 
+  stats_data_not_mapped <- df_input
     dplyr::mutate(df_input, sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
     dplyr::group_by(sum_mapped_unmapped,unit) %>% 
     dplyr::summarise(sum_value_by_dimension = sum(value))
