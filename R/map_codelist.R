@@ -58,7 +58,7 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map){
     group_by(mapped,unit) %>% 
     summarise(sum_value_by_dimension = sum(value))
   
-  stats_data_not_mapped<-dcast(stats_data_not_mapped,catchunit~mapped, sum)
+  stats_data_not_mapped<-dcast(stats_data_not_mapped,unit~mapped, sum)
   stats_data_not_mapped$percentage_not_mapped<-stats_data_not_mapped$not_mapped/stats_data_not_mapped$mapped*100
   
   return(list(df=df_input,stats=stats_data_not_mapped))
