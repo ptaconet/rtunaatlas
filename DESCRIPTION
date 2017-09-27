@@ -7,7 +7,7 @@ Authors@R: person("Paul", "Taconet", email = "paul.taconet@ird.fr",
   role = c("aut", "cre"))
 Maintainer: Paul Taconet <paul.taconet@ird.fr>
 Description: This package offers facilities to handle datasets from tuna Regional Fisheries Management Organizations (tRFMOs). It provides functions to:
-    - transform the structures of the public domain tRFMOs datasets 
+    transform the structures of the public domain tRFMOs datasets 
 Depends: R (>= 3.1.0)
 Imports: dplyr, data.table
 Suggests: testthat, roxygen2
