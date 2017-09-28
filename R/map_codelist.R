@@ -48,17 +48,17 @@
 
 map_codelist<-function(df_input,df_mapping,dimension_to_map){
   
-  df_input<-dplyr::left_join(df_input,df_mapping)
+  df_input<-left_join(df_input,df_mapping)
   df_input[,dimension_to_map]<-df_input$codetarget
   df_input$codetarget<-NULL
   
   # statistics on the percentage of data that are not mapped
   stats_data_not_mapped <- df_input %>% 
-    dplyr::mutate(sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
-    dplyr::group_by(sum_mapped_unmapped,unit) %>% 
-    dplyr::summarise(sum_value_by_dimension = sum(value))
+    mutate(sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
+    group_by(sum_mapped_unmapped,unit) %>% 
+    summarise(sum_value_by_dimension = sum(value))
   
-  stats_data_not_mapped<-data.table::dcast(stats_data_not_mapped,unit~sum_mapped_unmapped, sum)
+  stats_data_not_mapped<-dcast(stats_data_not_mapped,unit~sum_mapped_unmapped, sum)
   if (!("sum_value_not_mapped" %in% colnames(stats_data_not_mapped))) {
     stats_data_not_mapped$sum_value_not_mapped=0
   } 
