@@ -32,17 +32,17 @@
 #'   head(df_mapping)
 #'  
 #'   # Map code lists. Output is a list with two elements (see section "return")
-#'   df_mapped<-map_codelist(df_input,df_mapping,"gear")
+#'   list_df_mapped<-map_codelist(df_input,df_mapping,"gear")
 #'   
-#'   # Get df_input with dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
-#'   df_input<-df_mapped$df
-#'   head(df_input) 
+#'   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
+#'   df_mapped<-list_df_mapped$df
+#'   head(df_mapped) 
 #'   
 #'   # Get information regarding the data that were not mapped.
-#'   df_mapped$stats
+#'   list_df_mapped$stats
 #'  
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#'    
+#' @import data.table, dplyr     
 
 
 
@@ -54,7 +54,7 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map){
   
   # statistics on the percentage of data that are not mapped
   stats_data_not_mapped <- df_input %>% 
-    dplyr::mutate(df_input, sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
+    dplyr::mutate(sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
     dplyr::group_by(sum_mapped_unmapped,unit) %>% 
     dplyr::summarise(sum_value_by_dimension = sum(value))
   
