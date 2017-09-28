@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_codelist.R
 \name{map_codelist}
 \alias{map_codelist}
-\title{Maps and replaces one dimension of a fact dataset using a dataset of code list mapping}
+\title{Maps and replaces one dimension of a fact dataset using a dataset of mappings between code lists}
 \usage{
 map_codelist(df_input, df_mapping, dimension_to_map)
 }
@@ -36,14 +36,14 @@ The data frames of fact and code list mapping must be properly structured. For s
   head(df_mapping)
  
   # Map code lists. Output is a list with two elements (see section "return")
-  df_mapped<-map_codelist(df_input,df_mapping,"gear")
+  list_df_mapped<-map_codelist(df_input,df_mapping,"gear")
   
-  # Get df_input with dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
-  df_input<-df_mapped$df
-  head(df_input) 
+  # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
+  df_mapped<-list_df_mapped$df
+  head(df_mapped) 
   
   # Get information regarding the data that were not mapped.
-  df_mapped$stats
+  list_df_mapped$stats
  
 }
 \author{
