@@ -42,7 +42,7 @@
 #'   list_df_mapped$stats
 #'  
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import data.table, dplyr     
+#' @import data.table dplyr     
 
 
 
