@@ -9,8 +9,8 @@
 \usage{
 list_datasets(source_authority=NULL,db="sardara_world")
 list_raw_datasets(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world")
-list_codelists<-function(source_authority=NULL,dimension=NULL,db="sardara_world")
-list_mappings<-function(source_authority=NULL,dimension=NULL,db="sardara_world")
+list_codelists(source_authority=NULL,dimension=NULL,db="sardara_world")
+list_mappings(source_authority=NULL,dimension=NULL,db="sardara_world")
 }
 \arguments{
 \item{source_authority}{NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.}
@@ -26,7 +26,7 @@ list_mappings<-function(source_authority=NULL,dimension=NULL,db="sardara_world")
 \item{level_of_correction}{NULL or integer. For datasets only. If not NULL, filter available datasets that are have that level of correction provided.}
 }
 \value{
-a data.frame of metadata for the data available in Sardara database. For the meaning of the columns of the output data.frame, see \href{https://docs.google.com/spreadsheets/d/1HAgGQzd7GgPXLYgrHECZyqGy4Vsf4IOlppSbmhWEuaE/edit#gid=0}{data dictionary of the metadata table of Sardara database}. ## to fill in this description when it is finalized
+a data.frame of metadata for the data available in Sardara database. The meaning of the columns of the output data.frame is provided in the \href{https://docs.google.com/spreadsheets/d/1HAgGQzd7GgPXLYgrHECZyqGy4Vsf4IOlppSbmhWEuaE/edit#gid=0}{data dictionary of the metadata table of Sardara database}. ## to fill in this description when it is finalized
 }
 \description{
 This function outputs the metadata of the data available in the Sardara database.
