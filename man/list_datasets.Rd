@@ -36,8 +36,8 @@ This function outputs the metadata of the data available in the Sardara database
 # List the available source IOTC datasets:
 metadata_iotc_datasets<-list_datasets(c("IOTC"))
 
-# List the available code lists for WCPFC and CCSBT
-metadata_iccat_code_lists<-list_codelists(c("WCPFC","CCSBT"))
+# List the available code lists for WCPFC and IATTC
+metadata_iccat_code_lists<-list_codelists(c("WCPFC","IATTC"))
 
 # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
 metadata_raw_dataset_catch_5deg<-list_raw_datasets(variable=c("catch","effort"),spatial_resolution=5)
