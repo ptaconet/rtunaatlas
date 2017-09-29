@@ -8,8 +8,8 @@
 #' @usage 
 #' list_datasets(source_authority=NULL,db="sardara_world")
 #' list_raw_datasets(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world")
-#' list_codelists<-function(source_authority=NULL,dimension=NULL,db="sardara_world")
-#' list_mappings<-function(source_authority=NULL,dimension=NULL,db="sardara_world")
+#' list_codelists(source_authority=NULL,dimension=NULL,db="sardara_world")
+#' list_mappings(source_authority=NULL,dimension=NULL,db="sardara_world")
 #'    
 #' @param source_authority NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.
 #' @param dimension NULL or vector of strings. For codelists and mappings only. If not NULL, filter available code lists / mappings by dimensions. E.g. c("gear","species") will provide the metadata only for code lists/mappings between code lists related to fishing gears and species.
@@ -18,7 +18,7 @@
 #' @param level_of_correction NULL or integer. For datasets only. If not NULL, filter available datasets that are have that level of correction provided.
 #' @param db the name of the database to connect to. Defaut connects to Sardara database hosted on the BlueBridge project servers.
 #'
-#' @return a data.frame of metadata for the data available in Sardara database. For the meaning of the columns of the output data.frame, see \href{https://docs.google.com/spreadsheets/d/1HAgGQzd7GgPXLYgrHECZyqGy4Vsf4IOlppSbmhWEuaE/edit#gid=0}{data dictionary of the metadata table of Sardara database}. ## to fill in this description when it is finalized
+#' @return a data.frame of metadata for the data available in Sardara database. The meaning of the columns of the output data.frame is provided in the \href{https://docs.google.com/spreadsheets/d/1HAgGQzd7GgPXLYgrHECZyqGy4Vsf4IOlppSbmhWEuaE/edit#gid=0}{data dictionary of the metadata table of Sardara database}. ## to fill in this description when it is finalized
 #'
 #' @details 
 #' Three types of data are available in Sardara database:
@@ -34,12 +34,14 @@
 #'  \item{"mapping": }{Tables that establishes mappings / correspondences between codes from various reference tables.}
 #' }
 #' . 
-#' For the meaning of the columns of the raw dataset, see \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
+#' The meaning of the columns of the raw dataset is provided in the \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
 #' 
-#' \code{list_datasets} lists the metadata of all the types of datasets (raw_dataset, codelists, mappings)
-#' \code{list_raw_datasets} lists only the metadata of raw_datasets
-#' \code{list_codelists} lists only the metadata of the code lists
-#' \code{list_mappings} lists only the metadata of the mappings between code lists
+#' \itemize{
+#' \item{\code{list_datasets}} {lists the metadata of all the types of datasets (raw_dataset, codelists, mappings)}
+#' \item{\code{list_raw_datasets}} lists only the metadata of raw_datasets}
+#' \item{\code{list_codelists}} lists only the metadata of the code lists}
+#' \item{\code{list_mappings}} lists only the metadata of the mappings between code lists}
+#' }
 #' 
 #' @family list available data
 #' 
