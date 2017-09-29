@@ -59,6 +59,24 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @import RPostgreSQL   
 
+  
+  list_datasets<-function(source_authority=NULL,db="sardara_world"){
+    
+    con<-db_connexion(db)
+    
+    where_clause<-NULL
+    
+    if(!is.null(source_authority)){
+      source_authority<-paste(source_authority, collapse = "','")
+      where_clause<-paste0(where_clause," and dataset_origin_institution IN ('",source_authority,"')")
+    }
+   
+    metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null ",where_clause," order by dataset_origin_institution,table_name",sep=))
+    
+    dbDisconnect(con)
+    
+    return(metadata_datasets) 
+  }
 
 list_codelists<-function(source_authority=NULL,dimension=NULL,db="sardara_world"){
   
@@ -112,7 +130,7 @@ list_codelists_mapping<-function(source_authority=NULL,dimension=NULL,db="sardar
 
 
 
-list_datasets<-function(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world"){
+list_raw_datasets<-function(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world"){
   
   con<-db_connexion(db)
   
@@ -142,51 +160,3 @@ list_datasets<-function(source_authority=NULL,variable=NULL,spatial_resolution=N
   
   return(metadata_datasets) 
 }
-
-
-
-extract_codelist<-function(dataset_name,db="sardara_world"){
-  
-  con<-db_connexion(db)
-  
-  # get metadata row for the provided dataset_name
-  metadata_row<-dbGetQuery(con, paste0("SELECT * FROM metadata.metadata where dataset_name='",dataset_name,"'"))
-  
-  if (length(metadata_row)==0){ stop("the dataset provided does not exist in the database") }
-  
-  static_metadata_table_name=metadata_row$table_name
-  
-  # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommÃƒÆ’Ã‚Â©es 'code' et 'label' dans le codelist extrait (WFS et csv)
-  code_label_column_name<-dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",static_metadata_table_name,"'"))  
-  # 2) S'il n'y a pas de label, on remplit la colonne 'label' avec des 'NULL'  
-  if (is.na(code_label_column_name$english_label_column[1])){
-    code_label_column_name$english_label_column[1]="NULL"
-  }
-  # 3)  on va chercher les autres colonnes du code list
-  all_column_names<-dbGetQuery(con,paste0("SELECT column_name from information_schema.columns where table_schema||'.'||table_name='",static_metadata_table_name,"'"))
-  all_column_names_vector <- as.vector(all_column_names$column_name)
-  other_columns_column_names<-setdiff(all_column_names_vector, c(code_label_column_name$code_column[1],code_label_column_name$english_label_column[1]))
-  if (length(other_columns_column_names)>0){
-    other_columns_column_names<-paste0(", ",paste(as.character(other_columns_column_names),collapse=", ",sep="")," ")
-  } else {
-    other_columns_column_names<-NULL
-  }
-  # 4) s'il s'agit d'un code list de type spatial, on prend en plus la gÃƒÆ’Ã‚Â©omÃƒÆ’Ã‚Â©trie. Ce morceau de requete SQL est ÃƒÆ’  changer pour le CSV car on ne prendra pas l'attribut "the_geom" mais plutot un WKT.
-  if (substr(static_metadata_table_name,1,4)=='area'){
-    # Get geometry column name, type and srid
-    table_geometry_information<-dbGetQuery(con,paste0("select * from geometry_columns where f_table_schema='area' and f_table_name='",substring(static_metadata_table_name, 6),"'"))
-    query<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
-    
-  } else {
-    
-    # 5) s'il s'agit d'un code list non spatial (classique), on prend le code list 
-    query <- paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
-  }
-  
-  codelist<-dbGetQuery(con,query)
-  
-  dbDisconnect(con)
-  
-  return(codelist)
-}
-  
