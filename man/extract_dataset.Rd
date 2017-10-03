@@ -35,7 +35,8 @@ code_list_mapping<-extract_dataset(db_connection_sardara_world(),"codelist_mappi
 
 }
 \seealso{
-Other extract data: \code{\link{iotc_catch_level0}}
+Other extract data: \code{\link{iotc_catch_level0}},
+  \code{\link{iotc_effort_level0}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

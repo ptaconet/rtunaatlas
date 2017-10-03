@@ -3,6 +3,8 @@
 export(db_connection_sardara_world)
 export(extract_dataset)
 export(getSQLSardaraQueries)
+export(iotc_catch_level0)
+export(iotc_effort_level0)
 export(list_codelists)
 export(list_codelists_mapping)
 export(list_dataset_available_dimensions)
