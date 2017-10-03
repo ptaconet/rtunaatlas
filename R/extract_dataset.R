@@ -2,7 +2,7 @@
 #' @aliases extract_datasets
 #' @title Extract a dataset available in Sardara database
 #' @description This function outputs a dataset available in the Sardara database.
-#' @export extract_dataset
+#' @export
 #'
 #'
 #' @usage 
