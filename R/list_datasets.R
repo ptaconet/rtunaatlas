@@ -23,17 +23,16 @@
 #' @details 
 #' Three types of data are available in Sardara database:
 #' \itemize{
-#'  \item{"raw_dataset": }{Datasets. Three types of datasets are available:
+#'  \item{"raw_dataset": }{Datasets. Three types of datasets are available:}
 #'   \itemize{
 #'   \item{"catch": }{Quantity of of fish in number or biomass harvested in a given stratum}
 #'   \item{"effort": }{Quantity of effort (expressed in a given unit such as number of sets, number of fishing hours, number of hooks, etc.) exerted in a given stratum}
 #'   \item{"catch-at-size": }{Quantity of fish at a given size (or size class) harvested in a given stratum}
 #'   }
-#'   }
 #'  \item{"codelist": }{Reference tables with at least codes, and usualy labels associated to these codes.}
 #'  \item{"mapping": }{Tables that establishes mappings / correspondences between codes from various reference tables.}
 #' }
-#' . 
+#'  
 #' The meaning of the columns of the raw dataset is provided in the \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
 #' 
 #' \itemize{
