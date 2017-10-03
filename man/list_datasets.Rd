@@ -7,15 +7,15 @@
 \alias{list_codelists_mapping}
 \title{List metadata of the datasets available in Sardara database}
 \usage{
-list_datasets(source_authority=NULL,db="sardara_world")
-list_raw_datasets(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world")
-list_codelists(source_authority=NULL,dimension=NULL,db="sardara_world")
-list_mappings(source_authority=NULL,dimension=NULL,db="sardara_world")
+list_datasets(con,source_authority=NULL)
+list_raw_datasets(con,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
+list_codelists(con,source_authority=NULL,dimension=NULL)
+list_mappings(con,source_authority=NULL,dimension=NULL)
 }
 \arguments{
-\item{source_authority}{NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.}
+\item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{db}{the name of the database to connect to. Defaut connects to Sardara database hosted on the BlueBridge project servers.}
+\item{source_authority}{NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.}
 
 \item{dimension}{NULL or vector of strings. For codelists and mappings only. If not NULL, filter available code lists / mappings by dimensions. E.g. c("gear","species") will provide the metadata only for code lists/mappings between code lists related to fishing gears and species.}
 
@@ -34,13 +34,13 @@ This function outputs the metadata of the data available in the Sardara database
 \examples{
 
 # List the available source IOTC datasets:
-metadata_iotc_datasets<-list_datasets(c("IOTC"))
+metadata_iotc_datasets<-list_datasets(db_connection_sardara_world,c("IOTC"))
 
 # List the available code lists for WCPFC and IATTC
-metadata_iccat_code_lists<-list_codelists(c("WCPFC","IATTC"))
+metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world,c("WCPFC","IATTC"))
 
 # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
-metadata_raw_dataset_catch_5deg<-list_raw_datasets(variable=c("catch","effort"),spatial_resolution=5)
+metadata_raw_dataset_catch_5deg<-list_raw_datasets(db_connection_sardara_world,variable=c("catch","effort"),spatial_resolution=5)
 
 
 }
