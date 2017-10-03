@@ -37,9 +37,9 @@
 #' 
 #' \itemize{
 #' \item{\code{list_datasets}} {lists the metadata of all the types of datasets (raw_dataset, codelists, mappings)}
-#' \item{\code{list_raw_datasets}} lists only the metadata of raw_datasets}
-#' \item{\code{list_codelists}} lists only the metadata of the code lists}
-#' \item{\code{list_mappings}} lists only the metadata of the mappings between code lists}
+#' \item{\code{list_raw_datasets}} {lists only the metadata of raw_datasets}
+#' \item{\code{list_codelists}} {lists only the metadata of the code lists}
+#' \item{\code{list_mappings}} {lists only the metadata of the mappings between code lists}
 #' }
 #' 
 #' @family list data
