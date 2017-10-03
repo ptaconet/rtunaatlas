@@ -1,5 +1,5 @@
 dimension,db_tablename,db_fact_table_colname,db_pkattribute_colname,db_codesource_colname,db_tablesource_colname,csv_formatted_dimension_colname,codelist_table,sql_select_codes,sql_select_labels,sql_view_codes_labels_joins
-rfmo,metadata.origin_institution,id_rfmo,id_origin_institution,code_origin_institution,NA,rfmo,TRUE,"origin_institution.code_origin_institution AS source_authority,",,LEFT OUTER JOIN metadata.origin_institution ON tab.id_rfmo = origin_institution.id_origin_institution
+source_authority,metadata.origin_institution,id_rfmo,id_origin_institution,code_origin_institution,NA,rfmo,TRUE,"origin_institution.code_origin_institution AS source_authority,",,LEFT OUTER JOIN metadata.origin_institution ON tab.id_rfmo = origin_institution.id_origin_institution
 flag,flag.flag,id_flag,id_flag,codesource_flag,tablesource_flag,flag,TRUE,"flag_labels.codesource_flag AS flag,
 ","flag_labels.source_english_label AS flag_label,",LEFT OUTER JOIN flag.flag_labels USING (id_flag)
 gear,gear.gear,id_gear,id_gear,codesource_gear,tablesource_gear,gear,TRUE,"gear_labels.codesource_gear AS gear,
@@ -19,10 +19,10 @@ Area.codesource_area as geographic_identifier,",areas_with_geom.label as geograp
 LEFT JOIN area.areas_with_geom USING (id_area)"
 catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,"catchtype_labels.codesource_catchtype AS catchtype,
 ","Catchtype_labels.source_english_label AS catchtype_label,",LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
-catchunit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,"catchunit_labels.codesource_catchunit as catchunit,
-","Catchunit_labels.source_english_label as catchunit_label,",LEFT OUTER JOIN catchunit.catchunit_labels USING (id_catchunit)
-effortunit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,"effortunit_labels.codesource_effortunit as effortunit,
-","effortunit_labels.source_english_label as effortunit_label,",LEFT OUTER JOIN effortunit.effortunit_labels USING (id_effortunit)
+unit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,"catchunit_labels.codesource_catchunit as unit,
+","Catchunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN catchunit.catchunit_labels USING (id_catchunit)
+unit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,"effortunit_labels.codesource_effortunit as unit,
+","effortunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN effortunit.effortunit_labels USING (id_effortunit)
 sex,sex.sex,id_sex,id_sex,codesource_sex,tablesource_sex,sex,TRUE,"sex_labels.codesource_sex as sex,
 ","sex_labels.source_english_label as sex_label,",LEFT OUTER JOIN sex.sex_labels USING (id_sex)
 sizeclass,sizeclass.sizeclass,id_sizeclass,id_sizeclass,NA,NA,"size_min,size_step",FALSE,"sizeclass.size_min,
