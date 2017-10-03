@@ -23,9 +23,15 @@ list_dataset_available_dimensions<-function(con,dataset_name){
   
   db_dimensions_parameters<-read.csv("inst/extdata/db_dimensions_parameters.csv",stringsAsFactors = F)
   
+  metadata_row<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_name='",dataset_name,"'"))
+  
   # get type of variable of the dataset
-  table_name=dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",dataset_name,"'"))$table_name
-  id_metadata=dbGetQuery(con,paste0("SELECT id_metadata from metadata.metadata where dataset_name='",dataset_name,"'"))$id_metadata
+  table_name=metadata_row$table_name
+  id_metadata=metadata_row$id_metadata
+  table_type=metadata_row$table_type
+  
+  if (!(table_type=="raw_dataset")) { stop("the dataset provided is not a raw_dataset. You must provide a dataset of type raw_dataset") }
+  
   
   variable<-gsub("fact_tables.","",table_name)
   # get columns of this dataset
