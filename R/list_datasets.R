@@ -6,10 +6,10 @@
 #'
 #'
 #' @usage 
-#' list_datasets(source_authority=NULL,db="sardara_world")
-#' list_raw_datasets(source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL,db="sardara_world")
-#' list_codelists(source_authority=NULL,dimension=NULL,db="sardara_world")
-#' list_mappings(source_authority=NULL,dimension=NULL,db="sardara_world")
+#' list_datasets(con,source_authority=NULL)
+#' list_raw_datasets(con,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
+#' list_codelists(con,source_authority=NULL,dimension=NULL)
+#' list_mappings(con,source_authority=NULL,dimension=NULL)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param source_authority NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.
@@ -43,7 +43,7 @@
 #' \item{\code{list_mappings}} lists only the metadata of the mappings between code lists}
 #' }
 #' 
-#' @family list available data
+#' @family list data
 #' 
 #' 
 #' @examples
