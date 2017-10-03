@@ -16,13 +16,8 @@ This function list the dimensions available in a dataset. A dimension is set as 
 }
 \examples{
 
-# List the available source IOTC datasets:
-metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),c("IOTC"))$dataset_name
-
-metadata_iotc_datasets
-
-# List the available dimensions in the first dataset :
-list_dataset_available_dimensions(db_connection_sardara_world(),metadata_iotc_datasets[1])
+# List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":
+list_dataset_available_dimensions(db_connection_sardara_world(),"indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal")
 
 }
 \author{
