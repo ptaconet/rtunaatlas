@@ -42,7 +42,7 @@ list_dataset_available_dimensions<-function(con,dataset_name){
   # get only columns that are not empty (i.e. not filled with only with NULL values)
   available_dimensions_in_dataset_not_null<-NULL
     
-  for (i in 1:nrow(available_columns_in_dataset)){
+  for (i in 1:nrow(available_dimensions_in_dataset)){
     
   unique_values_dimension<-dbGetQuery(con,paste0("SELECT DISTINCT ", available_dimensions_in_dataset$db_fact_table_colname[i] ," FROM ",table_name," WHERE id_metadata=",id_metadata))
   
