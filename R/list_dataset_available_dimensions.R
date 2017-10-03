@@ -13,12 +13,12 @@
 #' @examples
 #' 
 #' # List the available source IOTC datasets:
-#' metadata_iotc_datasets<-list_datasets(db_connection_sardara_world,c("IOTC"))$dataset_name
+#' metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),c("IOTC"))$dataset_name
 #' 
 #' metadata_iotc_datasets
 #' 
 #' # List the available dimensions in the first dataset :
-#' list_dataset_available_dimensions(con,metadata_iotc_datasets[1])
+#' list_dataset_available_dimensions(db_connection_sardara_world(),metadata_iotc_datasets[1])
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'

@@ -56,13 +56,13 @@ The meaning of the columns of the raw dataset is provided in the \href{https://d
 \examples{
 
 # List the available source IOTC datasets:
-metadata_iotc_datasets<-list_datasets(db_connection_sardara_world,c("IOTC"))
+metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),c("IOTC"))
 
 # List the available code lists for WCPFC and IATTC
-metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world,c("WCPFC","IATTC"))
+metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world(),c("WCPFC","IATTC"))
 
 # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
-metadata_raw_dataset_catch_5deg<-list_raw_datasets(db_connection_sardara_world,variable=c("catch","effort"),spatial_resolution=5)
+metadata_raw_dataset_catch_5deg<-list_raw_datasets(db_connection_sardara_world(),variable=c("catch","effort"),spatial_resolution=5)
 
 
 }

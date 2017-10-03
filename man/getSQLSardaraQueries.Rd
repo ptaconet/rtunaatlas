@@ -38,7 +38,7 @@ queries<-getSQLSardaraQueries(db_connection_sardara_world(),"global_catch_5deg_1
 
 # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
 
-global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1<-dbGetQuery(con,queries$query_CSV)
+global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1<-dbGetQuery(db_connection_sardara_world(),queries$query_CSV)
 
 }
 \author{
