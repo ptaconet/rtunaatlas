@@ -210,9 +210,9 @@ getSQLSardaraQueries <- function(con, dataset_name){
     where_query_wms_wfs<-substring(where_query_wms_wfs, 5)
     
     # add types of data to columns_csv_wms_wfs (for further use as parameter of the function publish_wms_wfs in the script write_data_access_ogc_wms_wfs to determine the regexp)
-    columns_wms_wfs_where_clause<-data.frame(columns_wms_wfs_where_clause)
-    colnames(columns_wms_wfs_where_clause)<-"attname"
-    columns_wms_wfs_where_clause<-merge(column_names_and_types_dataset,columns_wms_wfs_where_clause)
+    #columns_wms_wfs_where_clause<-data.frame(columns_wms_wfs_where_clause)
+    #colnames(columns_wms_wfs_where_clause)<-"attname"
+    #columns_wms_wfs_where_clause<-merge(column_names_and_types_dataset,columns_wms_wfs_where_clause)
     
     
     # write the queries
