@@ -30,7 +30,6 @@
 #' head(iccat_catch)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import RPostgreSQL  
 #' 
 
 

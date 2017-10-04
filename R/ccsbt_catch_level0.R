@@ -23,7 +23,7 @@
 #' head(ccsbt_catch)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import RPostgreSQL    
+#'  
 
 ccsbt_catch_level0<-function(year_tunaatlas){
   

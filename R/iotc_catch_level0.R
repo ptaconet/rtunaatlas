@@ -23,7 +23,7 @@
 #' head(iotc_catch)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import RPostgreSQL   
+#'   
 
 iotc_catch_level0<-function(year_tunaatlas){
   

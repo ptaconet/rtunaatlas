@@ -23,7 +23,7 @@
 #' head(wcpfc_catch)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import RPostgreSQL   
+#'  
 
 wcpfc_catch_level0<-function(year_tunaatlas){
   
