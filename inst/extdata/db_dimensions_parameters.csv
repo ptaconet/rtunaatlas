@@ -1,31 +1,31 @@
 dimension,db_tablename,db_fact_table_colname,db_pkattribute_colname,db_codesource_colname,db_tablesource_colname,csv_formatted_dimension_colname,codelist_table,sql_column_label,sql_select_codes,sql_select_labels,sql_view_codes_labels_joins
-source_authority,metadata.origin_institution,id_rfmo,id_origin_institution,code_origin_institution,NA,rfmo,TRUE,source_authority,"origin_institution.code_origin_institution AS source_authority,",,LEFT OUTER JOIN metadata.origin_institution ON tab.id_rfmo = origin_institution.id_origin_institution
-flag,flag.flag,id_flag,id_flag,codesource_flag,tablesource_flag,flag,TRUE,flag,"flag_labels.codesource_flag AS flag,
-","flag_labels.source_english_label AS flag_label,",LEFT OUTER JOIN flag.flag_labels USING (id_flag)
-gear,gear.gear,id_gear,id_gear,codesource_gear,tablesource_gear,gear,TRUE,"gear,gear_group","gear_labels.codesource_gear AS gear,
-","gear_labels.source_english_label AS gear_label,",LEFT OUTER JOIN gear.gear_labels USING (id_gear)
-species,species.species,id_species,id_species,codesource_species,tablesource_species,species,TRUE,"species,species_group","species_labels.codesource_species AS species,
-","species_labels.source_english_label AS species_label,",LEFT OUTER JOIN species.species_labels USING (id_species)
-schooltype,schooltype.schooltype,id_schooltype,id_schooltype,codesource_schooltype,tablesource_schooltype,schooltype,TRUE,schooltype,"schooltype_labels.codesource_schooltype AS schooltype,
-","Schooltype_labels.source_english_label AS schooltype_label,",LEFT OUTER JOIN schooltype.schooltype_labels USING (id_schooltype)
+source_authority,metadata.origin_institution,id_rfmo,id_origin_institution,code_origin_institution,NA,rfmo,TRUE,source_authority,origin_institution.code_origin_institution AS source_authority,,LEFT OUTER JOIN metadata.origin_institution ON tab.id_rfmo = origin_institution.id_origin_institution
+flag,flag.flag,id_flag,id_flag,codesource_flag,tablesource_flag,flag,TRUE,flag,"flag_labels.codesource_flag AS flag
+",flag_labels.source_english_label AS flag_label,LEFT OUTER JOIN flag.flag_labels USING (id_flag)
+gear,gear.gear,id_gear,id_gear,codesource_gear,tablesource_gear,gear,TRUE,"gear,gear_group","gear_labels.codesource_gear AS gear
+",gear_labels.source_english_label AS gear_label,LEFT OUTER JOIN gear.gear_labels USING (id_gear)
+species,species.species,id_species,id_species,codesource_species,tablesource_species,species,TRUE,"species,species_group","species_labels.codesource_species AS species
+",species_labels.source_english_label AS species_label,LEFT OUTER JOIN species.species_labels USING (id_species)
+schooltype,schooltype.schooltype,id_schooltype,id_schooltype,codesource_schooltype,tablesource_schooltype,schooltype,TRUE,schooltype,"schooltype_labels.codesource_schooltype AS schooltype
+",Schooltype_labels.source_english_label AS schooltype_label,LEFT OUTER JOIN schooltype.schooltype_labels USING (id_schooltype)
 time,time.time,id_time,id_time,NA,NA,"time_start,time_end",FALSE,"time_start,time_end,month,quarter,year","time.time_start,
 time.time_end,
 time.month,
 time.quarter,
 time.year,
-Time.time_period,",,LEFT OUTER JOIN time.time USING (id_time)
+Time.time_period",,LEFT OUTER JOIN time.time USING (id_time)
 area,area.area,id_area,id_area,codesource_area,tablesource_area,area,TRUE,geographic_identifier,"tab.id_area,
-Area.codesource_area as geographic_identifier,",areas_with_geom.label as geographic_identifier_label,"LEFT OUTER JOIN area.area USING (id_area) 
+Area.codesource_area as geographic_identifier",areas_with_geom.label as geographic_identifier_label,"LEFT OUTER JOIN area.area USING (id_area) 
 LEFT JOIN area.areas_with_geom USING (id_area)"
-catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,catchtype,"catchtype_labels.codesource_catchtype AS catchtype,
-","Catchtype_labels.source_english_label AS catchtype_label,",LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
-catchunit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,catchunit,"catchunit_labels.codesource_catchunit as unit,
-","Catchunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN catchunit.catchunit_labels USING (id_catchunit)
-effortunit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,effortunit,"effortunit_labels.codesource_effortunit as unit,
-","effortunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN effortunit.effortunit_labels USING (id_effortunit)
-sex,sex.sex,id_sex,id_sex,codesource_sex,tablesource_sex,sex,TRUE,sex,"sex_labels.codesource_sex as sex,
-","sex_labels.source_english_label as sex_label,",LEFT OUTER JOIN sex.sex_labels USING (id_sex)
+catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,catchtype,"catchtype_labels.codesource_catchtype AS catchtype
+",Catchtype_labels.source_english_label AS catchtype_label,LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
+catchunit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,catchunit,"catchunit_labels.codesource_catchunit as unit
+",Catchunit_labels.source_english_label as unit_label,LEFT OUTER JOIN catchunit.catchunit_labels USING (id_catchunit)
+effortunit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,effortunit,"effortunit_labels.codesource_effortunit as unit
+",effortunit_labels.source_english_label as unit_label,LEFT OUTER JOIN effortunit.effortunit_labels USING (id_effortunit)
+sex,sex.sex,id_sex,id_sex,codesource_sex,tablesource_sex,sex,TRUE,sex,"sex_labels.codesource_sex as sex
+",sex_labels.source_english_label as sex_label,LEFT OUTER JOIN sex.sex_labels USING (id_sex)
 sizeclass,sizeclass.sizeclass,id_sizeclass,id_sizeclass,NA,NA,"size_min,size_step",FALSE,"size_min,size_step","sizeclass.size_min,
-Sizeclass.size_step,",,LEFT OUTER JOIN sizeclass.sizeclass USING (id_sizeclass)
-fadclass,fadclass.fadclass,id_fadclass,id_fadclass,codesource_fadclass,tablesource_fadclass,fadclass,TRUE,fadclass,"fadclass_labels.codesource_fadclass AS fadclass,
-","fadclass_labels.source_english_label AS fadclass_label,",
+Sizeclass.size_step",,LEFT OUTER JOIN sizeclass.sizeclass USING (id_sizeclass)
+fadclass,fadclass.fadclass,id_fadclass,id_fadclass,codesource_fadclass,tablesource_fadclass,fadclass,TRUE,fadclass,"fadclass_labels.codesource_fadclass AS fadclass
+",fadclass_labels.source_english_label AS fadclass_label,
