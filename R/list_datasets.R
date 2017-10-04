@@ -6,12 +6,13 @@
 #'
 #'
 #' @usage 
-#' list_datasets(con,source_authority=NULL)
-#' list_raw_datasets(con,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
-#' list_codelists(con,source_authority=NULL,dimension=NULL)
-#' list_mappings(con,source_authority=NULL,dimension=NULL)
+#' list_datasets(con,dataset_name=NULL,source_authority=NULL)
+#' list_raw_datasets(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
+#' list_codelists(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
+#' list_mappings(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
+#' @param dataset_name NULL or string. If not NULL, extracts the metadata row of the dataset_name stated. In this case, all the other parameters will be ignored
 #' @param source_authority NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.
 #' @param dimension NULL or vector of strings. For codelists and mappings only. If not NULL, filter available code lists / mappings by dimensions. E.g. c("gear","species") will provide the metadata only for code lists/mappings between code lists related to fishing gears and species.
 #' @param variable NULL or vector of strings. For datasets only. If not NULL, filter available code lists / mappings by variable. Three variables are available in Sardara: catch, effort, catch_at_size
@@ -48,10 +49,10 @@
 #' @examples
 #' 
 #' # List the available source IOTC datasets:
-#' metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),c("IOTC"))
+#' metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),source_authority=c("IOTC"))
 #' 
 #' # List the available code lists for WCPFC and IATTC
-#' metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world(),c("WCPFC","IATTC"))
+#' metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world(),source_authority=c("WCPFC","IATTC"))
 #' 
 #' # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
 #' metadata_raw_dataset_catch_5deg<-list_raw_datasets(db_connection_sardara_world(),variable=c("catch","effort"),spatial_resolution=5)
@@ -60,23 +61,31 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
   
-  list_datasets<-function(con,source_authority=NULL){
+  list_datasets<-function(con,dataset_name=NULL,source_authority=NULL){
     
     where_clause<-NULL
+    
+    if(!is.null(dataset_name)){
+      where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+    }
     
     if(!is.null(source_authority)){
       source_authority<-paste(source_authority, collapse = "','")
       where_clause<-paste0(where_clause," and dataset_origin_institution IN ('",source_authority,"')")
     }
-   
+    
     metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null ",where_clause," order by dataset_origin_institution,table_name",sep=))
     
     return(metadata_datasets) 
   }
 
-list_codelists<-function(con,source_authority=NULL,dimension=NULL){
+list_codelists<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
   
   where_clause<-NULL
+  
+  if(!is.null(dataset_name)){
+    where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+  }
   
   if(!is.null(source_authority)){
     source_authority<-paste(source_authority, collapse = "','")
@@ -96,9 +105,13 @@ list_codelists<-function(con,source_authority=NULL,dimension=NULL){
 
 
 
-list_codelists_mapping<-function(con,source_authority=NULL,dimension=NULL){
+list_codelists_mapping<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
   
   where_clause<-NULL
+  
+  if(!is.null(dataset_name)){
+    where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+  }
   
   if(!is.null(source_authority)){
     source_authority<-paste(source_authority, collapse = "','")
@@ -117,9 +130,13 @@ list_codelists_mapping<-function(con,source_authority=NULL,dimension=NULL){
 
 
 
-list_raw_datasets<-function(con,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL){
+list_raw_datasets<-function(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL){
   
   where_clause<-NULL
+  
+  if(!is.null(dataset_name)){
+    where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+  }
   
   if(!is.null(source_authority)){
     source_authority<-paste(source_authority, collapse = "','")
