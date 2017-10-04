@@ -69,7 +69,8 @@ dbDisconnect(con)
 
 }
 \seealso{
-Other create your own tuna atlas: \code{\link{map_codelist}}
+Other create your own tuna atlas: \code{\link{convert_units}},
+  \code{\link{map_codelist}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

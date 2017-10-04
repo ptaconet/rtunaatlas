@@ -29,12 +29,6 @@ Other tRFMOs datasets extraction: \code{\link{iattc_catch_level0}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
   \code{\link{wcpfc_catch_level0}}
-
-Other datasets extraction: \code{\link{extract_dataset}},
-  \code{\link{iattc_catch_level0}},
-  \code{\link{iccat_catch_level0}},
-  \code{\link{iotc_catch_level0}},
-  \code{\link{wcpfc_catch_level0}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

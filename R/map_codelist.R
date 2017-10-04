@@ -36,14 +36,14 @@
 #'   head(df_mapping)
 #'  
 #'   # Map code lists. Output is a list with two elements (see section "return")
-#'   list_df_mapped<-map_codelist(df_input,df_mapping,"gear")
+#'   df_mapped<-map_codelist(df_input,df_mapping,"gear")
 #'   
 #'   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
-#'   df_mapped<-list_df_mapped$df
-#'   head(df_mapped) 
+#'   df_mapped_df<-df_mapped$df
+#'   head(df_mapped_df) 
 #'   
 #'   # Get information regarding the data that were not mapped.
-#'   list_df_mapped$stats
+#'   df_mapped$stats
 #'  
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @import data.table dplyr     
@@ -51,6 +51,8 @@
 
 
 map_codelist<-function(df_input,df_mapping,dimension_to_map){
+  
+  cat(paste0("\n mapping dimension ",dimension_to_map," with code list mapping"))
   
   column_names_df_input<-colnames(df_input)
   
