@@ -51,7 +51,7 @@ The data frames of fact and code list mapping must be properly structured. The d
  
 }
 \seealso{
-Other create your own tuna atlas: \code{\link{raise_by_dimension}}
+Other create your own tuna atlas: \code{\link{raise_datasets_by_dimension}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

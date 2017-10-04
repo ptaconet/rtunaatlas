@@ -1,12 +1,12 @@
-#' @name raise_by_dimension
-#' @aliases raise_by_dimension
+#' @name raise_datasets_by_dimension
+#' @aliases raise_datasets_by_dimension
 #' @title Create a dataset with most complete information using two datasets with partial information
 #' @description This function creates a dataset with most complete information using two datasets with partial information , by crossing the informations available in both datasets.
 #'  It takes as input two datasets, each with partial information, but the full information is available if we consider both datasets. Each dataset used as input misses one dimension, the missing dimension in the dataset n°1 being available in the dataset n°2 and reversely. The functions uses both datasets to create a new dataset with the full information (i.e. with values filled for both dimensions on the dataset).
 #'  The data frames of fact must be properly structured. For structures of data frames, see details and here: \url{http://}. 
 #' @export
 #'
-#' @usage raise_by_dimension(df1, df2, dimension_missing_df1, dimension_missing_df2)
+#' @usage raise_datasets_by_dimension(df1, df2, dimension_missing_df1, dimension_missing_df2)
 #'                 
 #' @param df1 a data.frame of fact with one dimension missing (i.e. for this dimension all values are set to UNK), the latter being available in df2.
 #' @param df2 the same data.frame of fact with another dimension missing, the latter being available in df1.
@@ -57,7 +57,7 @@
 #' 
 #' ## Raise both datasets. In the output dataset, both flag and school type information are available for each stratum. 
 #'  
-#' dataset_iattc_flag_raised_to_schooltype<-raise_by_dimension(
+#' dataset_iattc_flag_raised_to_schooltype<-raise_datasets_by_dimension(
 #' df1=dataset_iattc_ce_PSFlag,
 #' df2=dataset_iattc_ce_PSSetType,
 #' dimension_missing_df1="schooltype",
@@ -72,11 +72,13 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' 
 
-raise_by_dimension<-function(df1, # dataset 1
+raise_datasets_by_dimension<-function(df1, # dataset 1
                              df2, # dataset 2
                              dimension_missing_df1, # e.g. "schooltype"
                              dimension_missing_df2 # e.g. "flag"
 ){
+  
+  cat(paste0("\nRaising ",dimension_missing_df1," to ",dimension_missing_df2," in ",df1," and ",df2))
   
   colnames_input_dataset<-unique(c(colnames(df1),c(colnames(df2))))
   
