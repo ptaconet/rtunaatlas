@@ -52,11 +52,11 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_typeofschool,dimensio
   
   # Datasets that are stratified by schooltype but not by flag
   datasets_permanent_identifiers_PSSetType="'east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_bySchool','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_bySchool','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_bySchool'"
-  metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_notPS,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_PSSetType,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
   # Datasets that are stratified by flag but not by schooltype
   datasets_permanent_identifiers_PSFlag="'east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_byFlag','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_byFlag','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_byFlag'"
-  metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_notPS,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_PSFlag,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
   # Retrieve IATTC georef. catches not Purse Seine
   df_iattc_notps<-extract_and_merge_multiple_datasets(con,metadata_datasets_notPS,columns_to_keep)
@@ -69,6 +69,7 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_typeofschool,dimensio
   
   # If user decided to raise flags to type of school:  The Purse Seine data are raised (schooltype raised to flag)
   if (raise_flags_to_typeofschool==TRUE){
+    cat(paste0("\nraising flags to schooltype"))
     
     iattc_flag_raised_to_schooltype<-raise_datasets_by_dimension(df1=df_iattc_PSFlag,
                                                               df2=df_iattc_PSSetType,
@@ -78,6 +79,8 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_typeofschool,dimensio
     df_level0<-rbind(df_iattc_notps,iattc_flag_raised_to_schooltype)
     
   } else {  # If user decides to not raise flags to type of school, he chooses to use either the data with stratification by flag or the data with stratification by schooltype
+    
+    cat(paste0("\nkeeping dataset with information on ",dimension_to_use_if_no_raising_flags_to_typeofschool))
     
     if (dimension_to_use_if_no_raising_flags_to_typeofschool=='flag'){
       df_level0<-rbind(df_iattc_notps,df_iattc_PSFlag)
