@@ -14,7 +14,6 @@
 #' Output dataset is expressed with CCSBT's coding system.
 #' 
 #' @family tRFMOs datasets extraction
-#' @family datasets extraction
 #' 
 #' @examples
 #' 

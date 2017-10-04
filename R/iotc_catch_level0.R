@@ -14,7 +14,6 @@
 #' Output dataset is expressed with IOTC's coding system.
 #' 
 #' @family tRFMOs datasets extraction
-#' @family datasets extraction
 #' 
 #' @examples
 #' 
@@ -34,7 +33,7 @@ iotc_catch_level0<-function(year_tunaatlas){
   
   # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
   
-  datasets_permanent_identifiers="'indian_ocean_catch_ll_tunaatlasdf_level0','indian_ocean_catch_tunaatlasdf_level0__coastal','indian_ocean_catch_tunaatlasdf_level0__surface'"
+  datasets_permanent_identifiers="'indian_ocean_catch_ll_tunaatlasIOTC_level0','indian_ocean_catch_tunaatlasIOTC_level0__coastal','indian_ocean_catch_tunaatlasIOTC_level0__surface'"
   
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   

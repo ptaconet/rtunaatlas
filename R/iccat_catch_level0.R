@@ -21,7 +21,6 @@
 #' Output dataset is expressed with ICCAT's coding system.
 #' 
 #' @family tRFMOs datasets extraction
-#' @family datasets extraction
 #' 
 #' @examples
 #' 
