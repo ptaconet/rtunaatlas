@@ -26,16 +26,18 @@
 #'  \item{\code{lineage} :}{ }
 #'  \item{\code{query_dynamic_list_keywords_institutions} :}{ }
 #'   }
-#' list_metadata_datasets(dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
+#' 
 #' @examples
 #' 
+#'  con=db_connection_sardara_world()
+#'  
 #'  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
-#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),list_metadata_datasets(dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
-#' queries<-getSQLSardaraQueries(db_connection_sardara_world(),dataset_metadata)
+#' dataset_metadata<-dbGetQuery(con,list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
+#' queries<-getSQLSardaraQueries(con,dataset_metadata)
 #' 
 #' # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
 #' 
-#' global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1<-dbGetQuery(db_connection_sardara_world(),queries$query_CSV)
+#' global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1<-dbGetQuery(con,queries$query_CSV)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
@@ -208,7 +210,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
       }
     
     
-    select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=", ",sep="") 
+    select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=" ",sep="") 
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
     # create WHERE clause for queries wms/wfs
