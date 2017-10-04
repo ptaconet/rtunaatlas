@@ -54,7 +54,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   static_metadata_URL_of_what <- dataset_metadata$url_report_process # TO BE DONE => REMOVE IT / NOT USED FOR NOW
   
   static_metadata_dataset_origin_institution <- dataset_metadata$dataset_origin_institution
-  static_metadata_view_type <- dataset_metadata$table_type
+  static_metadata_table_type <- dataset_metadata$table_type
   
   static_metadata_type_operation <- dataset_metadata$type_operation # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
   static_metadata_url_download_page <- dataset_metadata$url_download_page # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
@@ -108,7 +108,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   dynamic_metadata_Keywords_institutions <- dbGetQuery(con, SQL$query_dynamic_list_keywords_institutions)
 
   #sql queries depending on dataset_type
-  if (static_metadata_view_type=='codelist'){
+  if (static_metadata_table_type=='codelist'){
   
     ##logger.info("Setting SQL queries specific to CODELIST")
     
@@ -144,7 +144,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
       
     }
   
-  }else if (static_metadata_view_type=='mapping'){
+  }else if (static_metadata_table_type=='mapping'){
   
     #logger.info("Setting SQL queries specific to MAPPING")
   
@@ -182,7 +182,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     SQL$query_wfs_wms <- SQL$query_CSV
   
-  }else if (static_metadata_view_type=='raw_dataset'){
+  }else if (static_metadata_table_type=='raw_dataset'){
   
     ##logger.info("Setting SQL queries specific to RAW_DATASET")
     

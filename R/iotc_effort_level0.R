@@ -41,7 +41,7 @@ iotc_effort_level0<-function(year_tunaatlas){
   iotc_level0<-NULL
   for (i in 1:nrow(metadata_datasets)){
     cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[i]))
-    iotc_level0_thisdf<-extract_dataset(con,metadata_datasets[i])
+    iotc_level0_thisdf<-extract_dataset(con,metadata_datasets[i,])
     
     # keep only wanted columns
     iotc_level0_thisdf <- iotc_level0_thisdf[(names(iotc_level0_thisdf) %in% columns_to_keep)]
