@@ -43,6 +43,8 @@
 #'  The column "geographic_identifier" provides the spatial stratification of the factor of conversion. If the coding system for spatial stratification used in df_conversion_factor is the same as the one used in df_input, then the parameter codelist_geoidentifiers_conversion_factors must be set to NULL. Else, the spatial coding system used in df_conversion_factor must be stored in the Sardara database, and the parameter codelist_geoidentifiers_conversion_factors must be set to the name of the spatial coding system (table) in Sardara DB.
 #'  If df_conversion_factor mixes factors of conversion that have and do not have a spatial stratification, the rows that do not have spatial stratification must be set to geographic_identifier= 0.   
 #' 
+#'  Columns of time (time_start and time_end) must be character type (not Posix).
+#' 
 #' @family create your own tuna atlas
 #' 
 #' 
@@ -71,10 +73,10 @@
 #'
 #' # Convert units from numbers to weight using the dataset of factors of conversion. 
 #' # The spatial coding system used in conversion_factor (column geographic_identifier) is not the same as the one used in df_input. Hence, we set in the parameter codelist_geoidentifiers_conversion_factors the name of the spatial coding system used in df_conversion factor ("areas_conversion_factors_numtoweigth_ird").
-#' df_converted<-convert_units(df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird")
+#' df_converted<-convert_units(con, df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird")
 #'
 #' # Get the dataframe with units converted: data that were expressed in number are converted to metric tons. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their original unit (in this case, number).
-#' df_converted_df<-list_df_converted$df
+#' df_converted_df<-df_converted$df
 #' head(df_converted_df)
 #' 
 #' # Get information regarding the conversion (data converted, data not converted because no factor of conversion existed, etc.)
@@ -83,7 +85,7 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @import data.table dplyr RPostgreSQL   
 
-convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_conversion_factors){
+convert_units<-function(con,df_input,df_conversion_factor,codelist_geoidentifiers_conversion_factors){
   
   cat(paste0("\n converting units and measures"))
   
@@ -301,7 +303,7 @@ convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_co
   
   #  return(list(df_input,dataset_to_keep_as_is,dataset_with_units_to_convert,stats_converted_data,plot_catches_by_catchunit,plot_catches_remaining_in_number))
   
-  return(list(df=df_input,stats=stats_data_not_mapped))
+  return(list(df=df_input)) #,stats=stats_data_not_mapped))
   
 }
 
