@@ -209,7 +209,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     } else {  # else we recreate the query that outputs the data.frame
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_codes[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       join_clause<-db_dimensions_parameters$sql_view_codes_labels_joins[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      where_clause<-paste0(" WHERE id_metadata=",static_metadata_id)
+      where_clause<-paste0(" WHERE tab.id_metadata=",static_metadata_id)
       tab_name <- paste(static_metadata_table_name," tab",sep=" ")
       }
     
