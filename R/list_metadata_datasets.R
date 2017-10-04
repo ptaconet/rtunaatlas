@@ -1,15 +1,15 @@
-#' @name list_datasets
-#' @aliases list_datasets list_raw_datasets list_codelists list_codelists_mapping
+#' @name list_metadata_datasets
+#' @aliases list_metadata_datasets list_metadata_raw_datasets list_metadata_codelists list_metadata_codelists_mapping
 #' @title List metadata of the datasets available in Sardara database
 #' @description This function outputs the metadata of the data available in the Sardara database.
-#' @export list_datasets list_raw_datasets list_codelists list_codelists_mapping
+#' @export list_metadata_datasets list_metadata_raw_datasets list_metadata_codelists list_metadata_codelists_mapping
 #'
 #'
 #' @usage 
-#' list_datasets(con,dataset_name=NULL,source_authority=NULL)
-#' list_raw_datasets(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
-#' list_codelists(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
-#' list_mappings(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
+#' list_metadata_datasets(con,dataset_name=NULL,source_authority=NULL)
+#' list_metadata_raw_datasets(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
+#' list_metadata_codelists(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
+#' list_metadata_codelists_mapping(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param dataset_name NULL or string. If not NULL, extracts the metadata row of the dataset_name stated. In this case, all the other parameters will be ignored
@@ -37,10 +37,10 @@
 #' The meaning of the columns of the raw dataset is provided in the \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
 #' 
 #' \itemize{
-#' \item{\code{list_datasets}} {lists the metadata of all the types of datasets (raw_dataset, codelists, mappings)}
-#' \item{\code{list_raw_datasets}} {lists only the metadata of raw_datasets}
-#' \item{\code{list_codelists}} {lists only the metadata of the code lists}
-#' \item{\code{list_mappings}} {lists only the metadata of the mappings between code lists}
+#' \item{\code{list_metadata_datasets}} {lists the metadata of all the types of datasets (raw_dataset, codelists, mappings)}
+#' \item{\code{list_metadata_raw_datasets}} {lists only the metadata of raw_datasets}
+#' \item{\code{list_metadata_codelists}} {lists only the metadata of the code lists}
+#' \item{\code{list_metadata_mappings}} {lists only the metadata of the mappings between code lists}
 #' }
 #' 
 #' @family list data
@@ -49,19 +49,19 @@
 #' @examples
 #' 
 #' # List the available source IOTC datasets:
-#' metadata_iotc_datasets<-list_datasets(db_connection_sardara_world(),source_authority=c("IOTC"))
+#' metadata_iotc_datasets<-list_metadata_datasets(db_connection_sardara_world(),source_authority=c("IOTC"))
 #' 
 #' # List the available code lists for WCPFC and IATTC
-#' metadata_iccat_code_lists<-list_codelists(db_connection_sardara_world(),source_authority=c("WCPFC","IATTC"))
+#' metadata_iccat_code_lists<-list_metadata_codelists(db_connection_sardara_world(),source_authority=c("WCPFC","IATTC"))
 #' 
 #' # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
-#' metadata_raw_dataset_catch_5deg<-list_raw_datasets(db_connection_sardara_world(),variable=c("catch","effort"),spatial_resolution=5)
+#' metadata_raw_dataset_catch_5deg<-list_metadata_raw_datasets(db_connection_sardara_world(),variable=c("catch","effort"),spatial_resolution=5)
 #'
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
   
-  list_datasets<-function(con,dataset_name=NULL,source_authority=NULL){
+  list_metadata_datasets<-function(con,dataset_name=NULL,source_authority=NULL){
     
     where_clause<-NULL
     
@@ -79,7 +79,7 @@
     return(metadata_datasets) 
   }
 
-list_codelists<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
+list_metadata_codelists<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
   
   where_clause<-NULL
   
@@ -105,7 +105,7 @@ list_codelists<-function(con,dataset_name=NULL,source_authority=NULL,dimension=N
 
 
 
-list_codelists_mapping<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
+list_metadata_codelists_mapping<-function(con,dataset_name=NULL,source_authority=NULL,dimension=NULL){
   
   where_clause<-NULL
   
@@ -130,7 +130,7 @@ list_codelists_mapping<-function(con,dataset_name=NULL,source_authority=NULL,dim
 
 
 
-list_raw_datasets<-function(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL){
+list_metadata_raw_datasets<-function(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL){
   
   where_clause<-NULL
   

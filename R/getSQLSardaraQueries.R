@@ -1,7 +1,7 @@
 #' @name getSQLSardaraQueries
 #' @aliases getSQLSardaraQueries
 #' @title Get a list of queries to execute to plug services to the datasets available in Sardara
-#' @description Get a list of queries to execute to plug services to the datasets available in Sardara
+#' @description Get a list of queries to execute to manage the datasets available in Sardara (extract in csv format, in netcdf, etc.)
 #' @export 
 #'
 #' @usage 
@@ -26,11 +26,11 @@
 #'  \item{\code{lineage} :}{ }
 #'  \item{\code{query_dynamic_list_keywords_institutions} :}{ }
 #'   }
-#' 
+#' list_metadata_datasets(dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
 #' @examples
 #' 
 #'  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
-#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1'")
+#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),list_metadata_datasets(dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
 #' queries<-getSQLSardaraQueries(db_connection_sardara_world(),dataset_metadata)
 #' 
 #' # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
