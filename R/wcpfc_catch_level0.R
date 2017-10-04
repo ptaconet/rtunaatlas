@@ -1,7 +1,7 @@
 #' @name wcpfc_catch_level0
 #' @aliases wcpfc_catch_level0
 #' @title Extract source georeferenced catch datasets of WCPFC from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Western and Central Pacific Ocean Fisheries Commission (WCPFC). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the WCPFC. Catches are stratified by month, species, gear, fishing mode (i.e. type of school used), area (5° square) and unit of catch (weight or number). Data are expressed using WCPFC's coding system.
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Western and Central Pacific Ocean Fisheries Commission (WCPFC). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the WCPFC. Catches are stratified by month, species, gear, fishing mode (i.e. type of school used), area (5° square) and unit of catch (weight or number).
 #' @export
 #'
 #' @usage wcpfc_catch_level0(year_tunaatlas)
@@ -11,10 +11,10 @@
 #' @details 
 #' The output dataset lists catch of tuna and tuna-like species in the Western Pacific ocean. Catches are stratified by month, species, gear, fishing mode (i.e. type of school used), area (5° square) and unit of catch (weight or number). The dataset is computed using public domain datasets released by the Western and Central Pacific Fisheries Commission (WCPFC).
 #' This function merges the primary catch-and-effort datasets released by WCPFC.
-#' Data are expressed using WCPFC's coding system.
+#' Output dataset is expressed with WCPFC's coding system.
 #' 
-#' @family extract data
-#' 
+#' @family tRFMOs datasets extraction
+#' @family datasets extraction
 #' 
 #' @examples
 #' 

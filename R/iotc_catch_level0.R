@@ -1,7 +1,7 @@
 #' @name iotc_catch_level0
 #' @aliases iotc_catch_level0
 #' @title Extract source georeferenced catch datasets of IOTC from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the IOTC. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number). Data are expressed using IOTC's coding system.
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the IOTC. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number).
 #' @export
 #'
 #' @usage iotc_catch_level0(year_tunaatlas)
@@ -11,10 +11,10 @@
 #' @details 
 #' The output dataset lists catch of tuna, tuna-like and shark species in the Indian ocean. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the Indian Ocean Tuna Commission (IOTC).
 #' This function merges the primary catch-and-effort datasets released by IOTC.
-#' Data are expressed using IOTC's coding system.
+#' Output dataset is expressed with IOTC's coding system.
 #' 
-#' @family extract data
-#' 
+#' @family tRFMOs datasets extraction
+#' @family datasets extraction
 #' 
 #' @examples
 #' 

@@ -10,12 +10,12 @@ ccsbt_catch_level0(year_tunaatlas)
 \item{year_tunaatlas}{numeric. The year of the datasets to extract. Starts in 2017}
 }
 \description{
-This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Commission for the Conservation of Southern Bluefin Tuna (CCSBT). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the CCSBT Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number). Data are expressed using CCSBT's coding system.
+This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Commission for the Conservation of Southern Bluefin Tuna (CCSBT). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the CCSBT Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number).
 }
 \details{
 The output dataset lists catch of tuna and tuna-like species in the Southern hemisphere oceans. Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number). The dataset is computed using public domain datasets released by the CCSBT.
 This function merges the primary catch-and-effort datasets released by CCSBT
-Data are expressed using CCSBT's coding system.
+Output dataset is expressed with CCSBT's coding system.
 }
 \examples{
 
@@ -25,11 +25,15 @@ head(ccsbt_catch)
 
 }
 \seealso{
-Other extract data: \code{\link{extract_dataset}},
+Other tRFMOs datasets extraction: \code{\link{iattc_catch_level0}},
+  \code{\link{iccat_catch_level0}},
+  \code{\link{iotc_catch_level0}},
+  \code{\link{wcpfc_catch_level0}}
+
+Other datasets extraction: \code{\link{extract_dataset}},
   \code{\link{iattc_catch_level0}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
-  \code{\link{iotc_effort_level0}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

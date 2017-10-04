@@ -14,6 +14,9 @@ list_dataset_available_dimensions(con,dataset_metadata)
 \description{
 This function list the dimensions available in a dataset. A dimension is set as available if at least 1 value does exist for this dimension.
 }
+\seealso{
+Other datasets information: \code{\link{list_metadata_datasets}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

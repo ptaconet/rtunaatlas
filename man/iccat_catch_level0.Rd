@@ -12,7 +12,7 @@ iccat_catch_level0(year_tunaatlas)
 \item{include_type_of_school}{boolean. Set TRUE if you want the output dataset with school type stratification. FALSE will provide the stratification without the type of school. See details for more information.}
 }
 \description{
-This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the International Commission for the Conservation of Atlantic Tuna (ICCAT). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the ICCAT Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number). Data are expressed using ICCAT's coding system.
+This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the International Commission for the Conservation of Atlantic Tuna (ICCAT). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the ICCAT Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number).
 }
 \details{
 The output dataset lists catch of tuna, tuna-like and shark species in the Atlantic ocean. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used) - if parameter \code{include_type_of_school} is set to TRUE, area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the International Commission for the Conservation of Atlantic Tuna (ICCAT).
@@ -23,7 +23,7 @@ Details on the use of the parameter \code{include_type_of_school}: ICCAT deliver
 \item{ If the parameter \code{include_type_of_school} is set to FALSE, only the dataset without the type of school information will be used. The output dataset will hence not have the stratification by type of school. }
 }
 
-Data are expressed using ICCAT's coding system.
+Output dataset is expressed with ICCAT's coding system.
 }
 \examples{
 
@@ -33,11 +33,15 @@ head(iccat_catch)
 
 }
 \seealso{
-Other extract data: \code{\link{ccsbt_catch_level0}},
+Other tRFMOs datasets extraction: \code{\link{ccsbt_catch_level0}},
+  \code{\link{iattc_catch_level0}},
+  \code{\link{iotc_catch_level0}},
+  \code{\link{wcpfc_catch_level0}}
+
+Other datasets extraction: \code{\link{ccsbt_catch_level0}},
   \code{\link{extract_dataset}},
   \code{\link{iattc_catch_level0}},
   \code{\link{iotc_catch_level0}},
-  \code{\link{iotc_effort_level0}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

@@ -10,6 +10,8 @@
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata). Column table_type must be "raw_dataset"
 #' 
+#' @family datasets information
+#' 
 #' @examples
 #' 
 #' # List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":

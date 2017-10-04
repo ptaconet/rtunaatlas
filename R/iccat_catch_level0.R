@@ -1,7 +1,7 @@
 #' @name iccat_catch_level0
 #' @aliases iccat_catch_level0
 #' @title Extract source georeferenced catch datasets of ICCAT from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the International Commission for the Conservation of Atlantic Tuna (ICCAT). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the ICCAT Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number). Data are expressed using ICCAT's coding system.
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the International Commission for the Conservation of Atlantic Tuna (ICCAT). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the ICCAT Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number).
 #' @export
 #'
 #' @usage iccat_catch_level0(year_tunaatlas)
@@ -18,10 +18,10 @@
 #' \item{ If the parameter \code{include_type_of_school} is set to FALSE, only the dataset without the type of school information will be used. The output dataset will hence not have the stratification by type of school. }
 #' }
 #' 
-#' Data are expressed using ICCAT's coding system.
+#' Output dataset is expressed with ICCAT's coding system.
 #' 
-#' @family extract data
-#' 
+#' @family tRFMOs datasets extraction
+#' @family datasets extraction
 #' 
 #' @examples
 #' 

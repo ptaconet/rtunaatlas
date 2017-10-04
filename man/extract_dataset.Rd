@@ -37,11 +37,10 @@ code_list_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="
 
 }
 \seealso{
-Other extract data: \code{\link{ccsbt_catch_level0}},
+Other datasets extraction: \code{\link{ccsbt_catch_level0}},
   \code{\link{iattc_catch_level0}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
-  \code{\link{iotc_effort_level0}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

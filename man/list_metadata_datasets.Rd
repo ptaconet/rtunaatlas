@@ -70,6 +70,9 @@ metadata_raw_dataset_catch_5deg<-list_metadata_raw_datasets(con,variable=c("catc
 
 
 }
+\seealso{
+Other datasets information: \code{\link{list_dataset_available_dimensions}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

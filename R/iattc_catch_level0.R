@@ -1,22 +1,33 @@
 #' @name iattc_catch_level0
 #' @aliases iattc_catch_level0
 #' @title Extract source georeferenced catch datasets of IATTC from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the  (IATTC). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the iattc. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number). Data are expressed using IATTC's coding system.
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Inter American Tropical Tuna Commission (IATTC). The output dataset provides the catches of tuna, tuna-like and shark species in the East Pacific ocean. Catch are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset was computed using public domain datasets released by the IATTC.
 #' @export
 #'
 #' @usage iattc_catch_level0(year_tunaatlas)
 #'                 
 #' @param year_tunaatlas numeric. The year of the datasets to extract. Starts in 2017
-#' @param raise_flags_to_typeofschool boolean. 
-#' @param dimension_to_use_if_no_raising_flags_to_typeofschool string. 
+#' @param raise_flags_to_typeofschool boolean. Raise dataset with flag stratification to dataset with schooltype stratification? See section Details for more information.
+#' @param dimension_to_use_if_no_raising_flags_to_typeofschool NULL or string. Not nullable if \code{raise_flags_to_typeofschool} is set to FALSE. if not NULL, either set to "flag" or "schooltype"
 #'  
 #' @details 
-#' The output dataset lists catch of tuna, tuna-like and shark species in the Eastern Atlantic ocean. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the Indian Ocean Tuna Commission (iattc).
-#' This function merges the primary catch-and-effort datasets released by IATTC.
-#' Data are expressed using IATTC's coding system.
+#' The output dataset lists catch of tuna, tuna-like and shark species in the Eastern Atlantic ocean. Catch are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the Indian Ocean Tuna Commission (iattc).
+#' Primary longline and pole-and-line datasets are simply merged.
 #' 
-#' @family extract data
+#' Details on the use of the parameter \code{raise_flags_to_typeofschool}: For confidentiality policies, information on flag and school type for the geo-referenced catches is available in separate files for Purse seine datasets.
+#' \itemize{
+#' \item{ If the parameter \code{raise_flags_to_typeofschool} is set to TRUE, for each stratum, the catch from the flag-detailed dataset will be raised to the catch from the school type-detailed dataset to get an estimation of the catches by flag and school type in each stratum.}
+#' \item{ If the parameter \code{raise_flags_to_typeofschool} is set to FALSE, one single dataset will be used and in this case, the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} must be filled in: }
+#'  \itemize{
+#' \item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} is set to "flag", the data with flag information will be used.}
+#' \item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} is set to "schooltype", the data with schooltype information will be used. }
+#' }
+#' }
 #' 
+#' Output dataset is expressed with IATTC's coding system.
+#' 
+#' @family tRFMOs datasets extraction
+#' @family datasets extraction
 #' 
 #' @examples
 #' 
