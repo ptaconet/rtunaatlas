@@ -72,7 +72,7 @@ extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_k
       }
     }
     
-    df<-rbind(df_iattc_notps,df_level0_thisdf)
+    df<-rbind(df,df_thisdf)
   }
   
   return(df)
