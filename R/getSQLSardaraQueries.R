@@ -250,9 +250,9 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     #logger.info("Writing SQL Queries to get dynamic metadata elements from the values stored in the database")
     #logger.info("Writing SQL Queries for CSV, NetCDF, WMS, WFS")
     
-    SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",tab_name," ",join_clause, where_clause, sep=" ")
+    SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",tab_name, join_clause, where_clause, sep=" ")
     
-    SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",tab_name," ",join_clause," where catchunit IN ('MT','MTNO');",sep=" ")
+    SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
