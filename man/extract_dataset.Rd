@@ -5,12 +5,12 @@
 \alias{extract_datasets}
 \title{Extract a dataset available in Sardara database}
 \usage{
-extract_dataset(con,dataset_name)
+extract_dataset(con,metadata_dataset)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{dataset_metadata}{data.frame of type "metadata" (one row extracted from the table metadata.metadata).}
+\item{metadata_dataset}{data.frame of type "metadata" (one row extracted from the table metadata.metadata).}
 }
 \value{
 a data.frame of the data available in the database and set as \code{dataset_name}
@@ -38,6 +38,7 @@ code_list_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="
 }
 \seealso{
 Other extract data: \code{\link{ccsbt_catch_level0}},
+  \code{\link{iattc_catch_level0}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
   \code{\link{iotc_effort_level0}},

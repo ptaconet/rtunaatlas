@@ -41,25 +41,8 @@ wcpfc_catch_level0<-function(year_tunaatlas){
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","catchunit","value")
   
-  # Retrieve IOTC georef. catches 
-  df_level0<-NULL
-  for (i in 1:nrow(metadata_datasets)){
-    cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[i]))
-    df_level0_thisdf<-extract_dataset(con,metadata_datasets[i,])
-    
-    # keep only wanted columns
-    df_level0_thisdf <- df_level0_thisdf[(names(df_level0_thisdf) %in% columns_to_keep)]
-    
-    # add missing columns and fill them with "UNK" values
-    for (j in 1:length(columns_to_keep)){
-      if (!(columns_to_keep[j]) %in% names(df_level0_thisdf)){
-        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
-        df_level0_thisdf[,columns_to_keep[j]]<-"UNK"
-      }
-    }
-    
-    df_level0<-rbind(df_level0,df_level0_thisdf)
-  }
+  # Retrieve WCPFC georef. catches 
+  df_level0<-extract_and_merge_multiple_datasets(con,metadata_datasets,columns_to_keep)
   
   dbDisconnect(con)
   

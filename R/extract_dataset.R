@@ -2,14 +2,14 @@
 #' @aliases extract_datasets
 #' @title Extract a dataset available in Sardara database
 #' @description This function outputs a dataset available in the Sardara database.
-#' @export
+#' @export extract_dataset extract_and_merge_multiple_datasets
 #'
 #'
 #' @usage 
-#' extract_dataset(con,dataset_name)
+#' extract_dataset(con,metadata_dataset)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
-#' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata).
+#' @param metadata_dataset data.frame of type "metadata" (one row extracted from the table metadata.metadata).
 #'
 #' @return a data.frame of the data available in the database and set as \code{dataset_name}
 #'
@@ -38,13 +38,43 @@
 #'
 
 
-extract_dataset<-function(con,dataset_metadata){
+extract_dataset<-function(con,metadata_dataset){
   
   # retrieve query to execute using the function getSQLSardaraQueries
-  query<-getSQLSardaraQueries(con,dataset_metadata)$query_CSV
+  query<-getSQLSardaraQueries(con,metadata_dataset)$query_CSV
   
   df<-dbGetQuery(con,query)
 
+  return(df)
+  
+}
+
+
+# columns_to_keep : vector of columns to keep. If columns of the source datasets are missing, a column with this dimension will be added to the dataset and filled with value = UNK (unknown)
+# metadata_datasets data.frame of type "metadata" (muliple rows extracted from the table metadata.metadata).
+
+extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_keep){
+  
+  df<-NULL
+  
+  for (i in 1:nrow(metadata_datasets)){
+    cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[i]))
+    df_thisdf<-extract_dataset(con,metadata_datasets[i,])
+    
+    # keep only wanted columns
+    df_thisdf <- df_thisdf[(names(df_thisdf) %in% columns_to_keep)]
+    
+    # add missing columns and fill them with "UNK" values
+    for (j in 1:length(columns_to_keep)){
+      if (!(columns_to_keep[j]) %in% names(df_thisdf)){
+        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
+        df_thisdf[,columns_to_keep[j]]<-"UNK"
+      }
+    }
+    
+    df<-rbind(df_iattc_notps,df_level0_thisdf)
+  }
+  
   return(df)
   
 }

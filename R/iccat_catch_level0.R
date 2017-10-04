@@ -42,50 +42,22 @@ iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
 
   datasets_permanent_identifiers="'atlantic_ocean_catch_tunaatlasICCAT_level0__noSchool'"
   
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_WithoutSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","catchunit","value")
   
-  cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[1]))
-  
-  iccat_ce_WithoutSchooltypeInfo<-extract_dataset(con,metadata_datasets[1,])
-  
-  # keep only wanted columns
-  iccat_ce_WithoutSchooltypeInfo <- iccat_ce_WithoutSchooltypeInfo[(names(iccat_ce_WithoutSchooltypeInfo) %in% columns_to_keep)]
-  
-  # add missing columns and fill them with "UNK" values
-  for (j in 1:length(columns_to_keep)){
-    if (!(columns_to_keep[j]) %in% names(iccat_ce_WithoutSchooltypeInfo)){
-      cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
-      iccat_ce_WithoutSchooltypeInfo[,columns_to_keep[j]]<-"UNK"
-    }
-  }
+  iccat_ce_WithoutSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithoutSchooltypeInfo,columns_to_keep)
   
   if (include_type_of_school==TRUE){
     # Retrieve ICCAT dataset with schooltype information (task2 by operation mode) (https://goo.gl/f2jz5R). We do not use the template (template_query_catches) because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
    datasets_permanent_identifiers="'atlantic_ocean_catch_1deg_1m_ps_tunaatlasICCAT_level0__bySchool'"
-    metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+   metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
     
     # We need to map flag code list, because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
-    cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[1]))
     
-    iccat_ce_WithSchooltypeInfo<-extract_dataset(con,metadata_datasets[1,])
-    
-    df_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_flag_iccat_from_ncandcas_flag_iccat")) 
-    iccat_ce_WithSchooltypeInfo<-map_codelist(iccat_ce_WithSchooltypeInfo,df_mapping,"flag")$df
-    
-    # keep only wanted columns
-    iccat_ce_WithSchooltypeInfo <- iccat_ce_WithSchooltypeInfo[(names(iccat_ce_WithSchooltypeInfo) %in% columns_to_keep)]
-    
-    # add missing columns and fill them with "UNK" values
-    for (j in 1:length(columns_to_keep)){
-      if (!(columns_to_keep[j]) %in% names(iccat_ce_WithSchooltypeInfo)){
-        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
-        iccat_ce_WithSchooltypeInfo[,columns_to_keep[j]]<-"UNK"
-      }
-    }
-    
+    iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
+
     strata_in_withoutschooltype_and_not_in_withshooltype<-anti_join (iccat_ce_WithoutSchooltypeInfo,iccat_ce_WithSchooltypeInfo,by=setdiff(columns_to_keep,c("value","schooltype")))
     
     # Join datasets: Dataset with the type of school + dataset without the type of school from which we have removed the strata that are also available in the dataset with the type of school.

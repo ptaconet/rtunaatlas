@@ -2,8 +2,10 @@
 
 export(ccsbt_catch_level0)
 export(db_connection_sardara_world)
+export(extract_and_merge_multiple_datasets)
 export(extract_dataset)
 export(getSQLSardaraQueries)
+export(iattc_catch_level0)
 export(iccat_catch_level0)
 export(iotc_catch_level0)
 export(iotc_effort_level0)

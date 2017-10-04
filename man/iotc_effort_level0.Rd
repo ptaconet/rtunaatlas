@@ -25,6 +25,7 @@ head(iotc_effort)
 \seealso{
 Other extract data: \code{\link{ccsbt_catch_level0}},
   \code{\link{extract_dataset}},
+  \code{\link{iattc_catch_level0}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
   \code{\link{wcpfc_catch_level0}}
