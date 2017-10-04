@@ -56,6 +56,11 @@
 #' # Retrieve IOTC georeferenced catch data from 2017
 #' df_input<-iotc_catch_level0(2017)
 #' 
+#' # some curation before use of the functions
+#' df_input$time_start<-substr(as.character(df_input$time_start), 1, 10)
+#' df_input$time_end<-substr(as.character(df_input$time_end), 1, 10)
+#' colnames(df_input)[colnames(df_input) == "catchunit"] <- "unit"
+#' 
 #' # Open a dataset of factors of conversion (the one used to convert units of catch in the IRD Tuna Atlas)
 #' conversion_factors_dataset="https://goo.gl/KriwxV"
 #' df_conversion_factor=read.csv(conversion_factors_dataset,stringsAsFactors = F,colClasses="character")
@@ -81,6 +86,8 @@
 #' 
 #' # Get information regarding the conversion (data converted, data not converted because no factor of conversion existed, etc.)
 #' df_converted$stats
+#'
+#' dbDisconnect(con)
 #'
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @import data.table dplyr RPostgreSQL   

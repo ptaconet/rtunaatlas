@@ -67,7 +67,7 @@ extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_k
     # add missing columns and fill them with "UNK" values
     for (j in 1:length(columns_to_keep)){
       if (!(columns_to_keep[j]) %in% names(df_thisdf)){
-        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling with values UNK (unknown)"))
+        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling it with values UNK (unknown)"))
         df_thisdf[,columns_to_keep[j]]<-"UNK"
       }
     }
