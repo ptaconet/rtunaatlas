@@ -24,15 +24,19 @@ a list with two objects:
 This function maps one dimension (i.e. column with codes) of a fact dataset to a target code list using a dataset of mappings between code lists. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of mappings between code lists.
 }
 \details{
-The data frames of fact and code list mapping must be properly structured. For structures of data frames, see here: \url{http://}. Note that the dataset of code list mapping can have several dimensions that are used for the mapping. However, one single dimension will be mapped - this dimension is the one specified in the dimension_to_map parameter. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.
+The data frames of fact and code list mapping must be properly structured. The data.frame of mapping must at least have the 2 following columns:
+\itemize{. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+\item{"src_code": }{The source codes for the dimension to map (i.e. the codes used in the df_input fot the considered dimension)}
+\item{"src_target": }{The target codes for the dimension to map}
+}
 }
 \examples{
-  # Open a data.frame of fact
-  df_input<-read.csv("inst/extdata/fact_table_example.csv",stringsAsFactors = F)
-  head(df_input)
+  # Reads IOTC nominal catch dataset (2017 release)
+  iotc_nominal_catch<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
+  head(iotc_nominal_catch)
   
-  # Open a data.frame of mapping between code lists (in this case, mapping between codes for fishing gears used by the tuna RFMOs and the International Standard Statistical Classification of Fishing Gear)
-  df_mapping<-read.csv("inst/extdata/gear_mapping_to_standard.csv",stringsAsFactors = F,colClasses = "character")
+  # Read a mapping between code lists (in this case, mapping between codes for fishing gears used by the tuna RFMOs and the International Standard Statistical Classification of Fishing Gear)
+  df_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_isscfg_revision_1")) 
   head(df_mapping)
  
   # Map code lists. Output is a list with two elements (see section "return")
@@ -45,6 +49,9 @@ The data frames of fact and code list mapping must be properly structured. For s
   # Get information regarding the data that were not mapped.
   list_df_mapped$stats
  
+}
+\seealso{
+Other create your own tuna atlas: \code{\link{raise_by_dimension}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
