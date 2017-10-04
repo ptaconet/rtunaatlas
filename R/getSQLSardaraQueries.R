@@ -190,7 +190,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     # Get the dimensions available in the raw_dataset
   
-    dataset_available_dimensions<-list_dataset_available_dimensions(con,static_metadata_dataset_name)
+    dataset_available_dimensions<-list_dataset_available_dimensions(con,dataset_metadata)
     
     columns_csv_wms_wfs<-db_dimensions_parameters$sql_column_label[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
     
