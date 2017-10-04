@@ -43,7 +43,7 @@
 #'  The column "geographic_identifier" provides the spatial stratification of the factor of conversion. If the coding system for spatial stratification used in df_conversion_factor is the same as the one used in df_input, then the parameter codelist_geoidentifiers_conversion_factors must be set to NULL. Else, the spatial coding system used in df_conversion_factor must be stored in the Sardara database, and the parameter codelist_geoidentifiers_conversion_factors must be set to the name of the spatial coding system (table) in Sardara DB.
 #'  If df_conversion_factor mixes factors of conversion that have and do not have a spatial stratification, the rows that do not have spatial stratification must be set to geographic_identifier= 0.   
 #' 
-#'  Columns of time (time_start and time_end) must be character type (not Posix).
+#'  Columns of time (time_start and time_end) must be of type character (not Posix) and they must have the same resolution (e.g. day, second. etc).
 #' 
 #' @family create your own tuna atlas
 #' 
@@ -106,9 +106,6 @@ convert_units<-function(con,df_input,df_conversion_factor,codelist_geoidentifier
       dataset_distinct_geographic_identifier<-unique(df_input$geographic_identifier)  
       dataset_distinct_geographic_identifier<-paste(unique(dataset_distinct_geographic_identifier), collapse = '\',\'')
       
-      drv <- dbDriver("PostgreSQL")
-      con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
-      
       correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,paste("select
                                                                                  u1.codesource_area as geographic_identifier,
                                                                                  u2.codesource_area as conv_factor_df_geo_id
@@ -119,7 +116,6 @@ convert_units<-function(con,df_input,df_conversion_factor,codelist_geoidentifier
                                                                                  u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"')
                                                                                  and ST_Contains(u2.geom, u1.geom)",sep=""))
       
-      dbDisconnect(con)
       
       df_input<-merge(df_input,data.table(correspondance_geo_identifiers_input_df_conv_fact_df))
       

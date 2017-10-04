@@ -56,7 +56,9 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map){
   
   column_names_df_input<-colnames(df_input)
   
-  df_input<-merge(df_input,df_mapping,all.x=TRUE,by.x = dimension_to_map, by.y = "src_code")
+ colnames(df_mapping)[colnames(df_mapping) == "src_code"] <- dimension_to_map
+ 
+  df_input<-left_join(df_input,df_mapping)
   df_input[,dimension_to_map]<-df_input$trg_code
 
   df_input <- df_input[column_names_df_input]
