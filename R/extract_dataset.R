@@ -9,7 +9,7 @@
 #' extract_dataset(con,dataset_name)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
-#' @param dataset_name string. The name of a dataset in the database (column "dataset_name" of the table metadata.metadata)
+#' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata).
 #'
 #' @return a data.frame of the data available in the database and set as \code{dataset_name}
 #'
@@ -23,25 +23,20 @@
 #' @examples
 #' 
 #' # Extract a raw dataset
-#' raw_dataset<-extract_dataset(db_connection_sardara_world(),"global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
+#' raw_dataset<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1'"))
 #'
 #' # Extract a code list
-#' code_list<-extract_dataset(db_connection_sardara_world(),"species_asfis")
+#' code_list<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='species_asfis'"))
 #' 
-#' # Extract a mapping between code lists
-#' code_list_mapping<-extract_dataset(db_connection_sardara_world(),"codelist_mapping_species_iotc_speciesgroup_tunaatlas")
+#' # Extract a mapping between code lists )
+#' code_list_mapping<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='codelist_mapping_species_iotc_speciesgroup_tunaatlas'"))
 #'
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
 
 
-extract_dataset<-function(con,dataset_name){
-  
-  # get metadata row for the provided dataset_name
-  metadata_row<-dbGetQuery(con, paste0("SELECT * FROM metadata.metadata where dataset_name='",dataset_name,"'"))
-  
-  if (length(metadata_row)==0){ stop("the dataset provided does not exist in the database") }
+extract_dataset<-function(con,dataset_metadata){
   
   # retrieve query to execute using the function getSQLSardaraQueries
   query<-getSQLSardaraQueries(con,dataset_name)$query_CSV

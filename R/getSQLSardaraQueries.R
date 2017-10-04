@@ -5,10 +5,10 @@
 #' @export 
 #'
 #' @usage 
-#' getSQLSardaraQueries(con,dataset_name)
+#' getSQLSardaraQueries(con,dataset_metadata)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
-#' @param dataset_name string. The name of a dataset in the database (column "dataset_name" of the table metadata.metadata)
+#' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata).
 #' 
 #' @return a list with SQL queries and informations on the dataset. Depending on the type of data (raw_dataset, codelist, mapping), the output elements of the list might vary. The elements of the list are:
 #' \itemize{
@@ -29,7 +29,9 @@
 #' 
 #' @examples
 #' 
-#' queries<-getSQLSardaraQueries(db_connection_sardara_world(),"global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
+#'  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
+#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1'")
+#' queries<-getSQLSardaraQueries(db_connection_sardara_world(),dataset_metadata)
 #' 
 #' # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
 #' 
@@ -41,34 +43,32 @@
 
 
 
-getSQLSardaraQueries <- function(con, dataset_name){
-  
-  dataset<-dbGetQuery(con, paste0("SELECT * FROM metadata.metadata where dataset_name='",dataset_name,"'"))
+getSQLSardaraQueries <- function(con, dataset_metadata){
   
   #similar static definitions same as in write_tuna_atlas_metadata
   #to facilitate later editing of metadata fieldname changes, but to simplify the parameters of the function...too many parameters is crazy and unreadable
-  static_metadata_table_name<- dataset$table_name # TO BE DONE => REMOVE IT / NOT USED FOR NOW
-  static_metadata_id <- dataset$id_metadata
-  static_metadata_permanent_id <- dataset$dataset_permanent_identifier
-  static_metadata_date_of_what <- dataset$date
-  static_metadata_URL_of_what <- dataset$url_report_process # TO BE DONE => REMOVE IT / NOT USED FOR NOW
+  static_metadata_table_name<- dataset_metadata$table_name # TO BE DONE => REMOVE IT / NOT USED FOR NOW
+  static_metadata_id <- dataset_metadata$id_metadata
+  static_metadata_permanent_id <- dataset_metadata$dataset_permanent_identifier
+  static_metadata_date_of_what <- dataset_metadata$date
+  static_metadata_URL_of_what <- dataset_metadata$url_report_process # TO BE DONE => REMOVE IT / NOT USED FOR NOW
   
-  static_metadata_dataset_origin_institution <- dataset$dataset_origin_institution
-  static_metadata_view_type <- dataset$table_type
+  static_metadata_dataset_origin_institution <- dataset_metadata$dataset_origin_institution
+  static_metadata_view_type <- dataset_metadata$table_type
   
-  static_metadata_type_operation <- dataset$type_operation # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
-  static_metadata_url_download_page <- dataset$url_download_page # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_table_description <- dataset$table_description
-  static_metadata_table_purpose <- dataset$table_short_description
-  static_metadata_url_original_file <- dataset$url_original_file # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_description_report_url <- dataset$dataset_description_report_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_description_report_original_url <- dataset$dataset_description_report_original_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_name <- dataset$dataset_name
-  static_metadata_dataset_release_date <- dataset$dataset_release_date  # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
-  static_metadata_dataset_available_dimensions <- dataset$dataset_available_dimensions
-  static_metadata_table_sql_query <- dataset$table_sql_query
-  static_metadata_table_dataset_title <- dataset$dataset_title
-  static_metadata_table_view_name <- dataset$view_name
+  static_metadata_type_operation <- dataset_metadata$type_operation # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
+  static_metadata_url_download_page <- dataset_metadata$url_download_page # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
+  static_metadata_table_description <- dataset_metadata$table_description
+  static_metadata_table_purpose <- dataset_metadata$table_short_description
+  static_metadata_url_original_file <- dataset_metadata$url_original_file # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
+  static_metadata_dataset_description_report_url <- dataset_metadata$dataset_description_report_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
+  static_metadata_dataset_description_report_original_url <- dataset_metadata$dataset_description_report_original_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
+  static_metadata_dataset_name <- dataset_metadata$dataset_name
+  static_metadata_dataset_release_date <- dataset_metadata$dataset_release_date  # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
+  static_metadata_dataset_available_dimensions <- dataset_metadata$dataset_available_dimensions
+  static_metadata_table_sql_query <- dataset_metadata$table_sql_query
+  static_metadata_table_dataset_title <- dataset_metadata$dataset_title
+  static_metadata_table_view_name <- dataset_metadata$view_name
   
   #logger.info("Setting SQL queries according to dataset type (codelist / mapping / raw_dataset)")
   SQL <- list()

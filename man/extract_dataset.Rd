@@ -10,7 +10,7 @@ extract_dataset(con,dataset_name)
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{dataset_name}{string. The name of a dataset in the database (column "dataset_name" of the table metadata.metadata)}
+\item{dataset_metadata}{data.frame of type "metadata" (one row extracted from the table metadata.metadata).}
 }
 \value{
 a data.frame of the data available in the database and set as \code{dataset_name}
@@ -24,13 +24,13 @@ The meaning of the columns of a raw dataset is provided in the \href{https://doc
 \examples{
 
 # Extract a raw dataset
-raw_dataset<-extract_dataset(db_connection_sardara_world(),"global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
+raw_dataset<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1'"))
 
 # Extract a code list
-code_list<-extract_dataset(db_connection_sardara_world(),"species_asfis")
+code_list<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='species_asfis'"))
 
-# Extract a mapping between code lists
-code_list_mapping<-extract_dataset(db_connection_sardara_world(),"codelist_mapping_species_iotc_speciesgroup_tunaatlas")
+# Extract a mapping between code lists )
+code_list_mapping<-extract_dataset(db_connection_sardara_world(),dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='codelist_mapping_species_iotc_speciesgroup_tunaatlas'"))
 
 
 }

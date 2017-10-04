@@ -4,21 +4,15 @@
 \alias{list_dataset_available_dimensions}
 \title{List dimensions available in a raw dataset}
 \usage{
-list_dataset_available_dimensions(con,dataset_name)
+list_dataset_available_dimensions(con,dataset_metadata)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{dataset_name}{string. The name of a dataset of type "raw_dataset" in the database (column "dataset_name" of the table metadata.metadata)}
+\item{dataset_metadata}{data.frame of type "metadata" (one row extracted from the table metadata.metadata). Column table_type must be "raw_dataset"}
 }
 \description{
 This function list the dimensions available in a dataset. A dimension is set as available if at least 1 value does exist for this dimension.
-}
-\examples{
-
-# List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":
-list_dataset_available_dimensions(db_connection_sardara_world(),"indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal")
-
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

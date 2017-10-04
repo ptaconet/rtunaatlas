@@ -5,30 +5,31 @@
 #' @export 
 #'
 #' @usage 
-#' list_dataset_available_dimensions(con,dataset_name)
+#' list_dataset_available_dimensions(con,dataset_metadata)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
-#' @param dataset_name string. The name of a dataset of type "raw_dataset" in the database (column "dataset_name" of the table metadata.metadata)
+#' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata). Column table_type must be "raw_dataset"
 #' 
 #' @examples
 #' 
 #' # List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":
-#' list_dataset_available_dimensions(db_connection_sardara_world(),"indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal")
+#' 
+#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal')
+#' 
+#' list_dataset_available_dimensions(db_connection_sardara_world(),dataset_metadata)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
 
 
-list_dataset_available_dimensions<-function(con,dataset_name){
+list_dataset_available_dimensions<-function(con,dataset_metadata){
   
   db_dimensions_parameters<-read.csv("inst/extdata/db_dimensions_parameters.csv",stringsAsFactors = F)
   
-  metadata_row<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_name='",dataset_name,"'"))
-  
   # get type of variable of the dataset
-  table_name=metadata_row$table_name
-  id_metadata=metadata_row$id_metadata
-  table_type=metadata_row$table_type
+  table_name=dataset_metadata$table_name
+  id_metadata=dataset_metadata$id_metadata
+  table_type=dataset_metadata$table_type
   
   if (!(table_type=="raw_dataset")) { stop("the dataset provided is not a raw_dataset. You must provide a dataset of type raw_dataset") }
   

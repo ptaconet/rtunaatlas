@@ -4,12 +4,12 @@
 \alias{getSQLSardaraQueries}
 \title{Get a list of queries to execute to plug services to the datasets available in Sardara}
 \usage{
-getSQLSardaraQueries(con,dataset_name)
+getSQLSardaraQueries(con,dataset_metadata)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{dataset_name}{string. The name of a dataset in the database (column "dataset_name" of the table metadata.metadata)}
+\item{dataset_metadata}{data.frame of type "metadata" (one row extracted from the table metadata.metadata).}
 }
 \value{
 a list with SQL queries and informations on the dataset. Depending on the type of data (raw_dataset, codelist, mapping), the output elements of the list might vary. The elements of the list are:
@@ -34,7 +34,9 @@ Get a list of queries to execute to plug services to the datasets available in S
 }
 \examples{
 
-queries<-getSQLSardaraQueries(db_connection_sardara_world(),"global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
+ # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
+dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1'")
+queries<-getSQLSardaraQueries(db_connection_sardara_world(),dataset_metadata)
 
 # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
 
