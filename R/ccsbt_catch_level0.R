@@ -1,40 +1,39 @@
-#' @name iotc_catch_level0
-#' @aliases iotc_catch_level0
-#' @title Extract source georeferenced catch datasets of IOTC from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the IOTC. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number). Data are expressed using IOTC's coding system.
+#' @name ccsbt_catch_level0
+#' @aliases ccsbt_catch_level0
+#' @title Extract source georeferenced catch datasets of ccsbt from Sardara World database
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Commission for the Conservation of Southern Bluefin Tuna (CCSBT). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the CCSBT Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number). Data are expressed using CCSBT's coding system.
 #' @export
 #'
-#' @usage iotc_catch_level0(year_tunaatlas)
+#' @usage ccsbt_catch_level0(year_tunaatlas)
 #'                 
 #' @param year_tunaatlas numeric. The year of the datasets to extract. Starts in 2017
 #'  
 #' @details 
-#' The output dataset lists catch of tuna, tuna-like and shark species in the Indian ocean. Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the Indian Ocean Tuna Commission (IOTC).
-#' This function merges the primary catch-and-effort datasets released by IOTC.
-#' Data are expressed using IOTC's coding system.
+#' The output dataset lists catch of tuna and tuna-like species in the Southern hemisphere oceans. Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number). The dataset is computed using public domain datasets released by the CCSBT.
+#' This function merges the primary catch-and-effort datasets released by CCSBT
+#' Data are expressed using CCSBT's coding system.
 #' 
 #' @family extract data
 #' 
 #' 
 #' @examples
 #' 
-#' # Retrieve IOTC georeferenced catch data from 2017
-#' iotc_catch<-iotc_catch_level0(2017)
-#' head(iotc_catch)
+#' # Retrieve ccsbt georeferenced catch data from 2017
+#' ccsbt_catch<-ccsbt_catch_level0(2017)
+#' head(ccsbt_catch)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import RPostgreSQL   
+#' @import RPostgreSQL    
 
-iotc_catch_level0<-function(year_tunaatlas){
+ccsbt_catch_level0<-function(year_tunaatlas){
   
-  # Select iotc raw datasets release on the year year_tunaatlas
+  # Select ccsbt raw datasets release on the year year_tunaatlas
   
   drv <- dbDriver("PostgreSQL")
   con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
   
   # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
-  
-  datasets_permanent_identifiers="'indian_ocean_catch_ll_tunaatlasdf_level0','indian_ocean_catch_tunaatlasdf_level0__coastal','indian_ocean_catch_tunaatlasdf_level0__surface'"
+  datasets_permanent_identifiers="'southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface','southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0'"
   
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
@@ -63,7 +62,7 @@ iotc_catch_level0<-function(year_tunaatlas){
   
   dbDisconnect(con)
   
-  df_level0$source_authority<-"IOTC"
+  df_level0$source_authority<-"CCSBT"
   
   return(df_level0)
   

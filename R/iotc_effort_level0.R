@@ -8,7 +8,8 @@
 #'                 
 #' @param year_tunaatlas numeric. The year of the datasets to extract. Starts in 2017
 #'  
-#' @details More information (metadata) regarding the dataset ouput of this function can be found at \href{URL OF DATASET IN CATALOGUE TO ADD}{this URL} on the \href{http://geonetwork2-tunaatlas.d4science.org/geonetwork/srv/fre/catalog.search#/search}{Tuna Atlas catalogue}
+#' @details 
+#' 
 #'
 #' @family extract data
 #' 
@@ -29,38 +30,38 @@ iotc_effort_level0<-function(year_tunaatlas){
   drv <- dbDriver("PostgreSQL")
   con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
   
-  # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_effort_ll_tunaatlasIOTC_level0 , indian_ocean_effort_tunaatlasIOTC_level0__coastal , indian_ocean_effort_tunaatlasIOTC_level0__surface
+  # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_effort_ll_tunaatlasdf_level0 , indian_ocean_effort_tunaatlasdf_level0__coastal , indian_ocean_effort_tunaatlasdf_level0__surface
   
-  datasets_permanent_identifiers="'indian_ocean_effort_ll_tunaatlasIOTC_level0','indian_ocean_effort_tunaatlasIOTC_level0__coastal','indian_ocean_effort_tunaatlasIOTC_level0__surface'"
+  datasets_permanent_identifiers="'indian_ocean_effort_ll_tunaatlasdf_level0','indian_ocean_effort_tunaatlasdf_level0__coastal','indian_ocean_effort_tunaatlasdf_level0__surface'"
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for efforts
   columns_to_keep<-c("source_authority","gear","flag","schooltype","time_start","time_end","geographic_identifier","effortunit","value")
   
   # Retrieve IOTC georef. catches 
-  iotc_level0<-NULL
+  df_level0<-NULL
   for (i in 1:nrow(metadata_datasets)){
     cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[i]))
-    iotc_level0_thisdf<-extract_dataset(con,metadata_datasets[i,])
+    df_level0_thisdf<-extract_dataset(con,metadata_datasets[i,])
     
     # keep only wanted columns
-    iotc_level0_thisdf <- iotc_level0_thisdf[(names(iotc_level0_thisdf) %in% columns_to_keep)]
+    df_level0_thisdf <- df_level0_thisdf[(names(df_level0_thisdf) %in% columns_to_keep)]
     
     # add missing columns and fill them with "UNK" values
     for (j in 1:length(columns_to_keep)){
-      if (!(columns_to_keep[j]) %in% names(iotc_level0_thisdf)){
+      if (!(columns_to_keep[j]) %in% names(df_level0_thisdf)){
         cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
-        iotc_level0_thisdf[,columns_to_keep[j]]<-"UNK"
+        df_level0_thisdf[,columns_to_keep[j]]<-"UNK"
       }
     }
     
-    iotc_level0<-rbind(iotc_level0,iotc_level0_thisdf)
+    df_level0<-rbind(df_level0,df_level0_thisdf)
   }
   
   dbDisconnect(con)
   
-  iotc_level0$source_authority<-"IOTC"
+  df_level0$source_authority<-"IOTC"
   
-  return(iotc_level0)
+  return(df_level0)
   
 }

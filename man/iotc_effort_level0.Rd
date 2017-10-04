@@ -13,7 +13,7 @@ iotc_effort_level0(year_tunaatlas)
 This function extracts the source georeferenced effort datasets stored in the Sardara World database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides efforts of tuna, tuna-like and shark species in the Indian ocean. Efforts are stratified by month, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of effort. Data are expressed using IOTC's coding system.
 }
 \details{
-More information (metadata) regarding the dataset ouput of this function can be found at \href{URL OF DATASET IN CATALOGUE TO ADD}{this URL} on the \href{http://geonetwork2-tunaatlas.d4science.org/geonetwork/srv/fre/catalog.search#/search}{Tuna Atlas catalogue}
+
 }
 \examples{
 
@@ -23,8 +23,11 @@ head(iotc_effort)
 
 }
 \seealso{
-Other extract data: \code{\link{extract_dataset}},
-  \code{\link{iotc_catch_level0}}
+Other extract data: \code{\link{ccsbt_catch_level0}},
+  \code{\link{extract_dataset}},
+  \code{\link{iccat_catch_level0}},
+  \code{\link{iotc_catch_level0}},
+  \code{\link{wcpfc_catch_level0}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
