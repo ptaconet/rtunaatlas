@@ -24,7 +24,7 @@
 
 list_dataset_available_dimensions<-function(con,dataset_metadata){
   
-  db_dimensions_parameters<-read.csv("inst/extdata/db_dimensions_parameters.csv",stringsAsFactors = F)
+  db_dimensions_parameters<-read.csv(system.file("extdata", "db_dimensions_parameters.csv",package="rtunaatlas"),stringsAsFactors = F)
   
   # get type of variable of the dataset
   table_name=dataset_metadata$table_name

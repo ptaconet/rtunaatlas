@@ -186,7 +186,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     ##logger.info("Setting SQL queries specific to RAW_DATASET")
     
-    db_dimensions_parameters<-read.csv("inst/extdata/db_dimensions_parameters.csv",stringsAsFactors = F)
+    db_dimensions_parameters<-read.csv(system.file("extdata", "db_dimensions_parameters.csv",package="rtunaatlas"),stringsAsFactors = F)
     
     # Get the dimensions available in the raw_dataset
   
