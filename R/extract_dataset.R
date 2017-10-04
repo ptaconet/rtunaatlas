@@ -39,7 +39,7 @@
 extract_dataset<-function(con,dataset_metadata){
   
   # retrieve query to execute using the function getSQLSardaraQueries
-  query<-getSQLSardaraQueries(con,dataset_name)$query_CSV
+  query<-getSQLSardaraQueries(con,dataset_metadata)$query_CSV
   
   df<-dbGetQuery(con,query)
 
