@@ -192,10 +192,25 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     dataset_available_dimensions<-list_dataset_available_dimensions(con,dataset_metadata)
     
-    columns_csv_wms_wfs<-db_dimensions_parameters$sql_column_label[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+    ## if the dataset already exists as a view, we take the data from the view
+    # list all tables, views and materialized views of the db
+    tables_views_materializedviews<-dbGetQuery(con,"
+    SELECT table_schema||'.'||table_name FROM information_schema.tables
+    union
+    SELECT oid::regclass::text FROM   pg_class WHERE  relkind = 'm'")$`?column?`
+    
+    if (static_metadata_table_view_name %in% tables_views_materializedviews){
+      columns_csv_wms_wfs<-db_dimensions_parameters$sql_column_label[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      join_clause<-" LEFT JOIN area.areas_with_geom area USING (id_area) "
+    } else {  # else we recreate the query that outputs the data.frame
+      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_codes[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      join_clause<-db_dimensions_parameters$sql_view_codes_labels_joins[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      }
+    
     
     select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=", ",sep="") 
-
+    join_clause<-paste(join_clause,collapse=" ",sep="") 
+    
     # create WHERE clause for queries wms/wfs
     columns_wms_wfs_where_clause<-setdiff(columns_csv_wms_wfs, c("time_start","time_end"))
     where_query_wms_wfs<-NULL
@@ -229,13 +244,17 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     #logger.info("Writing SQL Queries to get dynamic metadata elements from the values stored in the database")
     #logger.info("Writing SQL Queries for CSV, NetCDF, WMS, WFS")
     
-    SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",static_metadata_table_view_name," LEFT JOIN area.areas_with_geom area USING (id_area) order by ",select_query_csv_wms_wfs, sep="")
+    SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",static_metadata_table_view_name," ",join_clause,"  order by ",select_query_csv_wms_wfs, sep="")
     
-    SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",static_metadata_table_view_name," LEFT JOIN area.areas_with_geom area USING (id_area) where catchunit IN ('MT','MTNO');",sep=" ")
+    SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",static_metadata_table_view_name," ",join_clause," where catchunit IN ('MT','MTNO');",sep=" ")
 
+    if (static_metadata_table_view_name %in% tables_views_materializedviews){
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
     SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) ",sep="")
-    
+    } else {
+      SQL$query_wfs_wms <- "You must create a table or a materialized view out of the dataset prior to the creation of the WMS/WFS"
+      SQL$query_wfs_wms_aggregated_layer <-   "You must create a table or a materialized view out of the dataset prior to the creation of the WMS/WFS"
+    }
     
     #logger.info("Writing SQL Queries for KEYWORDS")
     
