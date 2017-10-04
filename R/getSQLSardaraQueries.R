@@ -32,7 +32,7 @@
 #'  con=db_connection_sardara_world()
 #'  
 #'  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
-#' dataset_metadata<-dbGetQuery(con,list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
+#' dataset_metadata<-list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
 #' queries<-getSQLSardaraQueries(con,dataset_metadata)
 #' 
 #' # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
@@ -201,7 +201,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     union
     SELECT oid::regclass::text FROM   pg_class WHERE  relkind = 'm'")$`?column?`
     
-    if (static_metadata_table_view_name %in% tables_views_materializedviews){
+    if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_column_label[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       join_clause<-" LEFT JOIN area.areas_with_geom area USING (id_area) "
     } else {  # else we recreate the query that outputs the data.frame
@@ -250,7 +250,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",static_metadata_table_view_name," ",join_clause," where catchunit IN ('MT','MTNO');",sep=" ")
 
-    if (static_metadata_table_view_name %in% tables_views_materializedviews){
+    if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
     SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) ",sep="")
     } else {
