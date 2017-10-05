@@ -116,7 +116,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     ##logger.info("Setting SQL queries specific to CODELIST")
     
-    # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommÃƒÆ’Ã‚Â©es 'code' et 'label' dans le codelist extrait (WFS et csv)
+    # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommées 'code' et 'label' dans le codelist extrait (WFS et csv)
     code_label_column_name<-dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",static_metadata_table_name,"'"))  
     # 2) S'il n'y a pas de label, on remplit la colonne 'label' avec des 'NULL'  
     if (is.na(code_label_column_name$english_label_column[1])){
