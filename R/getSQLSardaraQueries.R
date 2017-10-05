@@ -205,11 +205,13 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       join_clause<-" LEFT JOIN area.areas_with_geom area USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
     } else {  # else we recreate the query that outputs the data.frame
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       where_clause<-paste0(" WHERE tab.id_metadata=",static_metadata_id)
       tab_name <- paste(static_metadata_table_name," tab",sep=" ")
@@ -217,6 +219,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     
     select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=", ",sep="") 
+    select_query_netcdf<-paste(columns_netcdf,collapse=", ",sep="") 
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
     # create WHERE clause for queries wms/wfs
@@ -254,7 +257,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",tab_name, join_clause, where_clause, sep=" ")
     
-    SQL$query_NetCDF <- paste ("SELECT ",select_query_csv_wms_wfs,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
+    SQL$query_NetCDF <- paste ("SELECT ",select_query_netcdf,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
