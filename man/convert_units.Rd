@@ -28,10 +28,10 @@ Example: These are the first rows of a dataset of factors of conversions:
 
  \tabular{rrrrrrrrr}{
  source_authority   \tab species \tab    gear \tab  geographic_identifier \tab  time_start  \tab  time_end    \tab   unit \tab    unit_target  \tab   conversion_factor\cr
- IOTC  \tab          \tab    YFT  \tab      LL \tab    1      \tab                 1952-01-01 \tab   1953-01-01 \tab    NO   \tab    MT    \tab          0.048060001\cr
- IOTC  \tab          \tab    YFT   \tab     LL \tab    2       \tab                1952-01-01  \tab  1953-01-01   \tab  NO   \tab    MT    \tab          0.048680000\cr
- IOTC  \tab          \tab    YFT   \tab     LL \tab    3       \tab                1952-01-01  \tab  1953-01-01  \tab   NO   \tab    MT     \tab         0.058639999\cr
- IOTC  \tab          \tab    BET   \tab     LL \tab    0       \tab                1952-01-01  \tab  1953-01-01  \tab   NO   \tab    MT     \tab         0.044340000
+ IOTC            \tab    YFT  \tab      LL \tab    1      \tab                 1952-01-01 \tab   1953-01-01 \tab    NO   \tab    MT    \tab          0.048060001\cr
+ IOTC            \tab    YFT   \tab     LL \tab    2       \tab                1952-01-01  \tab  1953-01-01   \tab  NO   \tab    MT    \tab          0.048680000\cr
+ IOTC            \tab    YFT   \tab     LL \tab    3       \tab                1952-01-01  \tab  1953-01-01  \tab   NO   \tab    MT     \tab         0.058639999\cr
+ IOTC            \tab    BET   \tab     LL \tab    0       \tab                1952-01-01  \tab  1953-01-01  \tab   NO   \tab    MT     \tab         0.044340000
  }
  
  The first row means that for the combination of dimensions: { source_authority=IOTC, species=YFT, gear=LL, geographical_identifier=1, starting date of validity of the factor of conversion (time_start)=1952-01-01, ending date of validity of the factor of conversion (time_start)=1953-01-01}, the factor of conversion to convert a measure from unit=NO to target_unit=MT is equal to 0.048060001 
