@@ -26,7 +26,7 @@ See an example of dataset of factors of conversion here: \url{https://goo.gl/Kri
 
 Example: These are the first rows of a dataset of factors of conversions:
 
- \tabular{rrrrr}{
+ \tabular{rrrrrrrrr}{
  source_authority   \tab species \tab    gear \tab  geographic_identifier \tab  time_start  \tab  time_end    \tab   unit \tab    unit_target  \tab   conversion_factor\cr
  IOTC  \tab          \tab    YFT  \tab      LL \tab    1      \tab                 1952-01-01 \tab   1953-01-01 \tab    NO   \tab    MT    \tab          0.048060001\cr
  IOTC  \tab          \tab    YFT   \tab     LL \tab    2       \tab                1952-01-01  \tab  1953-01-01   \tab  NO   \tab    MT    \tab          0.048680000\cr
@@ -41,7 +41,9 @@ Example: These are the first rows of a dataset of factors of conversions:
  Particularly, the columns "time_start", "time_end" and "geographic_identifier" allow to stratify spatialy and temporarily the factors of conversion. 
  The columns "time_start" and "time_end" provide respectively the starting date and the ending date of validity of the factor of conversion. 
  The column "geographic_identifier" provides the spatial stratification of the factor of conversion. If the coding system for spatial stratification used in df_conversion_factor is the same as the one used in df_input, then the parameter codelist_geoidentifiers_conversion_factors must be set to NULL. Else, the spatial coding system used in df_conversion_factor must be stored in the Sardara database, and the parameter codelist_geoidentifiers_conversion_factors must be set to the name of the spatial coding system (table) in Sardara DB.
- If df_conversion_factor mixes factors of conversion that have and do not have a spatial stratification, the rows that do not have spatial stratification must be set to geographic_identifier= 0.
+ If df_conversion_factor mixes factors of conversion that have and do not have a spatial stratification, the rows that do not have spatial stratification must be set to geographic_identifier= 0.   
+
+ Columns of time (time_start and time_end) must be of type character (not Posix) and they must have the same resolution (e.g. day, second. etc).
 }
 \examples{
 
@@ -50,6 +52,11 @@ con=db_connection_sardara_world()
 
 # Retrieve IOTC georeferenced catch data from 2017
 df_input<-iotc_catch_level0(2017)
+
+# some curation before use of the functions
+df_input$time_start<-substr(as.character(df_input$time_start), 1, 10)
+df_input$time_end<-substr(as.character(df_input$time_end), 1, 10)
+colnames(df_input)[colnames(df_input) == "catchunit"] <- "unit"
 
 # Open a dataset of factors of conversion (the one used to convert units of catch in the IRD Tuna Atlas)
 conversion_factors_dataset="https://goo.gl/KriwxV"
@@ -68,19 +75,22 @@ df_input<-df_input[!(df_input$unit=="NOMT"),]
 
 # Convert units from numbers to weight using the dataset of factors of conversion. 
 # The spatial coding system used in conversion_factor (column geographic_identifier) is not the same as the one used in df_input. Hence, we set in the parameter codelist_geoidentifiers_conversion_factors the name of the spatial coding system used in df_conversion factor ("areas_conversion_factors_numtoweigth_ird").
-df_converted<-convert_units(df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird")
+df_converted<-convert_units(con, df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird")
 
 # Get the dataframe with units converted: data that were expressed in number are converted to metric tons. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their original unit (in this case, number).
-df_converted_df<-list_df_converted$df
+df_converted_df<-df_converted$df
 head(df_converted_df)
 
 # Get information regarding the conversion (data converted, data not converted because no factor of conversion existed, etc.)
 df_converted$stats
 
+dbDisconnect(con)
+
 }
 \seealso{
 Other create your own tuna atlas: \code{\link{map_codelist}},
-  \code{\link{raise_datasets_by_dimension}}
+  \code{\link{raise_datasets_by_dimension}},
+  \code{\link{raise_get_rf}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
