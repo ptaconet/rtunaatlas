@@ -1,6 +1,6 @@
 #' @name raise_get_rf
 #' @aliases raise_get_rf
-#' @title Get raising factors from two datasets
+#' @title Get raising factors
 #' @description Provided two datasets, one for which the information information is usually stratified is space and/or time but the associated measure represents only part of the reality ("incomplete" dataset), and one for wich the the information is usually less stratified (i.e. more aggregated) but the measure represents the reality ("total" dataset): this function outputs a data.frame of raising factors that represents, for a given stratum, the proportion of data that of the "total" dataset that are available in the "incomplete" dataset  
 #' See section "Details" for a use case.
 #'
