@@ -6,7 +6,7 @@
 #' @import RPostgreSQL 
 
 
-db_connection_sardara_world<-function(db){
+db_connection_sardara_france<-function(db){
   
   library("RPostgreSQL")
   drv <- dbDriver("PostgreSQL")
