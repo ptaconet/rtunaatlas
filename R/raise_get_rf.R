@@ -6,7 +6,7 @@
 #'
 #' @export
 #' 
-#' @param df_input data.frame "incomplete". Must have a set of dimensions (columns) + a value column
+#' @param df_input_incomplete data.frame "incomplete", to raise. Must have a set of dimensions (columns) + a value column
 #' @param df_input_total data.frame "total". Must have a set of dimensions (columns) + a value column
 #' @param x_raising_dimensions vector of dimensions (i.e. dimensions that compose the stratum) to use for the computation of the raising factors. The dimensions must be available in both input data.frames.
 #'
@@ -14,14 +14,14 @@
 #' The output dataset is composed of:
 #'\itemize{
 #'\item{the columns of \code{x_raising_dimensions}{}
-#'\item{a column named "sum_value_df_input": }{Provides, for the stratum, the sum of the value in the "incomplete" dataset}
+#'\item{a column named "sum_value_df_input_incomplete": }{Provides, for the stratum, the sum of the value in the "incomplete" dataset}
 #'\item{a column named "sum_value_df_input_total": }{Provides, for the stratum, the sum of the value in the "total" dataset}
 #'\item{a column named "rf": }{Provides, for the stratum, the raising factor (sum_value_df_input_total/sum_value_df_input), i.e. the proportion of data of the "total" dataset that are available in the "incomplete" dataset.}
 #'}
 #'
 #' @details
 #' 
-#' Let's take the example of the tuna fisheries to understand the concept of raising factors:
+#' It is possible to understand the concept of raising factors with the following example.
 #' 
 #' Catch-and-effort data are data aggregated over spatio-temporal strata that are collected by the CPCs or the tRFMOs
 #' in some cases. Generally, catch-and-effort data are defined over one month time period and 1° or 5° size square
@@ -76,22 +76,22 @@
    
 
 raise_get_rf<-function(
-  df_input, # data frame with partial information available
+  df_input_incomplete, # data frame with partial information available
   df_input_total, # data frame with total information available
   x_raising_dimensions # Columns to consider for the raising. e.g. c("gear","flag","species","year","source_authority","unit")
   
 ) {
   
   # check if columns of x_raising_dimensions exist in the datasets
-  if (length(setdiff(x_raising_dimensions,colnames(df_input)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
+  if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
   if ("year" %in% x_raising_dimensions){
-    df_input$year<-as.numeric(substr(df_input$time_start, 0, 4))
+    df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
     df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
   }
   
   # georefcatches_in_stratum_flagknown
-  DFPartialInfo_ByEachRaisingDimension<-group_by_(df_input,.dots=x_raising_dimensions) %>%
+  DFPartialInfo_ByEachRaisingDimension<-group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>%
     summarise(value = sum(value))
   
   # totalcatches_in_stratum_flagknown
@@ -104,7 +104,7 @@ raise_get_rf<-function(
                           by=x_raising_dimensions,
                           all=TRUE)
   
-  colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.x")]<-"sum_value_df_input"
+  colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.x")]<-"sum_value_df_input_incomplete"
   colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.y")]<-"sum_value_df_input_total"
   
   DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input
