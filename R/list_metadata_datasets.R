@@ -43,21 +43,19 @@
 #' \item{\code{list_metadata_mappings}} {lists only the metadata of the mappings between code lists}
 #' }
 #' 
-#' @family datasets information
+#' @family list data
 #' 
 #' 
 #' @examples
 #' 
-#'  con=db_connection_sardara_world()
-#' 
 #' # List the available source IOTC datasets:
-#' metadata_iotc_datasets<-list_metadata_datasets(con,source_authority=c("IOTC"))
+#' metadata_iotc_datasets<-list_metadata_datasets(db_connection_sardara_world(),source_authority=c("IOTC"))
 #' 
 #' # List the available code lists for WCPFC and IATTC
-#' metadata_iccat_code_lists<-list_metadata_codelists(con,source_authority=c("WCPFC","IATTC"))
+#' metadata_iccat_code_lists<-list_metadata_codelists(db_connection_sardara_world(),source_authority=c("WCPFC","IATTC"))
 #' 
 #' # List the available raw datasets of catch and of effort that are defined on 5° grid resolution
-#' metadata_raw_dataset_catch_5deg<-list_metadata_raw_datasets(con,variable=c("catch","effort"),spatial_resolution=5)
+#' metadata_raw_dataset_catch_5deg<-list_metadata_raw_datasets(db_connection_sardara_world(),variable=c("catch","effort"),spatial_resolution=5)
 #'
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
@@ -77,6 +75,8 @@
     }
     
     metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null ",where_clause," order by dataset_origin_institution,table_name",sep=))
+    
+    if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
     
     return(metadata_datasets) 
   }
@@ -100,6 +100,8 @@ list_metadata_codelists<-function(con,dataset_name=NULL,source_authority=NULL,di
   }
   
   metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='codelist' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  
+  if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
  return(metadata_datasets) 
 }
@@ -126,6 +128,8 @@ list_metadata_codelists_mapping<-function(con,dataset_name=NULL,source_authority
   }
   
   metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='mapping' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  
+  if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
   return(metadata_datasets) 
 }
@@ -159,6 +163,8 @@ list_metadata_raw_datasets<-function(con,dataset_name=NULL,source_authority=NULL
   }
   
   metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='raw_dataset' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  
+  if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
   return(metadata_datasets) 
 }

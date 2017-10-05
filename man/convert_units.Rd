@@ -11,7 +11,7 @@ convert_units(df_input, df_conversion_factor, codelist_geoidentifiers_conversion
 
 \item{df_conversion_factor}{a data.frame of factors of conversion between units}
 
-\item{codelist_geoidentifiers_conversion_factors}{NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor, or NULL if the coding system for the spatial dimension is the same as the one used in df_input}
+\item{codelist_geoidentifiers_conversion_factors}{NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input}
 }
 \description{
 This function converts the units of measure in a fact dataset using a dataset of factors of conversions between units. The data frames of fact and of factors of conversions must be properly structured. For structures of data frames, see details and here: \url{http://}.
@@ -39,8 +39,11 @@ Example: These are the first rows of a dataset of factors of conversions:
  The codes used in the dimensions of the dataset of factors of conversion (df_conversion_factor) must be the same as the ones used in the dataset of fact with units to convert (df_input), except for the spatial dimension (geographic_identifier) - see here-after for more details.
  The only mandatory columns of the dataset of factors of conversion are "unit", "unit_target" and "conversion_factor". All the other columns are here to stratify the factors of conversion (by species, gear, time, space, etc.).
  Particularly, the columns "time_start", "time_end" and "geographic_identifier" allow to stratify spatialy and temporarily the factors of conversion. 
+ 
  The columns "time_start" and "time_end" provide respectively the starting date and the ending date of validity of the factor of conversion. 
+ 
  The column "geographic_identifier" provides the spatial stratification of the factor of conversion. If the coding system for spatial stratification used in df_conversion_factor is the same as the one used in df_input, then the parameter codelist_geoidentifiers_conversion_factors must be set to NULL. Else, the spatial coding system used in df_conversion_factor must be stored in the Sardara database, and the parameter codelist_geoidentifiers_conversion_factors must be set to the name of the spatial coding system (table) in Sardara DB.
+ 
  If df_conversion_factor mixes factors of conversion that have and do not have a spatial stratification, the rows that do not have spatial stratification must be set to geographic_identifier= 0.   
 
  Columns of time (time_start and time_end) must be of type character (not Posix) and they must have the same resolution (e.g. day, second. etc).

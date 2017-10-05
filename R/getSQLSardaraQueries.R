@@ -47,6 +47,8 @@
 
 getSQLSardaraQueries <- function(con, dataset_metadata){
   
+  if(nrow(dataset_metadata)==0){stop("There is no dataset that corresponds to your query")}
+  
   #similar static definitions same as in write_tuna_atlas_metadata
   #to facilitate later editing of metadata fieldname changes, but to simplify the parameters of the function...too many parameters is crazy and unreadable
   static_metadata_table_name<- dataset_metadata$table_name # TO BE DONE => REMOVE IT / NOT USED FOR NOW

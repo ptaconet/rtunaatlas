@@ -40,6 +40,8 @@
 
 extract_dataset<-function(con,metadata_dataset){
   
+  if(nrow(metadata_dataset)==0){stop("There is no dataset that corresponds to your query")}
+  
   # retrieve query to execute using the function getSQLSardaraQueries
   query<-getSQLSardaraQueries(con,metadata_dataset)$query_CSV
   
@@ -54,6 +56,8 @@ extract_dataset<-function(con,metadata_dataset){
 # metadata_datasets data.frame of type "metadata" (muliple rows extracted from the table metadata.metadata).
 
 extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_keep){
+  
+  if(nrow(metadata_dataset)==0){stop("There is no dataset that corresponds to your query")}
   
   df<-NULL
   
