@@ -116,7 +116,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     ##logger.info("Setting SQL queries specific to CODELIST")
     
-    # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommées 'code' et 'label' dans le codelist extrait (WFS et csv)
+    # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommees 'code' et 'label' dans le codelist extrait (WFS et csv)
     code_label_column_name<-dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",static_metadata_table_name,"'"))  
     # 2) S'il n'y a pas de label, on remplit la colonne 'label' avec des 'NULL'  
     if (is.na(code_label_column_name$english_label_column[1])){
@@ -131,7 +131,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     } else {
       other_columns_column_names<-NULL
     }
-    # 4) s'il s'agit d'un code list de type spatial, on prend en plus la gÃƒÆ’Ã‚Â©omÃƒÆ’Ã‚Â©trie. Ce morceau de requete SQL est ÃƒÆ’  changer pour le CSV car on ne prendra pas l'attribut "the_geom" mais plutot un WKT.
+    # 4) s'il s'agit d'un code list de type spatial, on prend en plus la geometrie. Ce morceau de requete SQL est a  changer pour le CSV car on ne prendra pas l'attribut "the_geom" mais plutot un WKT.
     if (substr(static_metadata_table_name,1,4)=='area'){
       # Get geometry column name, type and srid
       table_geometry_information<-dbGetQuery(con,paste0("select * from geometry_columns where f_table_schema='area' and f_table_name='",substring(static_metadata_table_name, 6),"'"))
@@ -204,13 +204,13 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     SELECT oid::regclass::text FROM   pg_class WHERE  relkind = 'm'")$`?column?`
     
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
-      columns_csv_wms_wfs<-db_dimensions_parameters$sql_column_label[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       join_clause<-" LEFT JOIN area.areas_with_geom area USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
     } else {  # else we recreate the query that outputs the data.frame
-      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_codes[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      join_clause<-db_dimensions_parameters$sql_view_codes_labels_joins[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       where_clause<-paste0(" WHERE tab.id_metadata=",static_metadata_id)
       tab_name <- paste(static_metadata_table_name," tab",sep=" ")
       }
