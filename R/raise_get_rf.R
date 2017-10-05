@@ -107,7 +107,7 @@ raise_get_rf<-function(
   colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.x")]<-"sum_value_df_input_incomplete"
   colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.y")]<-"sum_value_df_input_total"
   
-  DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input
+  DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input_incomplete
   
   return(DFPartialInfo_rf)
   
