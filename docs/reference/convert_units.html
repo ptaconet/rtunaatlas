@@ -175,7 +175,7 @@ See an example of dataset of factors of conversion here: <a href='https://goo.gl
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># Connect to Sardara World DB</span>
-<span class='no'>con</span><span class='kw'>=</span><span class='fu'>db_connection_sardara_world</span>()</div><div class='output co'>#&gt; <span class='message'>Loading required package: DBI</span></div><div class='input'>
+<span class='no'>con</span><span class='kw'>=</span><span class='fu'>db_connection_sardara_world</span>()</div><div class='output co'>#&gt; <span class='error'>Error in postgresqlNewConnection(drv, ...): RS-DBI driver: (cannot allocate a new connection -- maximum of 16 connections already opened)</span></div><div class='input'>
 <span class='co'># Retrieve IOTC georeferenced catch data from 2017</span>
 <span class='no'>df_input</span><span class='kw'>&lt;-</span><span class='fu'><a href='iotc_catch_level0.html'>iotc_catch_level0</a></span>(<span class='fl'>2017</span>)</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): impossible de trouver la fonction "iotc_catch_level0"</span></div><div class='input'>
 <span class='co'># some curation before use of the functions</span>

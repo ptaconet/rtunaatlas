@@ -113,8 +113,7 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-<span class='no'>con</span><span class='kw'>=</span><span class='fu'>db_connection_sardara_world</span>()
-
+<span class='no'>con</span><span class='kw'>=</span><span class='fu'>db_connection_sardara_world</span>()</div><div class='output co'>#&gt; <span class='error'>Error in postgresqlNewConnection(drv, ...): RS-DBI driver: (cannot allocate a new connection -- maximum of 16 connections already opened)</span></div><div class='input'>
 <span class='co'># Extract a raw dataset</span>
 <span class='no'>raw_dataset</span><span class='kw'>&lt;-</span><span class='fu'>extract_dataset</span>(<span class='no'>con</span>,<span class='fu'><a href='list_metadata_datasets.html'>list_metadata_datasets</a></span>(<span class='no'>con</span>,<span class='kw'>dataset_name</span><span class='kw'>=</span><span class='st'>"global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"</span>))</div><div class='output co'>#&gt; <span class='error'>Error in nrow(metadata_dataset): impossible de trouver la fonction "list_metadata_datasets"</span></div><div class='input'>
 <span class='co'># Extract a code list</span>
