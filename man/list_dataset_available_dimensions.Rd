@@ -14,6 +14,15 @@ list_dataset_available_dimensions(con,dataset_metadata)
 \description{
 This function list the dimensions available in a dataset. A dimension is set as available if at least 1 value does exist for this dimension.
 }
+\examples{
+
+# List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":
+
+dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal'")
+
+list_dataset_available_dimensions(db_connection_sardara_world(),dataset_metadata)
+
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

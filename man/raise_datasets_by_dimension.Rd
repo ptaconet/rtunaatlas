@@ -70,7 +70,8 @@ dbDisconnect(con)
 }
 \seealso{
 Other create your own tuna atlas: \code{\link{convert_units}},
-  \code{\link{map_codelist}}, \code{\link{raise_get_rf}}
+  \code{\link{map_codelist}}, \code{\link{raise_get_rf}},
+  \code{\link{spatial_curation_intersect_areas}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

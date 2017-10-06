@@ -2,12 +2,12 @@
 % Please edit documentation in R/raise_get_rf.R
 \name{raise_get_rf}
 \alias{raise_get_rf}
-\title{Get raising factors from two datasets}
+\title{Get raising factors}
 \usage{
-raise_get_rf(df_input, df_input_total, x_raising_dimensions)
+raise_get_rf(df_input_incomplete, df_input_total, x_raising_dimensions)
 }
 \arguments{
-\item{df_input}{data.frame "incomplete". Must have a set of dimensions (columns) + a value column}
+\item{df_input_incomplete}{data.frame "incomplete", to raise. Must have a set of dimensions (columns) + a value column}
 
 \item{df_input_total}{data.frame "total". Must have a set of dimensions (columns) + a value column}
 
@@ -18,7 +18,7 @@ Provided two datasets, one for which the information information is usually stra
 See section "Details" for a use case.
 }
 \details{
-Let's take the example of the tuna fisheries to understand the concept of raising factors:
+It is possible to understand the concept of raising factors with the following example.
 
 Catch-and-effort data are data aggregated over spatio-temporal strata that are collected by the CPCs or the tRFMOs
 in some cases. Generally, catch-and-effort data are defined over one month time period and 1° or 5° size square
@@ -73,5 +73,6 @@ raise_incomplete_dataset_to_total_dataset
 
 Other create your own tuna atlas: \code{\link{convert_units}},
   \code{\link{map_codelist}},
-  \code{\link{raise_datasets_by_dimension}}
+  \code{\link{raise_datasets_by_dimension}},
+  \code{\link{spatial_curation_intersect_areas}}
 }

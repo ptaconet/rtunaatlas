@@ -88,7 +88,7 @@ AUS	\tab 1992-06-01	\tab 1992-07-01	\tab 230125	\tab LL	\tab YFT	\tab 0.42 \tab 
 AUS	\tab 1992-07-01	\tab 1992-08-01	\tab 235140	\tab LL	\tab YFT	\tab 1.05 \tab 9.43 \tab 14 \tab 1.48\cr
 AUS	\tab 1992-07-01	\tab 1992-08-01	\tab 240140	\tab LL	\tab YFT	\tab 0.15 \tab 9.43 \tab 14 \tab 1.48\cr
 AUS	\tab 1992-08-01	\tab 1992-09-01	\tab 240140	\tab LL	\tab YFT	\tab 0.61 \tab 9.43 \tab 14 \tab 1.48\cr
-AUS	\tab 1992-11-01	\tab 1992-12-01	\tab 230120	\tab LL	\tab YFT	\tab 0.15 \tab 9.43 \tab 14 \tabb 1.48\cr
+AUS	\tab 1992-11-01	\tab 1992-12-01	\tab 230120	\tab LL	\tab YFT	\tab 0.15 \tab 9.43 \tab 14 \tab 1.48\cr
 AUS	\tab 1992-11-01	\tab 1992-12-01	\tab 230125	\tab LL	\tab YFT	\tab 0.15 \tab 9.43 \tab 14 \tab 1.48\cr
 AUS	\tab 1992-11-01	\tab 1992-12-01	\tab 235115	\tab LL	\tab YFT	\tab 1.65 \tab 9.43 \tab 14 \tab 1.48\cr
 AUS	\tab 1992-11-01	\tab 1992-12-01	\tab 235135	\tab LL	\tab YFT	\tab 5 \tab 9.43 \tab 14 \tab 1.48\cr
@@ -166,10 +166,7 @@ threshold_rf=NULL)
 head(ind_catch_tunaatlasird_level2$df)
 
 # get statistics on the raising process
-head(ind_catch_tunaatlasird_level2$stats)
-
-# get raising factor dataset
-head(ind_catch_tunaatlasird_level2$df_rf)
+ind_catch_tunaatlasird_level2$stats
 
 dbDisconnect(con)
 

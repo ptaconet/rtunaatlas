@@ -53,7 +53,8 @@ The data frames of fact and code list mapping must be properly structured. The d
 \seealso{
 Other create your own tuna atlas: \code{\link{convert_units}},
   \code{\link{raise_datasets_by_dimension}},
-  \code{\link{raise_get_rf}}
+  \code{\link{raise_get_rf}},
+  \code{\link{spatial_curation_intersect_areas}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

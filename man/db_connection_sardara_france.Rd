@@ -2,10 +2,9 @@
 % Please edit documentation in R/db_connection_sardara_france.R
 \name{db_connection_sardara_france}
 \alias{db_connection_sardara_france}
-\alias{db_connection_sardara_world}
 \title{Connects to Sardara France PostgreSQL database stored on the Observatory of Exploited Tropical Pelagic Ecosystems (Ob7) servers.}
 \usage{
-db_connection_sardara_world(db)
+db_connection_sardara_france(db)
 }
 \value{
 a wrapper of RPostgreSQL connection (object of type "con")
