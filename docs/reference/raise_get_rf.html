@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get raising factors from two datasets — raise_get_rf • rtunaatlas</title>
+<title>Get raising factors — raise_get_rf • rtunaatlas</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -80,7 +80,7 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get raising factors from two datasets</h1>
+    <h1>Get raising factors</h1>
     </div>
 
     
@@ -88,14 +88,14 @@
 See section "Details" for a use case.</p>
     
 
-    <pre class="usage"><span class='fu'>raise_get_rf</span>(<span class='no'>df_input</span>, <span class='no'>df_input_total</span>, <span class='no'>x_raising_dimensions</span>)</pre>
+    <pre class="usage"><span class='fu'>raise_get_rf</span>(<span class='no'>df_input_incomplete</span>, <span class='no'>df_input_total</span>, <span class='no'>x_raising_dimensions</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>df_input</th>
-      <td><p>data.frame "incomplete". Must have a set of dimensions (columns) + a value column</p></td>
+      <th>df_input_incomplete</th>
+      <td><p>data.frame "incomplete", to raise. Must have a set of dimensions (columns) + a value column</p></td>
     </tr>
     <tr>
       <th>df_input_total</th>
@@ -109,7 +109,7 @@ See section "Details" for a use case.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Let's take the example of the tuna fisheries to understand the concept of raising factors:</p>
+    <p>It is possible to understand the concept of raising factors with the following example.</p>
 <p>Catch-and-effort data are data aggregated over spatio-temporal strata that are collected by the CPCs or the tRFMOs
 in some cases. Generally, catch-and-effort data are defined over one month time period and 1° or 5° size square
 spatial resolution. Following ICCAT, catch and fishing effort statistics are defined as “the complete species (tuna,
@@ -133,13 +133,15 @@ Total catches are also available in separated datasets. Their spatio-temporal re
     <p>raise_incomplete_dataset_to_total_dataset</p>
 <p>Other create your own tuna atlas: <code><a href='convert_units.html'>convert_units</a></code>,
   <code><a href='map_codelist.html'>map_codelist</a></code>,
-  <code><a href='raise_datasets_by_dimension.html'>raise_datasets_by_dimension</a></code></p>
+  <code><a href='raise_datasets_by_dimension.html'>raise_datasets_by_dimension</a></code>,
+  <code><a href='spatial_curation_intersect_areas.html'>spatial_curation_intersect_areas</a></code></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'># Connect to Sardara DB</span>
-<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'>db_connection_sardara_world</span>()</div><div class='output co'>#&gt; <span class='error'>Error in postgresqlNewConnection(drv, ...): RS-DBI driver: (cannot allocate a new connection -- maximum of 16 connections already opened)</span></div><div class='input'>
+<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='db_connection_sardara_world.html'>db_connection_sardara_world</a></span>()
+
 <span class='co'># Extract IOTC georeferenced catch time series of catches from Sardara DB</span>
 <span class='no'>ind_catch_tunaatlasird_level1</span><span class='kw'>&lt;-</span><span class='fu'><a href='extract_dataset.html'>extract_dataset</a></span>(<span class='no'>con</span>,<span class='fu'><a href='list_metadata_datasets.html'>list_metadata_datasets</a></span>(<span class='no'>con</span>,<span class='kw'>dataset_name</span><span class='kw'>=</span><span class='st'>"indian_ocean_catch_1952_11_01_2016_01_01_tunaatlasIRD_level1"</span>))</div><div class='output co'>#&gt; <span class='error'>Error in nrow(metadata_dataset): impossible de trouver la fonction "list_metadata_datasets"</span></div><div class='input'><span class='fu'>head</span>(<span class='no'>ind_catch_tunaatlasird_level1</span>)</div><div class='output co'>#&gt; <span class='error'>Error in head(ind_catch_tunaatlasird_level1): objet 'ind_catch_tunaatlasird_level1' introuvable</span></div><div class='input'>
 <span class='co'># Extract IOTC total (nominal) catch time series from Sardara DB</span>

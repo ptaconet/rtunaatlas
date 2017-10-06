@@ -126,14 +126,16 @@ Example:</p><ul>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <p>Other create your own tuna atlas: <code><a href='convert_units.html'>convert_units</a></code>,
-  <code><a href='map_codelist.html'>map_codelist</a></code>, <code><a href='raise_get_rf.html'>raise_get_rf</a></code></p>
+  <code><a href='map_codelist.html'>map_codelist</a></code>, <code><a href='raise_get_rf.html'>raise_get_rf</a></code>,
+  <code><a href='spatial_curation_intersect_areas.html'>spatial_curation_intersect_areas</a></code></p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='co'>## Retrieve some IATTC georeferenced times series of catch </span>
 <span class='co'># Connect to Sardara DB</span>
-<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'>db_connection_sardara_world</span>()</div><div class='output co'>#&gt; <span class='error'>Error in postgresqlNewConnection(drv, ...): RS-DBI driver: (cannot allocate a new connection -- maximum of 16 connections already opened)</span></div><div class='input'>
+<span class='no'>con</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='db_connection_sardara_world.html'>db_connection_sardara_world</a></span>()
+
 
 <span class='co'># IATTC dataset stratified by schooltype (and not flag)</span>
 <span class='no'>dataset_iattc_ce_PSSetType</span><span class='kw'>&lt;-</span><span class='fu'><a href='extract_dataset.html'>extract_dataset</a></span>(<span class='no'>con</span>,<span class='fu'><a href='list_metadata_datasets.html'>list_metadata_datasets</a></span>(<span class='no'>con</span>,<span class='kw'>dataset_name</span><span class='kw'>=</span><span class='st'>"east_pacific_ocean_catch_1958_12_01_2016_01_01_1deg_1m_ps_tunaatlasIATTC_2017_level0__tuna_bySchool"</span>))</div><div class='output co'>#&gt; <span class='error'>Error in nrow(metadata_dataset): impossible de trouver la fonction "list_metadata_datasets"</span></div><div class='input'><span class='fu'>head</span>(<span class='no'>dataset_iattc_ce_PSSetType</span>)</div><div class='output co'>#&gt; <span class='error'>Error in head(dataset_iattc_ce_PSSetType): objet 'dataset_iattc_ce_PSSetType' introuvable</span></div><div class='input'><span class='fu'>unique</span>(<span class='no'>dataset_iattc_ce_PSSetType</span>$<span class='no'>flag</span>) <span class='co'># Note that the column "flag" is all set with "UNK"</span></div><div class='output co'>#&gt; <span class='error'>Error in unique(dataset_iattc_ce_PSSetType$flag): objet 'dataset_iattc_ce_PSSetType' introuvable</span></div><div class='input'><span class='fu'>unique</span>(<span class='no'>dataset_iattc_ce_PSSetType</span>$<span class='no'>schooltype</span>) <span class='co'># Note that the column "schooltype" is detailed</span></div><div class='output co'>#&gt; <span class='error'>Error in unique(dataset_iattc_ce_PSSetType$schooltype): objet 'dataset_iattc_ce_PSSetType' introuvable</span></div><div class='input'>

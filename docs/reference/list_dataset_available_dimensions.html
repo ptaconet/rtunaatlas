@@ -103,12 +103,23 @@
     </table>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'>
+<span class='co'># List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":</span>
+
+<span class='no'>dataset_metadata</span><span class='kw'>&lt;-</span><span class='fu'>dbGetQuery</span>(<span class='fu'><a href='db_connection_sardara_world.html'>db_connection_sardara_world</a></span>(),<span class='st'>"SELECT * from metadata.metadata WHERE dataset_name='indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal'"</span>)
+
+<span class='fu'>list_dataset_available_dimensions</span>(<span class='fu'><a href='db_connection_sardara_world.html'>db_connection_sardara_world</a></span>(),<span class='no'>dataset_metadata</span>)</div><div class='output co'>#&gt; [1] "flag"       "gear"       "schooltype" "time"       "area"      
+#&gt; [6] "effortunit"</div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-                </ul>
+            
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
     <h2>Author</h2>
     
