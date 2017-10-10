@@ -33,7 +33,7 @@
 #' 
 #' @return a vector with the name of the dimensions available in the dataset. 
 #' 
-#' @family datasets information
+#' @family discover data
 #' 
 #' @examples
 #' 

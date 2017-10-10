@@ -48,7 +48,7 @@
 #' 
 #'  Columns of time (time_start and time_end) must be of type character (not Posix) and they must have the same resolution (e.g. day, second. etc).
 #' 
-#' @family create your own tuna atlas
+#' @family process data
 #' 
 #' 
 #' @examples

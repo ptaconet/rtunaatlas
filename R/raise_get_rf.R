@@ -46,7 +46,7 @@
 #'
 #' This function is usually used together with the function \code{raise_incomplete_dataset_to_total_dataset}, that applies the factors of conversion to raise an "incomplete" dataset to a "total" dataset.
 #' 
-#' @family create your own tuna atlas
+#' @family process data
 #' @seealso raise_incomplete_dataset_to_total_dataset
 #' 
 #' @examples

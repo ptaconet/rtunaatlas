@@ -24,7 +24,7 @@
 #' 
 #' While the latter lists the dimensions available in a given dataset
 #' 
-#' @family datasets information
+#' @family discover data
 #' 
 #' @examples
 #' 

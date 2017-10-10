@@ -33,7 +33,7 @@
 #' 
 #' We make the hypothesis that the proportion of catches by schooltype is equal for all the fishing countries.
 #' 
-#' @family create your own tuna atlas
+#' @family process data
 #' 
 #' 
 #' @examples

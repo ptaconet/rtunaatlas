@@ -4,7 +4,7 @@
 #' @description A set of functions used to load a dataset in the database
 #' @export FUNMergeDimensions_CodeListLike FUNMergeDimensions_NonCodeListLike FUNuploadNewRecordsToDB FUNUploadDatasetToTableInDB FUNUploadMetadataInDB
 #'
-#'
+#' @family load data
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'

@@ -23,7 +23,7 @@
 #' \item{"src_target": }{The target codes for the dimension to map}
 #' }
 #' 
-#' @family create your own tuna atlas
+#' @family process data
 #' 
 #' 
 #' @examples

@@ -43,7 +43,7 @@
 #' \item{\code{list_metadata_mappings}} {lists only the metadata of the mappings between code lists}
 #' }
 #' 
-#' @family list data
+#' @family discover data
 #' 
 #' 
 #' @examples

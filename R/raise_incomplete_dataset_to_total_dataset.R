@@ -123,6 +123,7 @@
 #' 
 #' Usually, for catches: \code{x_raising_dimensions} = c("gear","flag","species","year","source_authority","unit")  and for efforts: c("gear","flag","year","source_authority","unit"). 
 #' 
+#' @family process data
 #' @examples
 #' 
 #' # Connect to Sardara DB

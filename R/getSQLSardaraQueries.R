@@ -27,6 +27,7 @@
 #'  \item{\code{query_dynamic_list_keywords_institutions} :}{ }
 #'   }
 #' 
+#' @family access data 
 #' @examples
 #' 
 #'  con=db_connection_sardara_world()

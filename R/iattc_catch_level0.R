@@ -26,7 +26,7 @@
 #' 
 #' Output dataset is expressed with IATTC's coding system.
 #' 
-#' @family tRFMOs datasets extraction
+#' @family process data
 #' 
 #' @examples
 #' 

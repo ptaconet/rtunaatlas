@@ -17,7 +17,7 @@
 #' 
 #' The meaning of the columns of a raw dataset is provided in the \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
 #' 
-#' @family datasets extraction
+#' @family access data
 #' 
 #' 
 #' @examples

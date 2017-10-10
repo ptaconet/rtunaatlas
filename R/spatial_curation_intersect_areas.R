@@ -59,7 +59,7 @@
 #' 
 #' This table means that the geograpical identifier "235140" intersects two areas of the intersection layer: "F51" with 50\% (proportion_intersection=0.5) of the area of 235140 being intersected by F51, and "F57" with 50\% (proportion_intersection=0.5) of the area of 235140 being intersected by F57. However, the value of catch is 3.2 in both cases - i.e. it has not been multiplied by the proportion of area intersected.
 #' 
-#' @family create your own tuna atlas
+#' @family process data
 #' 
 #' 
 #' @examples

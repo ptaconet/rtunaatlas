@@ -13,7 +13,7 @@
 #' This function merges the primary catch-and-effort datasets released by IOTC.
 #' Output dataset is expressed with IOTC's coding system.
 #' 
-#' @family tRFMOs datasets extraction
+#' @family process data
 #' 
 #' @examples
 #' 

@@ -11,7 +11,7 @@
 #' @details 
 #' 
 #'
-#' @family extract data
+#' @family process data
 #' 
 #' 
 #' @examples

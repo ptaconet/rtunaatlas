@@ -38,7 +38,7 @@
 #' 
 #' For df_metadata: a template of the metadata data.frame to use is available under inst/extdata/template_metadata.csv
 #' 
-#' @family 
+#' @family load data
 #' 
 #' @examples
 #' 
