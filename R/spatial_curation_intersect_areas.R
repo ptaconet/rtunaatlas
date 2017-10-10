@@ -6,7 +6,11 @@
 #'
 #'
 #' @usage 
-#' spatial_curation_intersect_areas(con,df_input,df_spatial_code_list_name,intersection_spatial_code_list_name)
+#' spatial_curation_intersect_areas(
+#' con,
+#' df_input,
+#' df_spatial_code_list_name,
+#' intersection_spatial_code_list_name)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame of fact. The dataframe must have at least a column 'geographic_identifier'. The code list used for the column 'geographic_identifier' must be one of the table of the schema 'area' of the database.
@@ -20,14 +24,14 @@
 #'  \item{"geographic_identifier_intersection_layer": }{ Code of the feature from the intersection layer (\code{intersection_spatial_code_list_name}) that intersects the geographical identifier of \code{df_input}}
 #'  \item{"proportion_intersection": }{ Proportion of the area of the \code{df_input} feature being intersected by the \it{intersection layer} feature. }
 #'  }}
-#'  \item{"df_input_areas_intersect_intersection_layer": }{\code{a data.frame summarizing the results of the spatial intersection. The columns are: }
+#'  \item{"df_input_areas_intersect_intersection_layer": }{a data.frame summarizing the results of the spatial intersection. The columns are: }
 #'  \itemize{
 #'  \item{"geographic_identifier_source_layer": }{ Code of the feature (geographic identifier) from \code{df_input}}
 #'  \item{"geographic_identifier_intersection_layer": }{ Code of the feature from (\code{intersection_spatial_code_list_name}) that intersects the feature of \code{df_input}}
 #'  \item{"codelist_source_layer": }{ Name of the code list used for the column 'geographic_identifier' of \code{df_input}}
 #'  \item{"codelist_intersection_layer": }{ Name of the intersection layer code list (\code{intersection_spatial_code_list_name}) }
 #'  \item{"proportion_intersection": }{ Proportion of the area of the \it{input layer} feature being intersected by the \it{intersection layer} feature. }
-#'  }}
+#'  }
 #'
 #' }
 #' 
@@ -39,18 +43,21 @@
 #' 
 #' 1 row of \code{df_input}:
 #' \tabular{rrrrrrr}{
-#' flag	\tab time_start	\tab time_end	  \tab geographic_identifier	\tab gear	\tab species	\tab value\cr
+#' flag	\tab time_start	\tab time_end	  \tab  geographic_identifier 	\tab  gear	 \tab  species	 \tab  value  \cr
 #' AUS	\tab 1992-02-01	\tab 1992-03-01	\tab 235140	\tab LL	\tab YFT	\tab 0.05 \cr
 #' }
 #' 
+#' 
 #' When executing the function \code{function spatial_curation_intersect_areas} taking as intersection layer "fao_fishing_areas", the output dataset will return 2 rows:
+#' 
+#' 
 #' \tabular{rrrrrrrrr}{
-#' flag	\tab time_start	\tab time_end	  \tab geographic_identifier	\tab gear	\tab species	\tab value \tab  geographic_identifier_intersection_layer \tab proportion_intersection \cr 
+#' flag	 \tab  time_start 	\tab  time_end	  \tab  geographic_identifier	 \tab  gear	 \tab  species	\tab  value  \tab  geographic_identifier_intersection_layer  \tab  proportion_intersection  \cr 
 #' AUS	\tab 1992-02-01	\tab 1992-03-01	\tab 235140	\tab LL	\tab YFT	\tab 3.2 \tab F51 \tab 0.5 \cr 
 #' AUS	\tab 1992-02-01	\tab 1992-03-01	\tab 235140	\tab LL	\tab YFT	\tab 3.2 \tab F57 \tab 0.5 \cr 
 #' }
 #' 
-#' This table means that the geograpical identifier "235140" intersects two areas of the intersection layer: "F51" with 50% of the area of 235140 being intersected by F51, and "F57" with 50% of the area of 235140 being intersected by F57. However, the value of catch is 3.2 in both cases - i.e. it has not been multiplied by the proportion of area intersected.
+#' This table means that the geograpical identifier "235140" intersects two areas of the intersection layer: "F51" with 50\% (proportion_intersection=0.5) of the area of 235140 being intersected by F51, and "F57" with 50\% (proportion_intersection=0.5) of the area of 235140 being intersected by F57. However, the value of catch is 3.2 in both cases - i.e. it has not been multiplied by the proportion of area intersected.
 #' 
 #' @family create your own tuna atlas
 #' 
@@ -124,6 +131,10 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
     
     df_input$proportion_source_area_intersection[which(is.na(df_input$proportion_source_area_intersection))]<-0
     
+    #sum of the input df that intersect the intersection layer
+    #stats<-semi_join(df_input,areas_intersected,by= c("geographic_identifier" = "geographic_identifier_source_layer")) %>%
+    #  group_by(unit) %>%
+    #  summarize(sum_df_intersect_intersection_layer<-sum(value))
     
     areas_not_intersected<-setdiff(df_input$geographic_identifier,unique(areas_intersected$geographic_identifier_source_layer))
     areas_not_intersected<-data.frame(areas_not_intersected)

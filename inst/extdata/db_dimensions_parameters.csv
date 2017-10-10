@@ -22,10 +22,10 @@ LEFT JOIN area.areas_with_geom USING (id_area)"
 catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,"catchtype,","catchtype_labels.codesource_catchtype AS catchtype,
 ","catchtype,","catchtype_labels.codesource_catchtype AS catchtype,
 ","Catchtype_labels.source_english_label AS catchtype_label,",LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
-catchunit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,"catchunit as unit,","catchunit_labels.codesource_catchunit as unit,
+unit,catchunit.catchunit,id_catchunit,id_catchunit,codesource_catchunit,tablesource_catchunit,catchunit,TRUE,"catchunit as unit,","catchunit_labels.codesource_catchunit as unit,
 ","catchunit as unit,","catchunit_labels.codesource_catchunit as unit,
 ","Catchunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN catchunit.catchunit_labels USING (id_catchunit)
-effortunit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,"effortunit as unit,","effortunit_labels.codesource_effortunit as unit,","effortunit as unit,","effortunit_labels.codesource_effortunit as unit,
+unit,effortunit.effortunit,id_effortunit,id_effortunit,codesource_effortunit,tablesource_effortunit,effortunit,TRUE,"effortunit as unit,","effortunit_labels.codesource_effortunit as unit,","effortunit as unit,","effortunit_labels.codesource_effortunit as unit,
 ","effortunit_labels.source_english_label as unit_label,",LEFT OUTER JOIN effortunit.effortunit_labels USING (id_effortunit)
 sex,sex.sex,id_sex,id_sex,codesource_sex,tablesource_sex,sex,TRUE,"sex,","sex_labels.codesource_sex as sex,
 ","sex,","sex_labels.codesource_sex as sex,
