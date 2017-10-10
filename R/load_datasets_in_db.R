@@ -30,8 +30,8 @@
 #' \itemize{
 #' \item{1 column named 'src_code':} {code of the code list source (code to map)}
 #' \item{1 column named 'trg_code':} {code of the code list target}
-#' \item{1 column named 'src_codingsystem':} {name (permanent identifier) of the coding system in Sardara from where the code source is extracted. Only 1 value authorized. The code list must be in the database.}
-#' \item{1 column named 'trg_codingsystem':} {name (permanent identifier) of the coding system in Sardara from where the code target is extracted. The code list must be in the database.}
+#' \item{1 column named 'src_codingsystem':} {name (dataset_name) of the coding system in Sardara from where the code source is extracted. Only 1 value authorized. The code list must be in the database.}
+#' \item{1 column named 'trg_codingsystem':} {name (dataset_name) of the coding system in Sardara from where the code target is extracted. The code list must be in the database.}
 #' }
 #' 
 #' For df_codelists_input: a template is available under inst/extdata/template_df_codelist
@@ -334,9 +334,9 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   # Input code list must be in CSV format, with the first line giving the column names. separators should be commas
   
   df_inputOriginInstitution<-df_metadata$dataset_origin_institution
-  codelist_permanent_identifier<-df_metadata$dataset_permanent_identifier[1]
+  codelist_dataset_name<-df_metadata$dataset_name[1]
   
-  table_name<-paste0(dimension_name,".",codelist_permanent_identifier)
+  table_name<-paste0(dimension_name,".",codelist_dataset_name)
   df_metadata$table_name<-table_name
   
 
@@ -357,9 +357,9 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
     stop("The codes contain NULL values or is are not unique. Codes must be unique and cannot contain NULL values")
   }
   
-  # Check if there is no blank in codelist_permanent_identifier and df_inputPKattributeName
+  # Check if there is no blank in codelist_dataset_name and df_inputPKattributeName
   countSpaces <- function(s) { sapply(gregexpr(" ", s), function(p) { sum(p>=0) } ) }
-  if (countSpaces(codelist_permanent_identifier)>0 | countSpaces("code")>0){
+  if (countSpaces(codelist_dataset_name)>0 | countSpaces("code")>0){
     stop("The name of the code list and the codes in the column \"code\" cannot have blanks. Please check those parameters.")
   } 
   
@@ -368,7 +368,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   sql<-paste("SELECT '",dimension_name,"'||'.'||table_name FROM information_schema.tables WHERE table_schema='",dimension_name,"' UNION SELECT oid::regclass::text FROM pg_class WHERE relkind = 'm';",sep="")
   DB_Dimension_TableNames<-dbGetQuery(con, sql)
   colnames(DB_Dimension_TableNames)<-"table_name"
-  if (paste0(dimension_name,".",codelist_permanent_identifier) %in% DB_Dimension_TableNames$table_name){
+  if (paste0(dimension_name,".",codelist_dataset_name) %in% DB_Dimension_TableNames$table_name){
     stop("The name of the code list already exists in the database. Please set another name.")
   }
   
@@ -402,7 +402,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
 
   # Load metadata
-  table_name=paste(dimension_name,".",codelist_permanent_identifier,sep="")
+  table_name=paste(dimension_name,".",codelist_dataset_name,sep="")
   PK_metadata<-FUNUploadMetadataInDB(con,df_metadata,"codelist",table_name)
   
   ### Add code list table in the DB, with constraints (data types and primary key) and triggers
@@ -413,12 +413,12 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
   for (i in 1:ncol(df_to_load)){
     # columns are all set to "text" type.
-    #sql<- paste("ALTER TABLE ",dimension_name,".",codelist_permanent_identifier," ADD COLUMN ",tolower(colnames(df_input)[i])," ",df_inputColumnsDataTypes[i],sep="")
+    #sql<- paste("ALTER TABLE ",dimension_name,".",codelist_dataset_name," ADD COLUMN ",tolower(colnames(df_input)[i])," ",df_inputColumnsDataTypes[i],sep="")
     sql<- paste("ALTER TABLE ",table_name," ADD COLUMN ",tolower(colnames(df_to_load)[i])," text",sep="")
     dbSendQuery(con, sql)
   }
   
-  sql<- paste("ALTER TABLE ",table_name," ADD CONSTRAINT ",codelist_permanent_identifier,"_pkey PRIMARY KEY (code)",sep="")
+  sql<- paste("ALTER TABLE ",table_name," ADD CONSTRAINT ",codelist_dataset_name,"_pkey PRIMARY KEY (code)",sep="")
   dbSendQuery(con, sql)
   
   cat("code list created in db")
@@ -434,19 +434,19 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
   # Create triggers to automatically fill and update the link dimension table
   
-  sql_trigg_fill_link_dimension_table<-paste("CREATE OR REPLACE FUNCTION func_add_new_record_in_link_table_",codelist_permanent_identifier,"() RETURNS trigger AS $BODY$ BEGIN INSERT INTO ",dimension_name,".",dimension_name," ( codesource_",dimension_name,",tablesource_",dimension_name,") VALUES (NEW.code,'",codelist_permanent_identifier,"') ; RETURN NEW; END; $BODY$ LANGUAGE 'plpgsql' VOLATILE;",sep="")
+  sql_trigg_fill_link_dimension_table<-paste("CREATE OR REPLACE FUNCTION func_add_new_record_in_link_table_",codelist_dataset_name,"() RETURNS trigger AS $BODY$ BEGIN INSERT INTO ",dimension_name,".",dimension_name," ( codesource_",dimension_name,",tablesource_",dimension_name,") VALUES (NEW.code,'",codelist_dataset_name,"') ; RETURN NEW; END; $BODY$ LANGUAGE 'plpgsql' VOLATILE;",sep="")
   dbSendQuery(con, sql_trigg_fill_link_dimension_table)
   
-  sql_trigg_fill_link_dimension_table<-paste("CREATE TRIGGER trig_add_new_record_in_link_table_",codelist_permanent_identifier," BEFORE INSERT ON ",table_name," FOR EACH ROW EXECUTE PROCEDURE func_add_new_record_in_link_table_",codelist_permanent_identifier,"();",sep="")
+  sql_trigg_fill_link_dimension_table<-paste("CREATE TRIGGER trig_add_new_record_in_link_table_",codelist_dataset_name," BEFORE INSERT ON ",table_name," FOR EACH ROW EXECUTE PROCEDURE func_add_new_record_in_link_table_",codelist_dataset_name,"();",sep="")
   dbSendQuery(con, sql_trigg_fill_link_dimension_table)
   
   
   # ... Then fill table
-  #dbWriteTable(con, c(dimension_name, codelist_permanent_identifier), value = df_input,row.names=FALSE,append=TRUE)
+  #dbWriteTable(con, c(dimension_name, codelist_dataset_name), value = df_input,row.names=FALSE,append=TRUE)
   rs<-FUNUploadDatasetToTableInDB(con,df_to_load,table_name)
   
   # Finally fill the dimension link table with the metadata
-  sql<-paste("UPDATE ",dimension_name,".",dimension_name," SET id_metadata=",PK_metadata," WHERE tablesource_",dimension_name,"='",codelist_permanent_identifier,"'",sep="")
+  sql<-paste("UPDATE ",dimension_name,".",dimension_name," SET id_metadata=",PK_metadata," WHERE tablesource_",dimension_name,"='",codelist_dataset_name,"'",sep="")
   dbSendQuery(con, sql)
   
   # Set rigths to the table
@@ -526,9 +526,9 @@ load_mapping_in_db<-function(con,df_to_load,df_metadata){
 
   # Check errors: TO DO  (are tables existing? etc.)
   
-# get table_name corresponding to dataset_permanent_identifier of src_codingsystem and trg_codingsystem
-src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_permanent_identifier='",unique(df_to_load$src_codingsystem),"'"))$table_name
-trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_permanent_identifier='",unique(df_to_load$trg_codingsystem),"'"))$table_name
+# get table_name corresponding to dataset_name of src_codingsystem and trg_codingsystem
+src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_name='",unique(df_to_load$src_codingsystem),"'"))$table_name
+trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_name='",unique(df_to_load$trg_codingsystem),"'"))$table_name
 
 DBDimensionName=gsub("\\..*","",src_codingsystem_table_name)
 
