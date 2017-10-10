@@ -28,7 +28,7 @@ Example:
 \item{\code{df2} :} {is a dataset where the "schooltype" dimension is available but the "flag" dimension is missing (i.e. in this dataset, all the values of the column "flag" are set to UNK) }
 }
 
-The concept of raising the data is the following: in a given stratum S, a fishing country (flag) F has catched a percentage RF % of the total catches made in this stratum (this information is extracted from the dataset with flag detail, i.e. df1. RF is called the raising factor). In the same stratum S, there has been in total Y tons of catches realized on log school, made by all the fishing countries (this information extracted from the dataset with schooltype detail, i.e. df2). Raising the data means saying that the fishing country F has catched RF * T tons on log school in the stratum S. RF * T is the value raised.
+The concept of raising the data is the following: in a given stratum S, a fishing country (flag) F has catched a percentage RF \% of the total catches made in this stratum (this information is extracted from the dataset with flag detail, i.e. df1. RF is called the raising factor). In the same stratum S, there has been in total Y tons of catches realized on log school, made by all the fishing countries (this information extracted from the dataset with schooltype detail, i.e. df2). Raising the data means saying that the fishing country F has catched RF * T tons on log school in the stratum S. RF * T is the value raised.
 
 In the output dataset, both flag and school type dimensions are available for each stratum. 
 

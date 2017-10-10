@@ -11,8 +11,31 @@ list_dataset_available_dimensions(con,dataset_metadata)
 
 \item{dataset_metadata}{data.frame of type "metadata" (one row extracted from the table metadata.metadata). Column table_type must be "raw_dataset"}
 }
+\value{
+a vector with the name of the dimensions available in the dataset.
+}
 \description{
-This function list the dimensions available in a dataset. A dimension is set as available if at least 1 value does exist for this dimension.
+This function returns the dimensions available in a dataset. A dimension is set as available in a dataset if at least 1 value does exist for this dimension.
+}
+\details{
+Example to understand the meaning of this function: Let us take the following dataset:
+
+ \tabular{rrrrrrr}{
+flag	\tab time_start	\tab time_end	  \tab geographic_identifier	\tab gear	\tab species	\tab value\cr
+	\tab 1992-02-01	\tab 1992-03-01	\tab 235140	\tab LL	\tab YFT	\tab 0.05 \cr
+	\tab 1992-06-01	\tab 1992-07-01	\tab 230125	\tab LL	\tab YFT	\tab 0.42\cr
+	\tab 1992-07-01	\tab 1992-08-01	\tab 235140	\tab LL	\tab YFT	\tab 1.05\cr
+	\tab 1992-07-01	\tab 1992-08-01	\tab 240140	\tab LL	\tab YFT	\tab 0.15\cr
+	\tab 1992-08-01	\tab 1992-09-01	\tab 240140	\tab LL	\tab YFT	\tab 0.61\cr
+	\tab 1992-11-01	\tab 1992-12-01	\tab 230120	\tab LL	\tab YFT	\tab 0.15\cr
+	\tab 1992-11-01	\tab 1992-12-01	\tab 230125	\tab LL	\tab YFT	\tab 0.15\cr
+	\tab 1992-11-01	\tab 1992-12-01	\tab 235115	\tab LL	\tab YFT	\tab 1.65\cr
+	\tab 1992-11-01	\tab 1992-12-01	\tab 235135	\tab LL	\tab YFT	\tab 5\cr
+	\tab 1992-12-01	\tab 1993-01-01	\tab 235110	\tab LL	\tab YFT	\tab 0.08\cr
+	\tab 1992-12-01	\tab 1993-01-01	\tab 240140	\tab LL	\tab YFT	\tab 0.12
+ }
+
+In the above table, the dimension "flag" as not got any values. Hence, for this table the dimension "flag" is considered not to be available. The dimensions that will be returned by the function l\code{list_dataset_available_dimensions} applied on this dataset are: time, area, gear, species
 }
 \examples{
 
@@ -22,6 +45,9 @@ dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metada
 
 list_dataset_available_dimensions(db_connection_sardara_world(),dataset_metadata)
 
+}
+\seealso{
+Other datasets information: \code{\link{list_variable_available_dimensions}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
