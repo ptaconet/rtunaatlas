@@ -2,7 +2,7 @@
 #' @aliases functions_load_dataset_in_db
 #' @title Functions used to load a dataset in a database with Sardara model
 #' @description A set of functions used to load a dataset in the database
-#' @export FUNMergeDimensions_CodeListLike FUNMergeDimensions_NonCodeListLike FUNuploadNewRecordsToDB FUNUploadDatasetToTableInDB
+#' @export FUNMergeDimensions_CodeListLike FUNMergeDimensions_NonCodeListLike FUNuploadNewRecordsToDB FUNUploadDatasetToTableInDB FUNUploadMetadataInDB
 #'
 #'
 #' 
@@ -127,4 +127,35 @@ FUNUploadDatasetToTableInDB<-function(DBconnection,    # connection to DB
   rs <- postgresqlgetResult(DBconnection)
   
   return(rs)
+}
+
+
+
+#function to upload a new dataset into database.
+FUNUploadMetadataInDB<-function(DBconnection,    # connection to DB
+                                df_metadata, # Dataset of metadata to upload in the DB  
+                                table_type, # table type in sardara (codelist, mapping, raw_dataset)
+                                table_name){  # column "table_name" of sardara
+ 
+  
+  
+  # Load metadata
+  df_metadata$date<-as.character(Sys.Date())
+  df_metadata$table_type<-table_type
+  df_metadata$table_name<-table_name
+  
+  df_metadata<-data.frame(df_metadata,stringsAsFactors = F)
+  df_metadata<-replace(df_metadata, is.na(df_metadata), "NA") 
+  
+  rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
+  
+  cat("Metadata loaded\n")
+  
+  
+  # Retrieve the PK of the metadata for the line just inserted
+  sql<- "SELECT max(id_metadata) FROM metadata.metadata"
+  PK_metadata <- dbGetQuery(con, sql)
+  PK_metadata<-as.integer(PK_metadata$max[1])
+  
+  return(PK_metadata)
 }
