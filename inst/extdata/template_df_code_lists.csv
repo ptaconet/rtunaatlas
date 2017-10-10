@@ -1,0 +1,10 @@
+dimension,sardara_code_list_table_name
+area,area_wkt
+catchtype,catchtype_ob7
+catchunit,catchunit_rfmos
+effortunit,effortunit_rfmos
+flag,flag_fao_cwp
+gear,geargroup_tunaatlas
+schooltype,schooltype_rfmos
+species,species_ob7_balbaya
+sex,sex_rfmos
