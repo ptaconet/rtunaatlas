@@ -14,7 +14,7 @@
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame of fact. The dataframe must have at least a column 'geographic_identifier'. The code list used for the column 'geographic_identifier' must be one of the table of the schema 'area' of the database.
-#' @param df_spatial_code_list_name string . Name of the code list used for the column 'geographic_identifier' of \code{df_input} (type polygon)
+#' @param df_spatial_code_list_name string . Dataset name of the code list used for the column 'geographic_identifier' of \code{df_input} (type polygon)
 #' @param intersection_spatial_code_list_name string .  Name of the intersection layer to use (type polygon). Corresponds to the name of the table in the database.
 #' 
 #' @return a list with 2 objects: 
@@ -67,22 +67,23 @@
 #' con=db_connection_sardara_world()
 #' 
 #' # Extract a dataset
-#' df <- extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal"))
+#' dataset_metadata<-list_metadata_datasets(con,dataset_name="west_pacific_ocean_catch_1970_01_01_2016_01_01_5deg_1m_ps_tunaatlasWCPFC_2017_level0")
+#' df<-extract_dataset(con,dataset_metadata)
 #'
-#' # Get spatial coding systemd used in the dataset
-#' df_spatial_codingsystem <- TODO
+#' # Retrieve the spatial coding system used in the dataset
+#' df_spatial_codingsystem <- get_codelist_of_dimension(con,dataset_metadata,"area")
 #' 
-#' # Get geospatial layers available in the database
+#' # Get the list of geospatial layers available in the database
 #' spatial_code_lists_available<-list_metadata_codelists(con,dimension="area")
 #' 
 #' # Intersect df with continents (to check which data are located on land areas)
-#' df_intersect_continents<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem,intersection_spatial_code_list_name="gshhs_world_coastlines")
+#' df_intersect_continents<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem$dataset_name,intersection_spatial_code_list_name="gshhs_world_coastlines")
 #' 
 #' head(df_intersect_continents$df)
 #' head(df_intersect_continents$df_input_areas_intersect_intersection_layer)
 #' 
 #' # Intersect df with EEZ (to know what percentage of df is located on EEZs)
-#' df_intersect_eez<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name,intersection_spatial_code_list_name="vliz_world_eez_v8_2014")
+#' df_intersect_eez<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem$dataset_name,intersection_spatial_code_list_name="vliz_world_eez_v8_2014")
 #' 
 #' head(df_intersect_eez$df)
 #' head(df_intersect_eez$df_input_areas_intersect_intersection_layer)
@@ -93,15 +94,18 @@
 
 spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_name, intersection_spatial_code_list_name){ 
   
-  cat(paste0("Ignore warning message 'unrecognized PostgreSQL field type unknown'"))
+  cat(paste0("Please ignore here-under warning messages 'unrecognized PostgreSQL field type unknown'"))
   
   inputAreas_forQuery<-paste(unique(df_input$geographic_identifier), collapse = '\',\'')
   
-  names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='area.",df_spatial_code_list_name,"'"))
-  names_codes_labels_table_intersectionArea<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='area.",intersection_spatial_code_list_name,"'"))
+  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",df_spatial_code_list_name,"'"))$table_name
+  db_table_name_intersectionArea<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",intersection_spatial_code_list_name,"'"))$table_name
   
-  name_geom_table_inputAreas<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE f_table_name='",df_spatial_code_list_name,"'"))
-  name_geom_table_intersectionArea<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE f_table_name='",intersection_spatial_code_list_name,"'"))
+  names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
+  names_codes_labels_table_intersectionArea<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_intersectionArea,"'"))
+  
+  name_geom_table_inputAreas<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))
+  name_geom_table_intersectionArea<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_intersectionArea,"'"))
   
   
   query_data_inland<-paste("WITH 
@@ -124,7 +128,8 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
                            ,sep="")
   
     areas_intersected<-dbGetQuery(con,query_data_inland)
-  
+    areas_intersected$geographic_identifier_source_layer<-gsub(" ", "", areas_intersected$geographic_identifier_source_layer, fixed = TRUE) #remove withespaces
+    
     df_input<-left_join(df_input,areas_intersected,by= c("geographic_identifier" = "geographic_identifier_source_layer"))
     df_input$codelist_source_layer<-NULL
     df_input$codelist_intersection_layer<-NULL
