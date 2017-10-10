@@ -1,13 +1,1 @@
-metadata element,description,value
-dataset_title,Title of the dataset,
-dataset_release_date,Date of release of the dataset by the origin institution,
-dataset_origin_institution,Institution that has generated the dataset,
-table_description,Abstract of the dataset,
-view_name,Name of the view in the database under which the dataset is directly accessible with codes and labels.,
-keywords,,
-contacts_and_roles,Contacts and roles for the dataset,
-dataset_name,Text identifier of the dataset (candidate primary key). ,
-dataset_permanent_identifier,permanent identifier,
-dataset_time_start,first date of the time series / dataset,
-dataset_time_end,last date of the time series / dataset,
-dataset_lineage,Description (text) of the processes applied to generate the dataset,
+dataset_title,dataset_release_date,dataset_origin_institution,table_description,view_name,keywords,contacts_and_roles,dataset_name,dataset_permanent_identifier,dataset_time_start,dataset_time_end,dataset_lineage
