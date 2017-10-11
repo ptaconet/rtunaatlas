@@ -8,7 +8,7 @@
 #' @param dataset_metadata data.frame of type "metadata" (one row extracted from the table metadata.metadata).
 #' @param dimension_name string. One of the dimensions available in the dataset
 #'  
-#' @return a data.frame of the metadata of the code list used for the dimension set in the parameter dimension_name
+#' @return ad data.frame of the metadata of the code list used for the dimension set in the parameter dimension_name
 #'
 #'@usage get_codelist_of_dimension(con,dataset_metadata,dimension_name)
 #'
