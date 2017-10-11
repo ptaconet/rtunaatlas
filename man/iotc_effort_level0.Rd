@@ -22,6 +22,19 @@ iotc_effort<-iotc_effort_level0(2017)
 head(iotc_effort)
 
 }
+\seealso{
+Other process data: \code{\link{ccsbt_catch_level0}},
+  \code{\link{convert_units}},
+  \code{\link{iattc_catch_level0}},
+  \code{\link{iccat_catch_level0}},
+  \code{\link{iotc_catch_level0}},
+  \code{\link{map_codelist}},
+  \code{\link{raise_datasets_by_dimension}},
+  \code{\link{raise_get_rf}},
+  \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{spatial_curation_intersect_areas}},
+  \code{\link{wcpfc_catch_level0}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

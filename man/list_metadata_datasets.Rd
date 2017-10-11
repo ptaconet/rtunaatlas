@@ -68,6 +68,12 @@ metadata_raw_dataset_catch_5deg<-list_metadata_raw_datasets(db_connection_sardar
 
 
 }
+\seealso{
+Other discover data: \code{\link{get_codelist_of_dimension}},
+  \code{\link{get_dsd_of_dataset}},
+  \code{\link{list_dataset_available_dimensions}},
+  \code{\link{list_variable_available_dimensions}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

@@ -40,9 +40,16 @@ head(iattc_catch)
 
 }
 \seealso{
-Other tRFMOs datasets extraction: \code{\link{ccsbt_catch_level0}},
+Other process data: \code{\link{ccsbt_catch_level0}},
+  \code{\link{convert_units}},
   \code{\link{iccat_catch_level0}},
   \code{\link{iotc_catch_level0}},
+  \code{\link{iotc_effort_level0}},
+  \code{\link{map_codelist}},
+  \code{\link{raise_datasets_by_dimension}},
+  \code{\link{raise_get_rf}},
+  \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{spatial_curation_intersect_areas}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

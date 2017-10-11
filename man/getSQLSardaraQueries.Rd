@@ -45,6 +45,9 @@ queries<-getSQLSardaraQueries(con,dataset_metadata)
 global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1<-dbGetQuery(con,queries$query_CSV)
 
 }
+\seealso{
+Other access data: \code{\link{extract_dataset}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

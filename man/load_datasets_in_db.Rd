@@ -38,8 +38,8 @@ For mappings (df_to_load used in function load_mapping_in_db):: The code lists u
 \itemize{
 \item{1 column named 'src_code':} {code of the code list source (code to map)}
 \item{1 column named 'trg_code':} {code of the code list target}
-\item{1 column named 'src_codingsystem':} {name (permanent identifier) of the coding system in Sardara from where the code source is extracted. Only 1 value authorized. The code list must be in the database.}
-\item{1 column named 'trg_codingsystem':} {name (permanent identifier) of the coding system in Sardara from where the code target is extracted. The code list must be in the database.}
+\item{1 column named 'src_codingsystem':} {name (dataset_name) of the coding system in Sardara from where the code source is extracted. Only 1 value authorized. The code list must be in the database.}
+\item{1 column named 'trg_codingsystem':} {name (dataset_name) of the coding system in Sardara from where the code target is extracted. The code list must be in the database.}
 }
 
 For df_codelists_input: a template is available under inst/extdata/template_df_codelist
@@ -49,6 +49,9 @@ For df_metadata: a template of the metadata data.frame to use is available under
 \examples{
 
 
+}
+\seealso{
+Other load data: \code{\link{functions_load_dataset_in_db}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

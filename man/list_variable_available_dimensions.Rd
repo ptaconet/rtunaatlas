@@ -21,7 +21,10 @@ list_variable_available_dimensions(db_connection_sardara_world(),"catch")
 
 }
 \seealso{
-Other datasets information: \code{\link{list_dataset_available_dimensions}}
+Other discover data: \code{\link{get_codelist_of_dimension}},
+  \code{\link{get_dsd_of_dataset}},
+  \code{\link{list_dataset_available_dimensions}},
+  \code{\link{list_metadata_datasets}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

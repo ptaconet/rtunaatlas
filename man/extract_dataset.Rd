@@ -36,6 +36,9 @@ code_list_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="
 
 
 }
+\seealso{
+Other access data: \code{\link{getSQLSardaraQueries}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }
