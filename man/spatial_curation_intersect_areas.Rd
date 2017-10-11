@@ -15,7 +15,7 @@ intersection_spatial_code_list_name)
 
 \item{df_input}{data.frame of fact. The dataframe must have at least a column 'geographic_identifier'. The code list used for the column 'geographic_identifier' must be one of the table of the schema 'area' of the database.}
 
-\item{df_spatial_code_list_name}{string . Name of the code list used for the column 'geographic_identifier' of \code{df_input} (type polygon)}
+\item{df_spatial_code_list_name}{string . Dataset name of the code list used for the column 'geographic_identifier' of \code{df_input} (type polygon)}
 
 \item{intersection_spatial_code_list_name}{string .  Name of the intersection layer to use (type polygon). Corresponds to the name of the table in the database.}
 }
@@ -68,32 +68,40 @@ This table means that the geograpical identifier "235140" intersects two areas o
 con=db_connection_sardara_world()
 
 # Extract a dataset
-df <- extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal"))
+dataset_metadata<-list_metadata_datasets(con,dataset_name="west_pacific_ocean_catch_1970_01_01_2016_01_01_5deg_1m_ps_tunaatlasWCPFC_2017_level0")
+df<-extract_dataset(con,dataset_metadata)
 
-# Get spatial coding systemd used in the dataset
-df_spatial_codingsystem <- TODO
+# Retrieve the spatial coding system used in the dataset
+df_spatial_codingsystem <- get_codelist_of_dimension(con,dataset_metadata,"area")
 
-# Get geospatial layers available in the database
+# Get the list of geospatial layers available in the database
 spatial_code_lists_available<-list_metadata_codelists(con,dimension="area")
 
 # Intersect df with continents (to check which data are located on land areas)
-df_intersect_continents<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem,intersection_spatial_code_list_name="gshhs_world_coastlines")
+df_intersect_continents<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem$dataset_name,intersection_spatial_code_list_name="gshhs_world_coastlines")
 
 head(df_intersect_continents$df)
 head(df_intersect_continents$df_input_areas_intersect_intersection_layer)
 
 # Intersect df with EEZ (to know what percentage of df is located on EEZs)
-df_intersect_eez<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name,intersection_spatial_code_list_name="vliz_world_eez_v8_2014")
+df_intersect_eez<-spatial_curation_intersect_areas(con,df_input=df,df_spatial_code_list_name=df_spatial_codingsystem$dataset_name,intersection_spatial_code_list_name="vliz_world_eez_v8_2014")
 
 head(df_intersect_eez$df)
 head(df_intersect_eez$df_input_areas_intersect_intersection_layer)
 
 }
 \seealso{
-Other create your own tuna atlas: \code{\link{convert_units}},
+Other process data: \code{\link{ccsbt_catch_level0}},
+  \code{\link{convert_units}},
+  \code{\link{iattc_catch_level0}},
+  \code{\link{iccat_catch_level0}},
+  \code{\link{iotc_catch_level0}},
+  \code{\link{iotc_effort_level0}},
   \code{\link{map_codelist}},
   \code{\link{raise_datasets_by_dimension}},
-  \code{\link{raise_get_rf}}
+  \code{\link{raise_get_rf}},
+  \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{wcpfc_catch_level0}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
