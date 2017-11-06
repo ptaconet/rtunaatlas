@@ -31,7 +31,7 @@ ccsbt_catch_level0<-function(year_tunaatlas){
   drv <- dbDriver("PostgreSQL")
   con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
   
-  # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
+  # retrieves 2 lines. CCSBT level0 is only the combination of the 2 CCSBT catch-and-effort datasets: southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface , southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0
   datasets_permanent_identifiers="'southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface','southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0'"
   
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
