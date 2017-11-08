@@ -40,7 +40,7 @@
 iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_to_use_if_no_raising_flags_to_schooltype=NULL){
   
   # columns for catch
-  columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","catchunit","value")
+  columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
   
   # Select iattc raw datasets release on the year year_tunaatlas
   drv <- dbDriver("PostgreSQL")

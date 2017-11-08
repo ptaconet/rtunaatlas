@@ -38,7 +38,7 @@ wcpfc_catch_level0<-function(year_tunaatlas){
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for catch
-  columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","catchunit","value")
+  columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
   
   # Retrieve WCPFC georef. catches 
   df_level0<-extract_and_merge_multiple_datasets(con,metadata_datasets,columns_to_keep)
