@@ -57,7 +57,7 @@ extract_dataset<-function(con,metadata_dataset){
 
 extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_keep){
   
-  if(nrow(metadata_dataset)==0){stop("There is no dataset that corresponds to your query")}
+  if(nrow(metadata_datasets)==0){stop("There is no dataset that corresponds to your query")}
   
   df<-NULL
   

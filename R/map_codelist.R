@@ -17,17 +17,20 @@
 #'  \item{"stats": }{A data.frame with some information regarding the data not mapped. It provides, for each unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the dataset of mappings between code lists}
 #' }
 #' 
-#' @details The data frames of fact and code list mapping must be properly structured. The data.frame of mapping must at least have the 2 following columns:
-#' \itemize{. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+#' @details The data frames of fact and code list mapping must be properly structured. The data.frame of mapping must have the 2 following columns:
+#' \itemize{
 #' \item{"src_code": }{The source codes for the dimension to map (i.e. the codes used in the df_input fot the considered dimension)}
-#' \item{"src_target": }{The target codes for the dimension to map}
+#' \item{"trg_code": }{The target codes for the dimension to map}
 #' }
+#' 
+#' Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
 #' 
 #' @family process data
 #' 
 #' 
 #' @examples
 #'   # Reads IOTC nominal catch dataset (2017 release)
+#'   con=db_connection_sardara_world()
 #'   iotc_nominal_catch<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
 #'   head(iotc_nominal_catch)
 #'   

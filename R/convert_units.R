@@ -8,7 +8,7 @@
 #'                 
 #' @param df_input a data.frame of fact
 #' @param df_conversion_factor a data.frame of factors of conversion between units
-#' @param codelist_geoidentifiers_conversion_factors NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input
+#' @param codelist_geoidentifiers_conversion_factors NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.
 #' 
 #' @return a list with two objects:
 #' \itemize{

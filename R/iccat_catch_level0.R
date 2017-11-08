@@ -4,7 +4,7 @@
 #' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the International Commission for the Conservation of Atlantic Tuna (ICCAT). The output dataset provides the catch of tuna, tuna-like and by-catch in the area managed under the jurisdiction of the ICCAT Catches are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of catch (weight or number).
 #' @export
 #'
-#' @usage iccat_catch_level0(year_tunaatlas)
+#' @usage iccat_catch_level0(year_tunaatlas,include_type_of_school)
 #'                 
 #' @param year_tunaatlas numeric. The year of the datasets to extract. Starts in 2017
 #' @param include_type_of_school boolean. Set TRUE if you want the output dataset with school type stratification. FALSE will provide the stratification without the type of school. See details for more information.
