@@ -53,10 +53,13 @@ iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
    datasets_permanent_identifiers="'atlantic_ocean_catch_1deg_1m_ps_tunaatlasICCAT_level0__bySchool'"
    metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
     
-    # We need to map flag code list, because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
-    
     iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
 
+    # We need to map flag code list, because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
+    flag_mapping_flag_iccat_from_ncandcas_to_flag_iccat<-rtunaatlas::extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_flag_iccat_from_ncandcas_flag_iccat"))
+    iccat_ce_WithSchooltypeInfo<-map_codelist(iccat_ce_WithSchooltypeInfo,flag_mapping_flag_iccat_from_ncandcas_to_flag_iccat,"flag")[[1]]
+    
+    
     strata_in_withoutschooltype_and_not_in_withshooltype<-anti_join (iccat_ce_WithoutSchooltypeInfo,iccat_ce_WithSchooltypeInfo,by=setdiff(columns_to_keep,c("value","schooltype")))
     
     # Join datasets: Dataset with the type of school + dataset without the type of school from which we have removed the strata that are also available in the dataset with the type of school.
