@@ -78,7 +78,7 @@ raise_datasets_by_dimension<-function(df1, # dataset 1
                              dimension_missing_df2 # e.g. "flag"
 ){
   
-  cat(paste0("\nRaising ",dimension_missing_df1," to ",dimension_missing_df2," in ",df1," and ",df2))
+  cat(paste0("\nRaising ",dimension_missing_df1," to ",dimension_missing_df2))
   
   colnames_input_dataset<-unique(c(colnames(df1),c(colnames(df2))))
   

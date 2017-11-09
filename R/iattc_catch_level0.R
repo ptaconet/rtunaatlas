@@ -69,8 +69,7 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_
   
   # If user decided to raise flags to type of school:  The Purse Seine data are raised (schooltype raised to flag)
   if (raise_flags_to_schooltype==TRUE){
-    cat(paste0("\nraising flags to schooltype"))
-    
+
     iattc_flag_raised_to_schooltype<-raise_datasets_by_dimension(df1=df_iattc_PSFlag,
                                                               df2=df_iattc_PSSetType,
                                                               dimension_missing_df1="schooltype",
