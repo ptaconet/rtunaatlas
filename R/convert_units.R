@@ -136,14 +136,12 @@ convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_co
     combination_times_df_conversion_factor<-unique(df_conversion_factor[c("conv_factor_df_time_start", "conv_factor_df_time_end")])
     combination_times_input_dataset<-unique(data.frame(df_input)[c("time_start", "time_end")])
     
-    # convert the dates to to POSIXlt type to be able to compare the dates
+    # convert the dates to POSIXlt type to be able to compare the dates
     combination_times_df_conversion_factor$conv_factor_df_time_start<-strptime(combination_times_df_conversion_factor$conv_factor_df_time_start, "%Y-%m-%d")
     combination_times_df_conversion_factor$conv_factor_df_time_end<-strptime(combination_times_df_conversion_factor$conv_factor_df_time_end, "%Y-%m-%d")
     combination_times_input_dataset$time_start<-strptime(combination_times_input_dataset$time_start, "%Y-%m-%d")
     combination_times_input_dataset$time_end<-strptime(combination_times_input_dataset$time_end, "%Y-%m-%d")
-    
-    
-    
+   
     combination_times_input_dataset$conv_factor_df_time_start<-NA
     combination_times_input_dataset$conv_factor_df_time_end<-NA
     
@@ -155,6 +153,9 @@ convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_co
     
     combination_times_input_dataset$time_start <- as.character(combination_times_input_dataset$time_start)
     combination_times_input_dataset$time_end <- as.character(combination_times_input_dataset$time_end)
+    
+    df_input$time_start <- substr(as.character(df_input$time_start),1,10)
+    df_input$time_end <- substr(as.character(df_input$time_end),1,10)
     
     df_input<-left_join(df_input,combination_times_input_dataset)
     
