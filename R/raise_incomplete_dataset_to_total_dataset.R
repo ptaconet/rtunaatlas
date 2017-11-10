@@ -241,6 +241,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   colnames(dataset_to_return)[which(names(dataset_to_return) == "value_raised")] <- "value"
   dataset_to_return<-dataset_to_return[colnames_input_dataset]
   
+  # remove column "year" if exists
+  dataset_to_return$year<-NULL
+  
   sum_df_incomplete_after_raising <- dataset_to_return %>% 
     group_by(unit) %>%
     summarise(sum_df_incomplete_after_raising=sum(value))
