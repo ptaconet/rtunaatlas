@@ -75,7 +75,7 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_
                                                               dimension_missing_df1="schooltype",
                                                               dimension_missing_df2="flag")
     
-    df_level0<-rbind(df_iattc_notps,iattc_flag_raised_to_schooltype)
+    df_level0<-rbind(df_iattc_notps,iattc_flag_raised_to_schooltype$df)
     
   } else {  # If user decides to not raise flags to type of school, he chooses to use either the data with stratification by flag or the data with stratification by schooltype
     
