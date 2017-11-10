@@ -10,7 +10,7 @@
 #' @param df_input a data.frame of fact
 #' @param df_mapping a data.frame of code list mapping
 #' @param dimension_to_map the name (string) of the dimension to map.
-#' @param keep_src_code boolean keep source coding system column? TRUE will keep the source coding system column, FALSE will not keep it. Default is FALSE
+#' @param keep_src_code boolean keep source coding system column? TRUE will conserve in the output dataset both source and target coding systems columns, FALSE will conserve only target coding system (i.e. mapped). Default is FALSE
 #' 
 #' @return a list with two objects:
 #' \itemize{
@@ -41,7 +41,7 @@
 #'   df_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_isscfg_revision_1")) 
 #'   head(df_mapping)
 #'  
-#'   # Map code lists. Output is a list with two elements (see section "return")
+#'   # Map code lists. Output is a list with two elements (see section "return"). Default conserves only target coding system in the output dataset. Set keep_src_code=TRUE to conserve both source and target coding systems in the output dataset.
 #'   df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear")
 #'   
 #'   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
