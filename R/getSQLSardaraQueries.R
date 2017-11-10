@@ -177,7 +177,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
                         FROM ",static_metadata_table_name,"
                         JOIN ",dimension,".",dimension," ON ",dimension,".id_",dimension," = ",dimension,"_mapping.",dimension,"_mapping_id_to
                         JOIN metadata.metadata ON metadata.id_metadata = ",dimension,".id_metadata
-                        WHERE ",dimension,".tablesource_",dimension," = (SELECT distinct trg.tablesource_",dimension,"
+                        WHERE  ",dimension,"_mapping.id_metadata=",static_metadata_id," AND ",dimension,".tablesource_",dimension," = (SELECT distinct trg.tablesource_",dimension,"
                         FROM ",static_metadata_table_name,"
                         JOIN ",dimension,".",dimension," src ON src.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_from
                         JOIN ",dimension,".",dimension," trg ON trg.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_to
