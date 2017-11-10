@@ -9,7 +9,8 @@
 #' @param df_input a data.frame of fact
 #' @param df_conversion_factor a data.frame of factors of conversion between units
 #' @param codelist_geoidentifiers_conversion_factors NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.
-#' 
+#' @param con NULL or string. Not NULL if codelist_geoidentifiers_conversion_factors is not NULL, else NULL. Wrapper of rpostgresql connection (connection to a database) where the codelist_geoidentifiers_conversion_factors layer is stored.
+
 #' @return a list with two objects:
 #' \itemize{
 #'  \item{"df": }{The input data.frame of fact, where the measures and related units have been converted when factors of conversion were available. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their source unit (i.e. they are not removed from the dataset).
@@ -62,18 +63,12 @@
 #' # some curation before use of the functions
 #' df_input$time_start<-substr(as.character(df_input$time_start), 1, 10)
 #' df_input$time_end<-substr(as.character(df_input$time_end), 1, 10)
-#' colnames(df_input)[colnames(df_input) == "catchunit"] <- "unit"
 #' 
 #' # Open a dataset of factors of conversion (the one used to convert units of catch in the IRD Tuna Atlas)
 #' conversion_factors_dataset="https://goo.gl/KriwxV"
 #' df_conversion_factor=read.csv(conversion_factors_dataset,stringsAsFactors = F,colClasses="character")
 #' head(df_conversion_factor)
 #'
-#' # Map gears of input dataset with standard gears, and then with sardara groups of gears, to align with codes of gears used in the conversion factor dataset
-#' gear_rfmos_mapping_to_standard<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_isscfg_revision_1")) 
-#' df_mapped<-map_codelist(df_input,gear_rfmos_mapping_to_standard,"gear")$df
-#' gear_standard_mapping_to_gear_sardara<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_geargroup_tunaatlas")) 
-#' df_input<-map_codelist(df_input,gear_standard_mapping_to_gear_sardara,"gear")$df
 #' 
 #' # Convert units MTNO to MT and remove NOMT (we do not keep the data that were expressed in number with corresponding value in weight)
 #' df_input$unit[which(df_input$unit == "MTNO")]<-"MT"
@@ -81,7 +76,7 @@
 #'
 #' # Convert units from numbers to weight using the dataset of factors of conversion. 
 #' # The spatial coding system used in conversion_factor (column geographic_identifier) is not the same as the one used in df_input. Hence, we set in the parameter codelist_geoidentifiers_conversion_factors the name of the spatial coding system used in df_conversion factor ("areas_conversion_factors_numtoweigth_ird").
-#' df_converted<-convert_units(con, df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird")
+#' df_converted<-convert_units(df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird",con = con)
 #'
 #' # Get the dataframe with units converted: data that were expressed in number are converted to metric tons. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their original unit (in this case, number).
 #' df_converted_df<-df_converted$df
@@ -93,9 +88,9 @@
 #' dbDisconnect(con)
 #'
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import data.table dplyr RPostgreSQL   
 
-convert_units<-function(con,df_input,df_conversion_factor,codelist_geoidentifiers_conversion_factors){
+
+convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_conversion_factors=NULL,con=NULL){
   
   cat(paste0("\n converting units and measures"))
   
