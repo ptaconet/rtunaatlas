@@ -82,13 +82,13 @@ raise_get_rf<-function(
   
 ) {
   
-  # check if columns of x_raising_dimensions exist in the datasets
-  if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
-  
   if ("year" %in% x_raising_dimensions){
     df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
     df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
   }
+  
+  # check if columns of x_raising_dimensions exist in the datasets
+  if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
   # georefcatches_in_stratum_flagknown
   DFPartialInfo_ByEachRaisingDimension<-group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>%

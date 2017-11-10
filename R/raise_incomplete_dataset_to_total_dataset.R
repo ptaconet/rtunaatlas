@@ -169,6 +169,8 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
                                  x_raising_dimensions,
                                  threshold_rf=NULL){
   
+  df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
+  df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
   
   # check if columns of x_raising_dimensions exist in the datasets
   if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
@@ -182,10 +184,6 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   sum_df_incomplete_before_raising <- df_input_incomplete %>% 
     group_by(unit) %>%
     summarise(sum_df_incomplete_before_raising=sum(value))
-  
-  df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
-  df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
-  
   
   
   # rf>1 means that the catches in the georef dataset are inferior to the catches in the total dataset
