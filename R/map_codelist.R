@@ -10,6 +10,7 @@
 #' @param df_input a data.frame of fact
 #' @param df_mapping a data.frame of code list mapping
 #' @param dimension_to_map the name (string) of the dimension to map.
+#' @param keep_src_code boolean keep source coding system column? TRUE will keep the source coding system column, FALSE will not keep it. Default is FALSE
 #' 
 #' @return a list with two objects:
 #' \itemize{
@@ -24,6 +25,8 @@
 #' }
 #' 
 #' Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+#' If \item{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
+#' If \item{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 #' 
 #' @family process data
 #' 
@@ -39,7 +42,7 @@
 #'   head(df_mapping)
 #'  
 #'   # Map code lists. Output is a list with two elements (see section "return")
-#'   df_mapped<-map_codelist(df_input,df_mapping,"gear")
+#'   df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear")
 #'   
 #'   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
 #'   df_mapped_df<-df_mapped$df
@@ -49,11 +52,11 @@
 #'   df_mapped$stats
 #'  
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
-#' @import data.table dplyr     
+#'      
 
 
 
-map_codelist<-function(df_input,df_mapping,dimension_to_map){
+map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE){
   
   cat(paste0("\n mapping dimension ",dimension_to_map," with code list mapping"))
   
@@ -62,9 +65,14 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map){
  colnames(df_mapping)[colnames(df_mapping) == "src_code"] <- dimension_to_map
  
   df_input<-left_join(df_input,df_mapping)
+  
+  if (keep_src_code==FALSE){
   df_input[,dimension_to_map]<-df_input$trg_code
-
   df_input <- df_input[column_names_df_input]
+  } else {
+  colnames(df_input)[colnames(df_input) == "trg_code"] <-paste0(dimension_to_map,"_mapping")
+  df_input <- df_input[c(column_names_df_input,paste0(dimension_to_map,"_mapping"))]
+  }
   
   # statistics on the percentage of data that are not mapped
   stats_data_not_mapped <- df_input %>% 
