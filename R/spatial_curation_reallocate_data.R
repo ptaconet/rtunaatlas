@@ -2,6 +2,7 @@
 #' @aliases spatial_curation_reallocate_data
 #' @title Reallocate data using a spatial criterium
 #' @description This function reallocates data
+#' @export 
 #' 
 #' @param df_input data.frame of fact
 #' @param dimension_reallocation dimension to reallocate

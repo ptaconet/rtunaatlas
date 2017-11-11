@@ -2,6 +2,7 @@
 #' @aliases spatial_curation_upgrade_resolution
 #' @title Aggregate gridded data
 #' @description This function aggregates the data of a dataset on a grid with resolution equal to \code{resolution}. Data with resolutions inferior to \code{resolution} will be aggregated on the corresponding \code{resolution} quadrant. Data with resolutions superior to \code{resolution} will not be disaggregated. To disaggregate data with resolutions superior to \code{resolution}, use the function \code{spatial_curation_downgrade_resolution} 
+#' @export 
 #' 
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification.
