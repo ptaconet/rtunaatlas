@@ -4,14 +4,14 @@
 \alias{iattc_catch_level0}
 \title{Extract source georeferenced catch datasets of IATTC from Sardara World database}
 \usage{
-iattc_catch_level0(year_tunaatlas)
+iattc_catch_level0(year_tunaatlas,raise_flags_to_schooltype,dimension_to_use_if_no_raising_flags_to_schooltype)
 }
 \arguments{
 \item{year_tunaatlas}{numeric. The year of the datasets to extract. Starts in 2017}
 
-\item{raise_flags_to_typeofschool}{boolean. Raise dataset with flag stratification to dataset with schooltype stratification? See section Details for more information.}
+\item{raise_flags_to_schooltype}{boolean. Raise dataset with flag stratification to dataset with schooltype stratification? See section Details for more information.}
 
-\item{dimension_to_use_if_no_raising_flags_to_typeofschool}{NULL or string. Not nullable if \code{raise_flags_to_typeofschool} is set to FALSE. if not NULL, either set to "flag" or "schooltype"}
+\item{dimension_to_use_if_no_raising_flags_to_schooltype}{NULL or string. Not nullable if \code{raise_flags_to_schooltype} is set to FALSE. if not NULL, either set to "flag" or "schooltype"}
 }
 \description{
 This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Inter American Tropical Tuna Commission (IATTC). The output dataset provides the catches of tuna, tuna-like and shark species in the East Pacific ocean. Catch are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset was computed using public domain datasets released by the IATTC.
@@ -20,13 +20,13 @@ This function extracts the source georeferenced catch datasets stored in the Sar
 The output dataset lists catch of tuna, tuna-like and shark species in the Eastern Atlantic ocean. Catch are stratified by month, species, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (1° or 5° square) and unit of catch (weight or number). This dataset is computed using public domain datasets released by the Indian Ocean Tuna Commission (iattc).
 Primary longline and pole-and-line datasets are simply merged.
 
-Details on the use of the parameter \code{raise_flags_to_typeofschool}: For confidentiality policies, information on flag and school type for the geo-referenced catches is available in separate files for Purse seine datasets.
+Details on the use of the parameter \code{raise_flags_to_schooltype}: For confidentiality policies, information on flag and school type for the geo-referenced catches is available in separate files for Purse seine datasets.
 \itemize{
-\item{ If the parameter \code{raise_flags_to_typeofschool} is set to TRUE, for each stratum, the catch from the flag-detailed dataset will be raised to the catch from the school type-detailed dataset to get an estimation of the catches by flag and school type in each stratum.}
-\item{ If the parameter \code{raise_flags_to_typeofschool} is set to FALSE, one single dataset will be used and in this case, the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} must be filled in: }
+\item{ If the parameter \code{raise_flags_to_schooltype} is set to TRUE, for each stratum, the catch from the flag-detailed dataset will be raised to the catch from the school type-detailed dataset to get an estimation of the catches by flag and school type in each stratum.}
+\item{ If the parameter \code{raise_flags_to_schooltype} is set to FALSE, one single dataset will be used and in this case, the parameter \code{dimension_to_use_if_no_raising_flags_to_schooltype} must be filled in: }
  \itemize{
-\item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} is set to "flag", the data with flag information will be used.}
-\item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_typeofschool} is set to "schooltype", the data with schooltype information will be used. }
+\item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_schooltype} is set to "flag", the data with flag information will be used.}
+\item{ If the parameter \code{dimension_to_use_if_no_raising_flags_to_schooltype} is set to "schooltype", the data with schooltype information will be used. }
 }
 }
 
@@ -35,7 +35,7 @@ Output dataset is expressed with IATTC's coding system.
 \examples{
 
 # Retrieve IATTC georeferenced catch data from 2017, with dataset with flag dimension raised to dataset with schoolytpe dimension
-iattc_catch<-iattc_catch_level0(2017,raise_flags_to_typeofschool=TRUE)
+iattc_catch<-iattc_catch_level0(2017,raise_flags_to_schooltype=TRUE)
 head(iattc_catch)
 
 }
@@ -49,7 +49,10 @@ Other process data: \code{\link{ccsbt_catch_level0}},
   \code{\link{raise_datasets_by_dimension}},
   \code{\link{raise_get_rf}},
   \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
+  \code{\link{spatial_curation_reallocate_data}},
+  \code{\link{spatial_curation_upgrade_resolution}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

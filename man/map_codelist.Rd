@@ -12,6 +12,8 @@ map_codelist(df_input, df_mapping, dimension_to_map)
 \item{df_mapping}{a data.frame of code list mapping}
 
 \item{dimension_to_map}{the name (string) of the dimension to map.}
+
+\item{keep_src_code}{boolean keep source coding system column? TRUE will conserve in the output dataset both source and target coding systems columns, FALSE will conserve only target coding system (i.e. mapped). Default is FALSE}
 }
 \value{
 a list with two objects:
@@ -24,14 +26,19 @@ a list with two objects:
 This function maps one dimension (i.e. column with codes) of a fact dataset to a target code list using a dataset of mappings between code lists. In other words, it makes the correspondance between two code lists for a given dimension, and replaces for this dimension in the fact dataset the old codes by the new codes available in the dataset of mappings between code lists.
 }
 \details{
-The data frames of fact and code list mapping must be properly structured. The data.frame of mapping must at least have the 2 following columns:
-\itemize{. Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+The data frames of fact and code list mapping must be properly structured. The data.frame of mapping must have the 2 following columns:
+\itemize{
 \item{"src_code": }{The source codes for the dimension to map (i.e. the codes used in the df_input fot the considered dimension)}
-\item{"src_target": }{The target codes for the dimension to map}
+\item{"trg_code": }{The target codes for the dimension to map}
 }
+
+Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+If \item{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
+If \item{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 }
 \examples{
   # Reads IOTC nominal catch dataset (2017 release)
+  con=db_connection_sardara_world()
   iotc_nominal_catch<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
   head(iotc_nominal_catch)
   
@@ -39,8 +46,8 @@ The data frames of fact and code list mapping must be properly structured. The d
   df_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_isscfg_revision_1")) 
   head(df_mapping)
  
-  # Map code lists. Output is a list with two elements (see section "return")
-  df_mapped<-map_codelist(df_input,df_mapping,"gear")
+  # Map code lists. Output is a list with two elements (see section "return"). Default conserves only target coding system in the output dataset. Set keep_src_code=TRUE to conserve both source and target coding systems in the output dataset.
+  df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear")
   
   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
   df_mapped_df<-df_mapped$df
@@ -60,7 +67,10 @@ Other process data: \code{\link{ccsbt_catch_level0}},
   \code{\link{raise_datasets_by_dimension}},
   \code{\link{raise_get_rf}},
   \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
+  \code{\link{spatial_curation_reallocate_data}},
+  \code{\link{spatial_curation_upgrade_resolution}},
   \code{\link{wcpfc_catch_level0}}
 }
 \author{

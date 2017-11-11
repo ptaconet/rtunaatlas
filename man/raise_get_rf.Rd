@@ -80,6 +80,9 @@ Other process data: \code{\link{ccsbt_catch_level0}},
   \code{\link{map_codelist}},
   \code{\link{raise_datasets_by_dimension}},
   \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
+  \code{\link{spatial_curation_reallocate_data}},
+  \code{\link{spatial_curation_upgrade_resolution}},
   \code{\link{wcpfc_catch_level0}}
 }
