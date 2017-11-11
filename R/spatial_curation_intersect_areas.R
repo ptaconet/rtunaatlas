@@ -142,6 +142,8 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
     #  summarize(sum_df_intersect_intersection_layer<-sum(value))
     
     areas_not_intersected<-setdiff(df_input$geographic_identifier,unique(areas_intersected$geographic_identifier_source_layer))
+    
+    if(!identical(areas_not_intersected, character(0))){
     areas_not_intersected<-data.frame(areas_not_intersected)
     colnames(areas_not_intersected)<-"geographic_identifier_source_layer"
     areas_not_intersected$geographic_identifier_source_layer<-as.character(areas_not_intersected$geographic_identifier_source_layer)
@@ -150,6 +152,7 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
     areas_not_intersected$codelist_intersection_layer<-intersection_spatial_code_list_name
     areas_not_intersected$proportion_source_area_intersection<-0
     areas_not_intersected$codelist_source_layer<-df_spatial_code_list_name
+    } else { areas_not_intersected=NULL }
     
     df_input_areas_intersect_intersection_layer<-rbind(areas_intersected,areas_not_intersected)
     df_input_areas_intersect_intersection_layer$geographic_identifier_intersection_layer[which(df_input_areas_intersect_intersection_layer$proportion_intersection==0)]<-NA
