@@ -34,7 +34,7 @@
 #' # if you want the data superior to 5° to be disaggregated on the 5° grid, use : 
 #' # spatial_curation_downgrade_resolution(con,df_input=df_aggregated_5_deg,resolution=5)
 #' 
-#' @export
+
 
 spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   

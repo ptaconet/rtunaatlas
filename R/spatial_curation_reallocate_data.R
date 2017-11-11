@@ -54,7 +54,7 @@
 #' # To get some information on the reallocation process:
 #' dataset_reallocate_data_inland$stats
 #' 
-#' @export
+
 
 
 # Function to reallocate data, given a vector of areas as input of data to reallocate (eg data on land or data with no geographical stratification)
