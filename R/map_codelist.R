@@ -5,7 +5,7 @@
 #' @export
 #'
 #'
-#' @usage map_codelist(df_input, df_mapping, dimension_to_map)
+#' @usage map_codelist(df_input, df_mapping, dimension_to_map,keep_src_code)
 #'                 
 #' @param df_input a data.frame of fact
 #' @param df_mapping a data.frame of code list mapping

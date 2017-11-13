@@ -38,7 +38,7 @@
 #' 
 #' For df_metadata: a template of the metadata data.frame to use is available under inst/extdata/template_metadata.csv
 #' 
-#' @family load data
+#' @family load data to database
 #' 
 #' @examples
 #' 
@@ -460,7 +460,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
   dbSendQuery(con, sql)
   
-  test_if_code_list_is_inserted<-dbGetQuery(con,paste0("SELECT * FROM ",table_name, "LIMIT 10"))
+  test_if_code_list_is_inserted<-dbGetQuery(con,paste0("SELECT * FROM ",table_name, " LIMIT 10"))
   if(nrow(test_if_code_list_is_inserted)>0){
     cat(paste0("\nThe code list was successfully loaded. It is in the table ",table_name," of the database"))
   }
