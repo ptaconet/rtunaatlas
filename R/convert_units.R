@@ -4,12 +4,13 @@
 #' @description This function converts the units of measure in a fact dataset using a dataset of factors of conversions between units. The data frames of fact and of factors of conversions must be properly structured. For structures of data frames, see details and here: \url{http://}. 
 #' @export
 #'
-#' @usage convert_units(df_input, df_conversion_factor, codelist_geoidentifiers_conversion_factors)
-#'                 
+#' @usage convert_units(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input, codelist_geoidentifiers_conversion_factors)
+#' 
+#' @param con a wrapper of rpostgresql connection (connection to a database) where the geospatial codelists are stored.
 #' @param df_input a data.frame of fact
 #' @param df_conversion_factor a data.frame of factors of conversion between units
-#' @param codelist_geoidentifiers_conversion_factors NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.
-#' @param con NULL or string. Not NULL if codelist_geoidentifiers_conversion_factors is not NULL, else NULL. Wrapper of rpostgresql connection (connection to a database) where the codelist_geoidentifiers_conversion_factors layer is stored.
+#' @param codelist_geoidentifiers_df_input string. The name of the coding system used for the spatial dimension in df_input (i.e. table name in Sardara database).
+#' @param codelist_geoidentifiers_conversion_factors string. The name of the coding system used for the spatial dimension in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.
 
 #' @return a list with two objects:
 #' \itemize{
@@ -76,7 +77,7 @@
 #'
 #' # Convert units from numbers to weight using the dataset of factors of conversion. 
 #' # The spatial coding system used in conversion_factor (column geographic_identifier) is not the same as the one used in df_input. Hence, we set in the parameter codelist_geoidentifiers_conversion_factors the name of the spatial coding system used in df_conversion factor ("areas_conversion_factors_numtoweigth_ird").
-#' df_converted<-convert_units(df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird",con = con)
+#' df_converted<-convert_units(con = con, df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_df_input ="areas_tuna_rfmos_task2" ,codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird",)
 #'
 #' # Get the dataframe with units converted: data that were expressed in number are converted to metric tons. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their original unit (in this case, number).
 #' df_converted_df<-df_converted$df
@@ -90,7 +91,7 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 
 
-convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_conversion_factors=NULL,con=NULL){
+convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input, codelist_geoidentifiers_conversion_factors){
   
   cat(paste0("\n converting units and measures"))
   
@@ -105,11 +106,15 @@ convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_co
     colnames(df_conversion_factor)[which(colnames(df_conversion_factor)=="geographic_identifier")]<-"conv_factor_df_geo_id"
     
     # if the geographic areas of the conversion factors are the same as the ones used in the input dataset, there is nothing to do
-    if (is.null(codelist_geoidentifiers_conversion_factors)){
+    if (codelist_geoidentifiers_df_input==codelist_geoidentifiers_conversion_factors){
       df_input$conv_factor_df_geo_id<-df_input$geographic_identifier
     } else {  # else we intersect input_dataset_geo_codelist_sardara and codelist_geoidentifiers_conversion_factors to assign to each geographic_identifier of input dataset a geographic_identifier of conversion factor dataset
       dataset_distinct_geographic_identifier<-unique(df_input$geographic_identifier)  
       dataset_distinct_geographic_identifier<-paste(unique(dataset_distinct_geographic_identifier), collapse = '\',\'')
+      
+      conversion_factors_distinct_geographic_identifier<-unique(df_conversion_factor$conv_factor_df_geo_id)  
+      conversion_factors_distinct_geographic_identifier<-paste(unique(conversion_factors_distinct_geographic_identifier), collapse = '\',\'')
+      
       
       correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,paste("select
                                                                                  u1.codesource_area as geographic_identifier,
@@ -118,7 +123,7 @@ convert_units<-function(df_input,df_conversion_factor,codelist_geoidentifiers_co
                                                                                  area.areas_with_geom u1,
                                                                                  area.areas_with_geom u2
                                                                                  where
-                                                                                 u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"')
+                                                                                 u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') and u1.tablesource_area='",codelist_geoidentifiers_df_input,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"')
                                                                                  and ST_Contains(u2.geom, u1.geom)",sep=""))
       
       
