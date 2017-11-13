@@ -5,7 +5,7 @@
 #' @export 
 #' 
 #' @param con a wrapper of rpostgresql connection (connection to a database)
-#' @param df_input data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification.
+#' @param df_input data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification or IOTC irregular areas from catch-and-effort datasets.
 #' @param resolution integer. Resolution to reach (in degrees). Currently, works with 1 and 5. 
 #'
 #' @return a list with 2 objects: 
@@ -55,6 +55,7 @@ spatial_curation_downgrade_resolution<-function(con,df_input,resolution){
                                                                     JOIN area.cwp_grid
                                                                     USING (geom)
                                                                     WHERE codesource_area IN ('",dataset_distinct_area,"')
+                                                                    AND tablesource_area='areas_tuna_rfmos_task2'
                                                                     and spatial_resolution=",resolution))
   
   # df_input that is already 5deg resolution, with the cwp code associated
