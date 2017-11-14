@@ -42,7 +42,7 @@
 #'   head(df_mapping)
 #'  
 #'   # Map code lists. Output is a list with two elements (see section "return"). Default conserves only target coding system in the output dataset. Set keep_src_code=TRUE to conserve both source and target coding systems in the output dataset.
-#'   df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear")
+#'   df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear",FALSE)
 #'   
 #'   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
 #'   df_mapped_df<-df_mapped$df
@@ -76,8 +76,10 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
   
   #group by the new dimension
   if (keep_src_code==FALSE){
-    df_input<-df_input %>% group_by(setdiff(column_names_df_input,"value")) %>% summarize(value=sum(value))
+    df_input<-df_input %>% group_by_(.dots = setdiff(column_names_df_input,"value")) %>% summarize(value=sum(value))
   }
+  
+  df_input<-data.frame(df_input)
   
   # statistics on the percentage of data that are not mapped
   stats_data_not_mapped <- df_input %>% 
