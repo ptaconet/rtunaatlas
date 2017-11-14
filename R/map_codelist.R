@@ -74,6 +74,11 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
   df_input <- df_input[c(column_names_df_input,paste0(dimension_to_map,"_mapping"))]
   }
   
+  #group by the new dimension
+  if (keep_src_code==FALSE){
+    df_input<-df_input %>% group_by(setdiff(column_names_df_input,"value")) %>% summarize(value=sum(value))
+  }
+  
   # statistics on the percentage of data that are not mapped
   stats_data_not_mapped <- df_input %>% 
     mutate(sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
