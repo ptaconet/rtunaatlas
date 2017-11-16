@@ -117,8 +117,8 @@ if (number_of_variables==1){
 } else {
   number_of_variables<-1
   name_of_variables<-"variable"
-  df_input$variable<-df_input[,Colnamevalue]
-  df_input$TOTAL <- df_input[,Colnamevalue]
+  df_input$variable<-df_input$value
+  df_input$TOTAL <- df_input$value
 }
 
   
