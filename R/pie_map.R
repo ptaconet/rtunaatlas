@@ -51,7 +51,7 @@ pie_map<-function(con,
                  dimension_group_by=NULL, # String. Column name to use to aggregate. NULL if no aggregation column
                  df_spatial_code_list_name, # Name of the spatial coding system used in the input data frame. The spatial coding system must be available in the database
                  area_filter_wkt=NULL, # WKT of the area filter
-                 number_of_classes #number of classes
+                 number_of_classes=1 #number of classes
                  ){
 
 if(nrow(df_input)==0){stop("There is no data in your dataset")}

@@ -11,7 +11,8 @@ fun_aggregate_keep_n_classes(df_plot, number_of_classes, ColnameVariable)
 A set of functions used to vizualise datasets
 }
 \seealso{
-Other visualize data: \code{\link{pie_map}}
+Other visualize data: \code{\link{pie_map}},
+  \code{\link{time_series_plot}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

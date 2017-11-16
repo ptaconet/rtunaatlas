@@ -68,13 +68,19 @@ fun_fill_wholes_in_catch<-function(df_input,TimeStart,TimeEnd,time_resolution,co
   #wholeTimeSeries <- seq(from = as.Date(TimeStart, "%Y-%m-%d"), to = as.Date(TimeEnd,"%Y-%m-%d"), by = time_resolution_time_series) 
   EmptyDates<-as.Date(setdiff(wholeTimeSeries,unique(df_input$time)),"1970-01-01")
   
+  if (!is.null(colNameVariable)){
   variable_classes<-unique(df_input[,colNameVariable])
+  } else { variable_classes=NULL }
   
   if (length(EmptyDates)>0) {
     
     for (j in 1:length(EmptyDates)){
+      if (!is.null(variable_classes)){
       for (i in 1:length(variable_classes)){
         df_input<-rbind(df_input,c(variable_classes[i],0,as.character(EmptyDates[j])))
+      }
+      } else {
+        df_input<-rbind(df_input,c(0,as.character(EmptyDates[j])))
       }
     }
   }

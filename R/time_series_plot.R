@@ -5,17 +5,16 @@
 #' @export
 #' 
 #' @param df_input data.frame to map
-#' @param dimension_group_by string. Name of the dimension that will be the classes in the pies or NULL if no aggregation dimension.
-#' @param df_spatial_code_list_name string. Name of the spatial coding system used in df_input
-#' @param area_filter_wkt sting. A spatial filter (WKT format) or NULL if no spatial filter.
-#' @param number_of_classes integer. Number of classes to visualize in the pies.
+#' @param time_resolution string time resolution to visualize on the plot. 
+#' @param dimension_group_by string. Name of the dimension that will be the classes in the chart or NULL if no aggregation dimension.
+#' @param number_of_classes integer. Number of classes to visualize on the chart.
 #' 
 #'
 #' @details
 #'
 #' All values in \code{df_input} must be expressed with the same unit (since the function aggregates the data).
 #' 
-#' dimension_group_by 
+#' time_resolution takes one of the following values: "month", "quarter", "semester", "year", "decade" 
 #'
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @family visualize data
@@ -34,8 +33,8 @@
 #' # Map the catches made on log schools in 2014 by species:
 #' time_series_plot(
 #'       df_input=ind_catch_tunaatlasird_level2,
+#'       time_resolution="month",
 #'       dimension_group_by="species",
-#'       df_spatial_code_list_name="areas_tuna_rfmos_task2",
 #'       number_of_classes=4 
 #'      )
 #'      
@@ -50,7 +49,7 @@
 time_series_plot<-function(df_input, # data frame with standard DSD. Can have a column 'proportion_source_area_intersection' with proportional (output of function rtunaatlas::spatial_curation_intersect_areas)
                          time_resolution, # month,quarter,semester,year,decade
                          dimension_group_by=NULL, # String. Column name to use to aggregate. NULL if no aggregation column
-                         number_of_classes #number of classes
+                         number_of_classes=2 #number of classes
 ){
   
   if(nrow(df_input)==0){stop("There is no data in your dataset")}
@@ -103,6 +102,10 @@ time_series_plot<-function(df_input, # data frame with standard DSD. Can have a 
   TimeEnd<-max(df_input$time)
   df_input<-fun_fill_wholes_in_catch(df_input,TimeStart,TimeEnd,time_resolution,dimension_group_by)
   
+  if (is.null(dimension_group_by)){
+    dimension_group_by<-"no_group"
+    df_input[,dimension_group_by]<-""
+  }
   df_input <-aggregate(df_input$value, by=list(df_input[,dimension_group_by],df_input$time),FUN=sum)
 colnames(df_input)<-c("variable_class","time","value")
 
@@ -154,10 +157,9 @@ if (compute_proportion==TRUE){
     df_input_min<-df_input_min %>%
       group_by_(ColnameTimeStart,ColnameTimeEnd) %>% 
       summarise(value = sum(value))
-    df_input_min[,dimension_group_by]<-"all"
     df_input_min<-fun_create_time_column(df_input_min,time_resolution)
     df_input_min<-data.frame(df_input_min)
-    df_input_min<-fun_fill_wholes_in_catch(df_input_min,TimeStart,TimeEnd,time_resolution,dimension_group_by)
+    df_input_min<-fun_fill_wholes_in_catch(df_input_min,TimeStart,TimeEnd,time_resolution,NULL)
     df_input_min<-aggregate(df_input_min$value, by=list(df_input_min$time), FUN=sum)
     df_input_min[is.na(df_input_min)]<-0
     colnames(df_input_min)<-c("time","value")
@@ -167,16 +169,12 @@ if (compute_proportion==TRUE){
   df_input_max<-df_input_max %>%
     group_by_(ColnameTimeStart,ColnameTimeEnd) %>% 
     summarise(value = sum(value))
-  df_input_max[,dimension_group_by]<-"all"
   df_input_max<-fun_create_time_column(df_input_max,time_resolution)
   df_input_max<-data.frame(df_input_max)
-  df_input_max<-fun_fill_wholes_in_catch(df_input_max,TimeStart,TimeEnd,time_resolution)
+  df_input_max<-fun_fill_wholes_in_catch(df_input_max,TimeStart,TimeEnd,time_resolution,NULL)
   df_input_max<-aggregate(df_input_max$value, by=list(df_input_max$time), FUN=sum)
   df_input_max[is.na(df_input_max)]<-0
   colnames(df_input_max)<-c("time","value")
-
-
-
 
 
 if (ncol(df_input)==1){
