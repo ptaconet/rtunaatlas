@@ -41,13 +41,7 @@
 #' @importFrom maps map.axes
 #' @importFrom maps map
 #' @importFrom plotrix floating.pie
-#' @importFrom sp SpatialPointsDataFrame
-#' @importFrom sp coordinates
-#' @importFrom sp CRS
 #' @importFrom rgeos readWKT
-
-
-
 
 pie_map<-function(con,
                  df_input, # data frame with standard DSD. 
