@@ -6,14 +6,17 @@
 #' 
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame to map
-#' @param dimension_group_by string. Name of the dimension that will be the classes in the pies 
+#' @param dimension_group_by string. Name of the dimension that will be the classes in the pies or NULL if no aggregation dimension.
 #' @param df_spatial_code_list_name string. Name of the spatial coding system used in df_input
+#' @param area_filter_wkt sting. A spatial filter (WKT format) or NULL if no spatial filter.
 #' @param number_of_classes integer. Number of classes to visualize in the pies.
 #' 
 #'
 #' @details
 #'
+#' All values in \code{df_input} must be expressed with the same unit (since the function aggregates the data).
 #' 
+#' dimension_group_by 
 #'
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @family visualize data
@@ -45,7 +48,7 @@
 
 pie_map<-function(con,
                  df_input, # data frame with standard DSD. 
-                 dimension_group_by, # String. Column name to use to aggregate. NULL if no aggregation column
+                 dimension_group_by=NULL, # String. Column name to use to aggregate. NULL if no aggregation column
                  df_spatial_code_list_name, # Name of the spatial coding system used in the input data frame. The spatial coding system must be available in the database
                  area_filter_wkt=NULL, # WKT of the area filter
                  number_of_classes #number of classes
@@ -92,7 +95,6 @@ if("unit" %in% colnames(df_input)){
   
 if (!is.null(dimension_group_by)){   # If there is a variable of aggregation (e.g. gear, species, etc.)
   
-if (number_of_classes>length(unique(df_input[,dimension_group_by]))) { number_of_classes=length(unique(df_input[,dimension_group_by])) }
 df_input<-fun_aggregate_keep_n_classes(df_input,number_of_classes,dimension_group_by)
 
 number_of_variables<-length(unique(df_input[,dimension_group_by]))
