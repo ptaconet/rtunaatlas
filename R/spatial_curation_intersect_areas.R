@@ -22,7 +22,7 @@
 #'  \item{"df": }{\code{df_input} with additional columns:
 #'  \itemize{
 #'  \item{"geographic_identifier_intersection_layer": }{ Code of the feature from the intersection layer (\code{intersection_spatial_code_list_name}) that intersects the geographical identifier of \code{df_input}}
-#'  \item{"proportion_intersection": }{ Proportion of the area of the \code{df_input} feature being intersected by the \it{intersection layer} feature. }
+#'  \item{"proportion_source_area_intersection": }{ Proportion of the area of the \code{df_input} feature being intersected by the \it{intersection layer} feature. }
 #'  }}
 #'  \item{"df_input_areas_intersect_intersection_layer": }{a data.frame summarizing the results of the spatial intersection. The columns are: }
 #'  \itemize{
@@ -30,7 +30,7 @@
 #'  \item{"geographic_identifier_intersection_layer": }{ Code of the feature from (\code{intersection_spatial_code_list_name}) that intersects the feature of \code{df_input}}
 #'  \item{"codelist_source_layer": }{ Name of the code list used for the column 'geographic_identifier' of \code{df_input}}
 #'  \item{"codelist_intersection_layer": }{ Name of the intersection layer code list (\code{intersection_spatial_code_list_name}) }
-#'  \item{"proportion_intersection": }{ Proportion of the area of the \it{input layer} feature being intersected by the \it{intersection layer} feature. }
+#'  \item{"proportion_source_area_intersection": }{ Proportion of the area of the \it{input layer} feature being intersected by the \it{intersection layer} feature. }
 #'  }
 #'
 #' }
