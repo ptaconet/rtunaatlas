@@ -37,7 +37,7 @@ head(ind_catch_tunaatlasird_level2)
 ind_catch_tunaatlasird_level2 <- ind_catch_tunaatlasird_level2 \%>\% filter (year==2014) \%>\% filter (schooltype=="LS")
 
 # Map the catches made on log schools in 2014 by species:
-PieMap(con,
+pie_map(con,
       df_input=ind_catch_tunaatlasird_level2,
       dimension_group_by="species",
       df_spatial_code_list_name="areas_tuna_rfmos_task2",
