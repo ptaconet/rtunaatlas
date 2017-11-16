@@ -4,7 +4,7 @@
 \alias{map_codelist}
 \title{Maps and replaces one dimension of a fact dataset using a dataset of mappings between code lists}
 \usage{
-map_codelist(df_input, df_mapping, dimension_to_map)
+map_codelist(df_input, df_mapping, dimension_to_map,keep_src_code)
 }
 \arguments{
 \item{df_input}{a data.frame of fact}
@@ -47,7 +47,7 @@ If \item{keep_src_code} is set to TRUE, the source coding system column will be 
   head(df_mapping)
  
   # Map code lists. Output is a list with two elements (see section "return"). Default conserves only target coding system in the output dataset. Set keep_src_code=TRUE to conserve both source and target coding systems in the output dataset.
-  df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear")
+  df_mapped<-map_codelist(iotc_nominal_catch,df_mapping,"gear",FALSE)
   
   # Get the dataframe mapped: dimension "gear" mapped to ISSCFG. The column "gear" has its values changed compared to the ones before the execution of the function. The codes have been mapped following the dimensions "gear" and "source_authority", since the dataset of mappings between code lists had both dimensions.
   df_mapped_df<-df_mapped$df

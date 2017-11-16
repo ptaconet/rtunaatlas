@@ -9,7 +9,7 @@ spatial_curation_downgrade_resolution(con, df_input, resolution)
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{df_input}{data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification.}
+\item{df_input}{data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification or IOTC irregular areas from catch-and-effort datasets.}
 
 \item{resolution}{integer. Resolution to reach (in degrees). Currently, works with 1 and 5.}
 }

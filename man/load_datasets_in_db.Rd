@@ -50,9 +50,6 @@ For df_metadata: a template of the metadata data.frame to use is available under
 
 
 }
-\seealso{
-Other load data: \code{\link{functions_load_dataset_in_db}}
-}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

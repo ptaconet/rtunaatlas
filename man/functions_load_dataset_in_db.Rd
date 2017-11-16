@@ -12,9 +12,6 @@ FUNMergeDimensions_CodeListLike(DBconnection, DBTableName, DB_PK_AttributeName,
 \description{
 A set of functions used to load a dataset in the database
 }
-\seealso{
-Other load data: \code{\link{load_datasets_in_db}}
-}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }

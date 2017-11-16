@@ -4,16 +4,18 @@
 \alias{convert_units}
 \title{Convert units of measure in a fact dataset}
 \usage{
-convert_units(df_input, df_conversion_factor, codelist_geoidentifiers_conversion_factors)
+convert_units(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input, codelist_geoidentifiers_conversion_factors)
 }
 \arguments{
+\item{con}{a wrapper of rpostgresql connection (connection to a database) where the geospatial codelists are stored.}
+
 \item{df_input}{a data.frame of fact}
 
 \item{df_conversion_factor}{a data.frame of factors of conversion between units}
 
-\item{codelist_geoidentifiers_conversion_factors}{NULL or string. The name of the coding system for the spatial dimension used in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.}
+\item{codelist_geoidentifiers_df_input}{string. The name of the coding system used for the spatial dimension in df_input (i.e. table name in Sardara database).}
 
-\item{con}{NULL or string. Not NULL if codelist_geoidentifiers_conversion_factors is not NULL, else NULL. Wrapper of rpostgresql connection (connection to a database) where the codelist_geoidentifiers_conversion_factors layer is stored.}
+\item{codelist_geoidentifiers_conversion_factors}{string. The name of the coding system used for the spatial dimension in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.}
 }
 \description{
 This function converts the units of measure in a fact dataset using a dataset of factors of conversions between units. The data frames of fact and of factors of conversions must be properly structured. For structures of data frames, see details and here: \url{http://}.
@@ -74,7 +76,7 @@ df_input<-df_input[!(df_input$unit=="NOMT"),]
 
 # Convert units from numbers to weight using the dataset of factors of conversion. 
 # The spatial coding system used in conversion_factor (column geographic_identifier) is not the same as the one used in df_input. Hence, we set in the parameter codelist_geoidentifiers_conversion_factors the name of the spatial coding system used in df_conversion factor ("areas_conversion_factors_numtoweigth_ird").
-df_converted<-convert_units(df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird",con = con)
+df_converted<-convert_units(con = con, df_input = df_input, df_conversion_factor = df_conversion_factor, codelist_geoidentifiers_df_input ="areas_tuna_rfmos_task2" ,codelist_geoidentifiers_conversion_factors = "areas_conversion_factors_numtoweigth_ird",)
 
 # Get the dataframe with units converted: data that were expressed in number are converted to metric tons. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their original unit (in this case, number).
 df_converted_df<-df_converted$df
