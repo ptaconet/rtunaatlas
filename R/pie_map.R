@@ -45,6 +45,7 @@
 #' @importFrom maps map
 #' @importFrom plotrix floating.pie
 #' @importFrom rgeos readWKT
+#' @import sp
 
 pie_map<-function(con,
                  df_input, # data frame with standard DSD. 
