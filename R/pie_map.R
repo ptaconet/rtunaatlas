@@ -173,7 +173,7 @@ ymax_plot<-fun_calc_coord_plot_bounding_box(bbox_data[2,2],0.1,y_coord_for_exten
 
 #area_data<-sqrt((xmin_plot-xmax_plot)^2+(ymin_plot-ymax_plot)^2)
 
-size_grid<-unique(substr(ind_catch_tunaatlasird_level1$geographic_identifier,1,1))
+size_grid<-unique(substr(df_input$geographic_identifier,1,1))
 
 if (length(size_grid)==1){
 if (size_grid=="6"){ # If the whole dataset is a 5° grid
