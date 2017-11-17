@@ -7,7 +7,7 @@
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame to map
 #' @param dimension_group_by string. Name of the dimension that will be the classes in the pies or NULL if no aggregation dimension.
-#' @param df_spatial_code_list_name string. Name of the spatial coding system used in df_input
+#' @param df_spatial_code_list_name string. Name of the spatial coding system used in df_input (column 'geographic_identifier')
 #' @param area_filter_wkt sting. A spatial filter (WKT format) or NULL if no spatial filter.
 #' @param number_of_classes integer. Number of classes to visualize in the pies.
 #' 
@@ -16,7 +16,7 @@
 #'
 #' All values in \code{df_input} must be expressed with the same unit (since the function aggregates the data).
 #' 
-#' dimension_group_by 
+#' Column of spatial codes must be named 'geographic_identifier'. 
 #'
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #' @family visualize data
@@ -71,13 +71,13 @@ if("unit" %in% colnames(df_input)){
   names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
   colname_geom<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))$f_geometry_column
 
-  areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(ST_Simplify(",colname_geom,",100)) FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
+  areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(",colname_geom,") FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
   
   areas_lat_lon_wkt<-dbGetQuery(con,areas_lat_lon_wkt)
   areas_wkt<-areas_lat_lon_wkt$st_astext
   areas_lat_lon_wkt$st_astext<-NULL
   
-  df_input<-merge(df_input,areas_lat_lon_wkt)
+  df_input<-merge(data.table(df_input),areas_lat_lon_wkt)
   
   ColnameLatCentroid="lat"
   ColnameLonCentroid="lng"
