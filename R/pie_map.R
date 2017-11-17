@@ -205,9 +205,11 @@ if (nrow(df_input.spdf)>1){ # do this when there is more that 1 row in the datas
 # if most of the catches are big, then we use the ^2 function to bring the big catches out
 if (median(df_input.spdf$TOTAL)<mean(df_input.spdf$TOTAL)){
   fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
+  fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches."
 }
 if (median(df_input.spdf$TOTAL)>=mean(df_input.spdf$TOTAL)){
   fun_to_apply<-function(val){ val<-(val)^2 ; return(val) }
+  fun_to_apply_text<-"The diamater of the pies is proportional to the square of the catches."
 }
 
 # function sqrt -> the differences between the small values of catches are more visible than the differences between the big values of catches
@@ -444,7 +446,7 @@ angles <- floating.pie(xmax_plot-radius_for_legend,ymax_plot-radius_for_legend, 
 legend("bottomright",name_of_variables, bg="white",box.col="black",cex=1,col=col_plot, bty="o", fill=col_plot,horiz=FALSE,ncol=2,title="Classes :")
 
 text(xmax_plot-radius_for_legend,ymax_plot-radius_for_legend,paste(catch_for_legend,"\n ",sep = ""), cex=0.9,col="black",font=2)
-
+mtext(paste0("Caution: for visualization reasons, the size of the circles are not linarly proportional to the value of catch. ",fun_to_apply_text),side=1,line=1,cex=0.7)
 }
 
 
