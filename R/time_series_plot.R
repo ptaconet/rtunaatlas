@@ -68,7 +68,7 @@ time_series_plot<-function(df_input, # data frame with standard DSD. Can have a 
   df_input_max<-unique(df_input_max,by=setdiff(colnames(df_input_max),c("geographic_identifier_intersection_layer", "proportion_source_area_intersection")))
   
   # Dataset Hypothesis proportional.
-  df_input<-df_input[which(df_input$proportion_source_area_intersection>0.001),]
+  df_input<-df_input[which(!is.na(df_input$geographic_identifier_intersection_layer)),]
   df_input$value<-df_input$value*df_input$proportion_source_area_intersection
   
   } else {
@@ -143,11 +143,6 @@ if (ncol(df_input)==1){
 }
 
 
-plotrix::stackpoly(x=x,y=y, stack=stack_value, xaxlab=xaxlab,ylim=c(0,max(apply(df_input,1,sum))+0.1*max(apply(df_input,1,sum))),col=grey.colors(ncol(df_input)),
-          xlab="Time", border="black",lwd=0.3,cex.main = 1.5)
-
-
-
 
 if (compute_proportion==TRUE){
 # if the intersection method is a proportion, we compute the min catches (i.e. exclude) and max catches (i.e. include) to have a index of confidence
@@ -176,7 +171,14 @@ if (compute_proportion==TRUE){
   df_input_max[is.na(df_input_max)]<-0
   colnames(df_input_max)<-c("time","value")
 
+  ymax=max(df_input_max$value)
+} else { ymax=max(apply(df_input,1,sum))+0.1*max(apply(df_input,1,sum)) }
 
+plotrix::stackpoly(x=x,y=y, stack=stack_value, xaxlab=xaxlab,ylim=c(0,ymax),col=grey.colors(ncol(df_input)),
+                   xlab="Time", border="black",lwd=0.3,cex.main = 1.5)
+
+
+if (compute_proportion==TRUE){
 if (ncol(df_input)==1){
   
   for (i in par("usr")[1]:(par("usr")[1]+nrow(df_input)-2)){
