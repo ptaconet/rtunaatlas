@@ -14,7 +14,7 @@ pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
 
 \item{dimension_group_by}{string. Name of the dimension that will be the classes in the pies or NULL if no aggregation dimension.}
 
-\item{df_spatial_code_list_name}{string. Name of the spatial coding system used in df_input}
+\item{df_spatial_code_list_name}{string. Name of the spatial coding system used in df_input (column 'geographic_identifier')}
 
 \item{area_filter_wkt}{sting. A spatial filter (WKT format) or NULL if no spatial filter.}
 
@@ -26,7 +26,7 @@ This function ouputs a pie map from the dataset provided as input
 \details{
 All values in \code{df_input} must be expressed with the same unit (since the function aggregates the data).
 
-dimension_group_by
+Column of spatial codes must be named 'geographic_identifier'.
 }
 \examples{
 
