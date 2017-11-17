@@ -71,7 +71,7 @@ if("unit" %in% colnames(df_input)){
   names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
   colname_geom<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))$f_geometry_column
 
-  areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(",colname_geom,") FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
+  areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(ST_Simplify(",colname_geom,",100)) FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
   
   areas_lat_lon_wkt<-dbGetQuery(con,areas_lat_lon_wkt)
   areas_wkt<-areas_lat_lon_wkt$st_astext
