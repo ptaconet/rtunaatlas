@@ -188,8 +188,10 @@ if (size_grid=="6"){ # If the whole dataset is a 5° grid
     min_radius<-area_data^(1/1000)/4/3
   }
 } else {  #hereunder is for the grids for which the sizes are not known
-  max_radius<-area_data^(1/5)/2
-  min_radius<-area_data^(1/1000)/4
+  #max_radius<-area_data^(1/5)/2
+  #min_radius<-area_data^(1/1000)/4
+  max_radius<-area_data^(1/4)
+  min_radius<-area_data^(1/1000)/3
   }
 
 max_catch<-max(df_input.spdf$TOTAL)
