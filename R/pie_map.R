@@ -205,7 +205,7 @@ if (nrow(df_input.spdf)>1){ # do this when there is more that 1 row in the datas
 # if most of the catches are small, then we use the sqrt function to bring the small catches out
 # if most of the catches are big, then we use the ^2 function to bring the big catches out
   
-  if (!is.null(function_pie_size)){
+  if (is.null(function_pie_size)){
 if (median(df_input.spdf$TOTAL)<mean(df_input.spdf$TOTAL)){
   fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
   fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches.\n With this scale, the differences between the small values of catches are more visible than the differences between the big values of catches"
