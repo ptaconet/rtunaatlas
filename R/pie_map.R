@@ -52,7 +52,8 @@ pie_map<-function(con,
                  dimension_group_by=NULL, # String. Column name to use to aggregate. NULL if no aggregation column
                  df_spatial_code_list_name, # Name of the spatial coding system used in the input data frame. The spatial coding system must be available in the database
                  area_filter_wkt=NULL, # WKT of the area filter
-                 number_of_classes=1 #number of classes
+                 number_of_classes=1, #number of classes
+                 function_pie_size=NULL # square_root, square, proportional
                  ){
 
 if(nrow(df_input)==0){stop("There is no data in your dataset")}
@@ -203,6 +204,8 @@ if (nrow(df_input.spdf)>1){ # do this when there is more that 1 row in the datas
 #we can choose one of the functions in function of the distribution of the catches:
 # if most of the catches are small, then we use the sqrt function to bring the small catches out
 # if most of the catches are big, then we use the ^2 function to bring the big catches out
+  
+  if (!is.null(function_pie_size)){
 if (median(df_input.spdf$TOTAL)<mean(df_input.spdf$TOTAL)){
   fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
   fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches.\n With this scale, the differences between the small values of catches are more visible than the differences between the big values of catches"
@@ -210,6 +213,18 @@ if (median(df_input.spdf$TOTAL)<mean(df_input.spdf$TOTAL)){
 if (median(df_input.spdf$TOTAL)>=mean(df_input.spdf$TOTAL)){
   fun_to_apply<-function(val){ val<-(val)^2 ; return(val) }
   fun_to_apply_text<-"The diamater of the pies is proportional to the square of the catches.\n With this scale, the differences between the big values of catches are more visible than the differences between the small values of catches"
+}} else {
+  if (function_pie_size=="square_root"){
+    fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
+    fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches.\n With this scale, the differences between the small values of catches are more visible than the differences between the big values of catches"
+  }
+  if (function_pie_size=="square"){
+    fun_to_apply<-function(val){ val<-(val)^2 ; return(val) }
+    fun_to_apply_text<-"The diamater of the pies is proportional to the square of the catches.\n With this scale, the differences between the big values of catches are more visible than the differences between the small values of catches"
+    }
+  if (function_pie_size=="proportional"){
+    fun_to_apply<-function(val){ val<-(val) ; return(val) }
+  }
 }
 
 # function sqrt -> the differences between the small values of catches are more visible than the differences between the big values of catches
