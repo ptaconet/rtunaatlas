@@ -5,7 +5,7 @@
 \title{Create a pie map}
 \usage{
 pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
-  area_filter_wkt = NULL, number_of_classes = 1)
+  area_filter_wkt = NULL, number_of_classes = 1, function_pie_size = NULL)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}

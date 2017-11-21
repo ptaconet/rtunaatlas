@@ -41,8 +41,7 @@
 #'      )
 #'      
 #' dbDisconnect(con)
-#' @importFrom maps map.axes
-#' @importFrom maps map
+#' @import maps
 #' @importFrom plotrix floating.pie
 #' @importFrom rgeos readWKT
 #' @import sp
