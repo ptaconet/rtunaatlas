@@ -101,6 +101,8 @@ df_input<-fun_aggregate_keep_n_classes(df_input,number_of_classes,dimension_grou
 number_of_variables<-length(unique(df_input[,dimension_group_by]))
 name_of_variables<-unique(df_input[,dimension_group_by])
 
+ df_input[,dimension_group_by]<-gsub(".",",",df_input[,dimension_group_by]) 
+  
 df_input <- reshape(df_input,timevar=dimension_group_by,direction="wide",idvar=c(ColnameLonCentroid,ColnameLatCentroid))
 
 colnames(df_input) <-sub('.*\\.', '', colnames(df_input))
