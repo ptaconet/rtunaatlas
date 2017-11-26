@@ -102,7 +102,7 @@ number_of_variables<-length(unique(df_input[,dimension_group_by]))
 name_of_variables<-unique(df_input[,dimension_group_by])
 
 df_input[,dimension_group_by]<-gsub(".","_",df_input[,dimension_group_by]) 
-dimension_group_by<-gsub((".","_",dimension_group_by) 
+dimension_group_by<-gsub(".","_",dimension_group_by) 
   
 df_input <- reshape(df_input,timevar=dimension_group_by,direction="wide",idvar=c(ColnameLonCentroid,ColnameLatCentroid))
 
