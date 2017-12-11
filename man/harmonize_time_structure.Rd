@@ -70,6 +70,12 @@ The functions harmo_time_1, harmo_time_2, harmo_time_3, harmo_time_4 work as fol
 
 2) Then they convert the latter structure to the structure with the time_start and time_end columns (this step is done using the function \code{format_time_db_format})
 }
+\seealso{
+Other harmonize data structure: \code{\link{iattc_functions}},
+  \code{\link{iccat_functions}},
+  \code{\link{iotc_functions}},
+  \code{\link{wcpfc_functions}}
+}
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
 }
