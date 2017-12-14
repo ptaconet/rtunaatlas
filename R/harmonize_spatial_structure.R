@@ -170,7 +170,7 @@ harmo_spatial_3<-function(df_input, colname_latitude,colname_longitude,SquareSiz
   
   df_input$SquareSize<-CodeSquareSize
   
-  df_input<-Harmo_CWPgrid_1(df_input,colname_longitude,colname_latitude,"quadrant","SquareSize")
+  df_input<-harmo_spatial_1(df_input,colname_longitude,colname_latitude,"quadrant","SquareSize")
   
   return(df_input)
 }
