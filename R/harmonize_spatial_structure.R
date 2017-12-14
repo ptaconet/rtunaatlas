@@ -216,7 +216,7 @@ harmo_spatial_4<-function(df_input, colname_latitude,colname_longitude,colname_s
   df_input[,colname_latitude]<-abs(df_input[,colname_latitude])
   
   
-  df_input<-Harmo_CWPgrid_1(df_input,colname_longitude,colname_latitude,"quadrant",ColCodeSquareSize)
+  df_input<-harmo_spatial_1(df_input,colname_longitude,colname_latitude,"quadrant",ColCodeSquareSize)
   
   return(df_input)
   
@@ -243,7 +243,7 @@ harmo_spatial_5<-function(df_input, colname_latitude,colname_longitude,SquareSiz
   df_input[,colname_longitude]<-abs(df_input[,colname_longitude])
   df_input[,colname_latitude]<-abs(df_input[,colname_latitude])
   
-  df_input<-Harmo_CWPgrid_1(df_input,colname_longitude,colname_latitude,"quadrant","SquareSize")
+  df_input<-harmo_spatial_1(df_input,colname_longitude,colname_latitude,"quadrant","SquareSize")
   
   return(df_input)
 }
