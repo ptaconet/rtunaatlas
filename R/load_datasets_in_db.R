@@ -90,7 +90,7 @@ load_raw_dataset_in_db<- function(
   #Keep only dimensions that are code list (i.e. dimensions time and sizeclass will be dealt separately,as non-code list dimension)
   db_df_inputlike_dimensions_parameters<-db_dimensions_parameters[ which(db_dimensions_parameters$df_input_table==TRUE), ]
   
-  area_df_inputtouse<-df_codelists_input[which(df_codelists_input$dimension=="area"),]$sardara_code_list_table_name
+  area_df_inputtouse<-df_codelists_input[which(df_codelists_input$dimension=="area"),]$code_list_table_name
   # if the area code list to use is wkt, remove from the dimensions that are code lists. It will be treated later
   if (area_df_inputtouse == "area_wkt"){
     db_df_inputlike_dimensions_parameters<-db_df_inputlike_dimensions_parameters[-which(db_df_inputlike_dimensions_parameters$dimension=="area"),]
@@ -121,7 +121,7 @@ load_raw_dataset_in_db<- function(
     
     #Retrieve the name of the code list to use
     index<-which(df_codelists_input$dimension==db_df_inputlike_dimensions_parameters$dimension[i])
-    db_df_inputstouse<-df_codelists_input$sardara_code_list_table_name[index]
+    db_df_inputstouse<-df_codelists_input$code_list_table_name[index]
     
     # Merge the dimension 
     df_to_load<-FUNMergeDimensions_df_inputLike(
@@ -283,8 +283,13 @@ load_raw_dataset_in_db<- function(
     
     
     # Load metadata
+    rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
+    cat("Metadata loaded\n")
     
-    PK_metadata<-FUNUploadMetadataInDB(con,df_metadata,"raw_dataset",paste("fact_tables.",variable_name,sep=""))
+    # Retrieve the PK of the metadata for the line just inserted
+    sql<- "SELECT max(id_metadata) FROM metadata.metadata"
+    PK_metadata <- dbGetQuery(con, sql)
+    PK_metadata<-as.integer(PK_metadata$max[1])
     
     df_to_load$id_metadata<-PK_metadata
     
