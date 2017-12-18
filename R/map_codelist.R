@@ -25,8 +25,8 @@
 #' }
 #' 
 #' Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
-#' If \item{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
-#' If \item{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
+#' If \code{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
+#' If \code{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 #' 
 #' @family process data
 #' 
