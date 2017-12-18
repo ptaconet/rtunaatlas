@@ -3,7 +3,6 @@
 export(FUNMergeDimensions_CodeListLike)
 export(FUNMergeDimensions_NonCodeListLike)
 export(FUNUploadDatasetToTableInDB)
-export(FUNUploadMetadataInDB)
 export(FUN_cas_IATTC)
 export(FUN_cas_ICCAT)
 export(FUN_cas_IOTC)
