@@ -6,7 +6,7 @@
 #'
 #' @usage 
 #' load_raw_dataset_in_db(con,df_to_load,df_metadata,df_codelists_input,variable_name)
-#' load_codelist_in_db(con,df_to_load,df_metadata,dimension_name)
+#' load_codelist_in_db(con,df_to_load,df_metadata)
 #' load_mapping_in_db(con,df_to_load,df_metadata)
 #' 
 #'     
@@ -15,7 +15,6 @@
 #' @param df_metadata data.frame of metadata of to the df_to_load. See section "Details" for the structure of the dataset
 #' @param df_codelists_input data.frame of the code lists used in case of loading of a raw_dataset. See section "Details" for the structure of the dataset
 #' @param variable_name string. Name of the variable that is loaded (e.g. "catch", "effort", "catch_at_size")
-#' @param dimension_name string. Name of the dimension for a code list
 #' 
 #' 
 #' @details 
@@ -24,7 +23,7 @@
 #' 
 #' For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
 #' 
-#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'labed'. Any additional column is accepted.
+#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted.
 #' 
 #' For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
 #' \itemize{
@@ -330,7 +329,7 @@ load_raw_dataset_in_db<- function(
 
 
 ## Code to add a new code list in the Sardara DB
-load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
+load_codelist_in_db<-function(con,df_to_load,df_metadata){
   
   ## change all columns to "text" format. in the db, the columns will all be set to "all"
   df_to_load<-df_to_load %>% mutate_all(as.character)
@@ -338,11 +337,11 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
   # Input code list must be in CSV format, with the first line giving the column names. separators should be commas
   
-  df_inputOriginInstitution<-df_metadata$dataset_origin_institution
-  codelist_dataset_name<-df_metadata$dataset_name[1]
+  codelist_dataset_name<-df_metadata$identifier
+  dimension_name<-sub('\\..*', '', df_metadata$database_table_name)
   
-  table_name<-paste0(dimension_name,".",codelist_dataset_name)
-  df_metadata$table_name<-table_name
+  #table_name<-paste0(dimension_name,".",codelist_dataset_name)
+  #df_metadata$table_name<-table_name
   
 
 
@@ -393,22 +392,17 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   
   
   
-  ### Add metadata in origin_institution and metadata tables
+  ### Add metadata in metadata tables
   
-  # Retrieve code of origin institution of the code list. if df_inputOriginInstitution does not exist in the origin_institution table, add record in table origin_institution. Add a warning message saying that the user should fill the attributes
-  sql<-paste("SELECT code_origin_institution FROM metadata.origin_institution WHERE code_origin_institution='",df_inputOriginInstitution,"'",sep='')
-  df_input_CodeOriginInstitution_DB<-dbGetQuery(con, sql)
-  
-  if (nrow(df_input_CodeOriginInstitution_DB)==0){
-    sql<-paste("INSERT INTO metadata.origin_institution(code_origin_institution) VALUES ('",df_inputOriginInstitution,"')",sep='')
-    dbSendQuery(con, sql)
-    warning("The origin institution of the code list you inserted did not exist in the database. Please fill attributes in origin_institution table.")
-  }
-  
-
   # Load metadata
-  table_name=paste(dimension_name,".",codelist_dataset_name,sep="")
-  PK_metadata<-FUNUploadMetadataInDB(con,df_metadata,"codelist",table_name)
+  rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
+  cat("Metadata loaded\n")
+  
+  # Retrieve the PK of the metadata for the line just inserted
+  sql<- "SELECT max(id_metadata) FROM metadata.metadata"
+  PK_metadata <- dbGetQuery(con, sql)
+  PK_metadata<-as.integer(PK_metadata$max[1])
+
   
   ### Add code list table in the DB, with constraints (data types and primary key) and triggers
   #First create table ...
@@ -429,20 +423,20 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   cat("code list created in db")
   
   ## Add codes and labels in the table metadata.df_inputs_codes_labels_column_names
-  df_inputPKattributeName="code"
-  if ( !(any(names(df_to_load)=="label")) ) {
-    df_inputLabelattributeName="code" } else {df_inputLabelattributeName="label"}
+  #df_inputPKattributeName="code"
+  #if ( !(any(names(df_to_load)=="label")) ) {
+  #  df_inputLabelattributeName="code" } else {df_inputLabelattributeName="label"}
   
-  df_inputLabelattributeName="label"
-  sql<-paste0("INSERT INTO metadata.codelists_codes_labels_column_names(table_name,code_column,english_label_column) VALUES ('",table_name,"','",df_inputPKattributeName,"','",df_inputLabelattributeName,"')")
-  dbSendQuery(con, sql)
+  #df_inputLabelattributeName="label"
+  #sql<-paste0("INSERT INTO metadata.codelists_codes_labels_column_names(database_table_name,code_column,label_column) VALUES ('",table_name,"','",df_inputPKattributeName,"','",df_inputLabelattributeName,"')")
+  #dbSendQuery(con, sql)
   
   # Create triggers to automatically fill and update the link dimension table
   
-  sql_trigg_fill_link_dimension_table<-paste("CREATE OR REPLACE FUNCTION func_add_new_record_in_link_table_",codelist_dataset_name,"() RETURNS trigger AS $BODY$ BEGIN INSERT INTO ",dimension_name,".",dimension_name," ( codesource_",dimension_name,",tablesource_",dimension_name,") VALUES (NEW.code,'",codelist_dataset_name,"') ; RETURN NEW; END; $BODY$ LANGUAGE 'plpgsql' VOLATILE;",sep="")
+  sql_trigg_fill_link_dimension_table<-paste("CREATE OR REPLACE FUNCTION ",dimension_name,".func_add_new_record_in_link_table_",codelist_dataset_name,"() RETURNS trigger AS $BODY$ BEGIN INSERT INTO ",dimension_name,".",dimension_name," ( codesource_",dimension_name,",tablesource_",dimension_name,") VALUES (NEW.code,'",codelist_dataset_name,"') ; RETURN NEW; END; $BODY$ LANGUAGE 'plpgsql' VOLATILE;",sep="")
   dbSendQuery(con, sql_trigg_fill_link_dimension_table)
   
-  sql_trigg_fill_link_dimension_table<-paste("CREATE TRIGGER trig_add_new_record_in_link_table_",codelist_dataset_name," BEFORE INSERT ON ",table_name," FOR EACH ROW EXECUTE PROCEDURE func_add_new_record_in_link_table_",codelist_dataset_name,"();",sep="")
+  sql_trigg_fill_link_dimension_table<-paste("CREATE TRIGGER trig_add_new_record_in_link_table_",codelist_dataset_name," BEFORE INSERT ON ",table_name," FOR EACH ROW EXECUTE PROCEDURE ",dimension_name,".func_add_new_record_in_link_table_",codelist_dataset_name,"();",sep="")
   dbSendQuery(con, sql_trigg_fill_link_dimension_table)
   
   
@@ -457,11 +451,9 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   # Set rigths to the table
   
   sql<-paste("ALTER TABLE ",dimension_name,".",dimension_name,"
-  OWNER TO postgres;
-  GRANT ALL ON TABLE ",table_name," TO postgres;
-  GRANT SELECT ON TABLE ",table_name," TO invsardara;
-  GRANT ALL ON TABLE ",table_name," TO dbaSardara;
-  GRANT ALL ON TABLE ",table_name," TO \"dbaSardara\"",sep="")
+  OWNER TO tunaatlas_u;
+  GRANT ALL ON TABLE ",table_name," TO tunaatlas_u;
+  GRANT SELECT ON TABLE ",table_name," TO invsardara;",sep="")
   
   dbSendQuery(con, sql)
   
@@ -480,7 +472,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
   colname_view_id<-paste0("id_",dimension_name)
   colname_view_codesource<-paste0("codesource_",dimension_name)
   colname_view_tablesource<-paste0("tablesource_",dimension_name)
-  colname_view_label<-"source_english_label"
+  colname_view_label<-"source_label"
   
   query_create_view_label<-dbGetQuery(con,paste0("select pg_get_viewdef('",dimension_name,".",name_view_labels,"', true)"))
   
@@ -509,7 +501,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata,dimension_name){
     query_null_columns<-paste(query_null_columns,query_null_columns_this_column,sep=",")
   }
   
-  sql_query_for_view_label_new_codelist<-paste0(" UNION SELECT ",colname_view_id,",",colname_view_codesource,",",colname_view_tablesource,",label as source_english_label")
+  sql_query_for_view_label_new_codelist<-paste0(" UNION SELECT ",colname_view_id,",",colname_view_codesource,",",colname_view_tablesource,",label as source_label")
   sql_query_for_view_label_new_codelist<-paste0(sql_query_for_view_label_new_codelist,query_null_columns," FROM ",table_name," tab JOIN ",dimension_name,".",dimension_name," ON ",dimension_name,".codesource_",dimension_name,"=tab.code::text WHERE ",dimension_name,".tablesource_",dimension_name,"='",table_name_without_schema,"'::text ORDER BY 3,2;")
   
   query_create_view_label<-gsub("ORDER BY 3, 2","",query_create_view_label)
