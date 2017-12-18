@@ -13,6 +13,16 @@ raise_get_rf(df_input_incomplete, df_input_total, x_raising_dimensions)
 
 \item{x_raising_dimensions}{vector of dimensions (i.e. dimensions that compose the stratum) to use for the computation of the raising factors. The dimensions must be available in both input data.frames.}
 }
+\value{
+a data.frame of raising factors that will provide, for each stratum defined by the elements of \code{x_raising_dimensions}, the raising factor; i.e. the proportion of data of the "total" dataset that are available in the "incomplete" dataset.
+The output dataset is composed of:
+\itemize{
+\item{the columns of \code{x_raising_dimensions}}{}
+\item{a column named "sum_value_df_input_incomplete": }{Provides, for the stratum, the sum of the value in the "incomplete" dataset}
+\item{a column named "sum_value_df_input_total": }{Provides, for the stratum, the sum of the value in the "total" dataset}
+\item{a column named "rf": }{Provides, for the stratum, the raising factor (sum_value_df_input_total/sum_value_df_input), i.e. the proportion of data of the "total" dataset that are available in the "incomplete" dataset.}
+}
+}
 \description{
 Provided two datasets, one for which the information information is usually stratified is space and/or time but the associated measure represents only part of the reality ("incomplete" dataset), and one for wich the the information is usually less stratified (i.e. more aggregated) but the measure represents the reality ("total" dataset): this function outputs a data.frame of raising factors that represents, for a given stratum, the proportion of data that of the "total" dataset that are available in the "incomplete" dataset  
 See section "Details" for a use case.

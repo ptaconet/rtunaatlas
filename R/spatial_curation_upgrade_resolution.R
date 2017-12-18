@@ -11,7 +11,7 @@
 #' @return a list with 2 objects: 
 #'  \itemize{
 #'  \item{"df": }{\code{df_input} where data have been aggregated}
-#'  \item{"stats": }{A data.frame with some information regarding the process
+#'  \item{"stats": }{A data.frame with some information regarding the process}
 #'  }
 #'
 #' @author Paul Taconet, IRD \email{paul.taconet@ird.fr}

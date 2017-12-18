@@ -21,28 +21,28 @@ intersection_spatial_code_list_name)
 }
 \value{
 a list with 2 objects: 
-\itemize{
- \item{"df": }{\code{df_input} with additional columns:
- \itemize{
- \item{"geographic_identifier_intersection_layer": }{ Code of the feature from the intersection layer (\code{intersection_spatial_code_list_name}) that intersects the geographical identifier of \code{df_input}}
- \item{"proportion_source_area_intersection": }{ Proportion of the area of the \code{df_input} feature being intersected by the \it{intersection layer} feature. }
+\codeemize{
+ \codeem{"df": }{\code{df_input} with additional columns:
+ \codeemize{
+ \codeem{"geographic_identifier_intersection_layer": }{ Code of the feature from the intersection layer (\code{intersection_spatial_code_list_name}) that intersects the geographical identifier of \code{df_input}}
+ \codeem{"proportion_source_area_intersection": }{ Proportion of the area of the \code{df_input} feature being intersected by the \code{intersection layer} feature. }
  }}
- \item{"df_input_areas_intersect_intersection_layer": }{a data.frame summarizing the results of the spatial intersection. The columns are: }
- \itemize{
- \item{"geographic_identifier_source_layer": }{ Code of the feature (geographic identifier) from \code{df_input}}
- \item{"geographic_identifier_intersection_layer": }{ Code of the feature from (\code{intersection_spatial_code_list_name}) that intersects the feature of \code{df_input}}
- \item{"codelist_source_layer": }{ Name of the code list used for the column 'geographic_identifier' of \code{df_input}}
- \item{"codelist_intersection_layer": }{ Name of the intersection layer code list (\code{intersection_spatial_code_list_name}) }
- \item{"proportion_source_area_intersection": }{ Proportion of the area of the \it{input layer} feature being intersected by the \it{intersection layer} feature. }
+ \codeem{"df_input_areas_intersect_intersection_layer": }{a data.frame summarizing the results of the spatial intersection. The columns are: }
+ \codeemize{
+ \codeem{"geographic_identifier_source_layer": }{ Code of the feature (geographic identifier) from \code{df_input}}
+ \codeem{"geographic_identifier_intersection_layer": }{ Code of the feature from (\code{intersection_spatial_code_list_name}) that intersects the feature of \code{df_input}}
+ \codeem{"codelist_source_layer": }{ Name of the code list used for the column 'geographic_identifier' of \code{df_input}}
+ \codeem{"codelist_intersection_layer": }{ Name of the intersection layer code list (\code{intersection_spatial_code_list_name}) }
+ \codeem{"proportion_source_area_intersection": }{ Proportion of the area of the \code{input layer} feature being intersected by the \code{intersection layer} feature. }
  }
 
 }
 }
 \description{
-This function performs the spatial intersection between a georeferenced dataset (\it{input layer}) and a georeferenced code list stored in Sardara database (\it{intersection layer}). It provides the features of the \it{intersection layer} that intersect the features of the \it{input layer}, along with the proportion of the area of the \it{input layer} feature being intersected by the \it{intersection layer} feature.
+This function performs the spatial intersection between a georeferenced dataset (\code{input layer}) and a georeferenced code list stored in Sardara database (\code{intersection layer}). It provides the features of the \code{intersection layer} that intersect the features of the \code{input layer}, along with the proportion of the area of the \code{input layer} feature being intersected by the \code{intersection layer} feature.
 }
 \details{
-User has to be aware that the intersection might return several rows for 1 given row of \code{df_input}. This happens when one spatial feature of the \it{input layer} intersects several features of the \it{intersection layer}. Hence, the values of the ouput dataset might not be summed directly.
+User has to be aware that the intersection might return several rows for 1 given row of \code{df_input}. This happens when one spatial feature of the \code{input layer} intersects several features of the \code{intersection layer}. Hence, the values of the ouput dataset might not be summed directly.
 Example:
 
 1 row of \code{df_input}:

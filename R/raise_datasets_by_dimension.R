@@ -15,7 +15,7 @@
 #' 
 #' @return a list with one object:
 #' \itemize{
-#'  \item{"df": }{a data frame, where df1 and df2 have been crossed to get a dataset with both dimensions filled).
+#'  \item{"df": }{a data frame, where df1 and df2 have been crossed to get a dataset with both dimensions filled).}
 #' }
 #' 
 #' @details 

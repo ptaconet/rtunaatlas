@@ -13,7 +13,7 @@
 #' @return a data.frame of raising factors that will provide, for each stratum defined by the elements of \code{x_raising_dimensions}, the raising factor; i.e. the proportion of data of the "total" dataset that are available in the "incomplete" dataset.
 #' The output dataset is composed of:
 #'\itemize{
-#'\item{the columns of \code{x_raising_dimensions}{}
+#'\item{the columns of \code{x_raising_dimensions}}{}
 #'\item{a column named "sum_value_df_input_incomplete": }{Provides, for the stratum, the sum of the value in the "incomplete" dataset}
 #'\item{a column named "sum_value_df_input_total": }{Provides, for the stratum, the sum of the value in the "total" dataset}
 #'\item{a column named "rf": }{Provides, for the stratum, the raising factor (sum_value_df_input_total/sum_value_df_input), i.e. the proportion of data of the "total" dataset that are available in the "incomplete" dataset.}

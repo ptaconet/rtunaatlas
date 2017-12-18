@@ -11,7 +11,7 @@
 #' @param variable string. The name of a variable (e.g. "catch", or "effort", or "catch_at_size")
 #' 
 #' @details 
-#' This function should not be confused with the function \link[rtunaatlas]{list_dataset_available_dimensions}. The difference between both functions is: 
+#' This function should not be confused with the function \code{\link{list_dataset_available_dimensions}}. The difference between both functions is: 
 #' \itemize{
 #'  \item{list_variable_available_dimensions: }{Returns all the dimensions possibly available for a given variable.}
 #'  \item{list_dataset_available_dimensions: }{Returns the dimensions specifically available for a given dataset.}

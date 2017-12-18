@@ -15,6 +15,12 @@ raise_datasets_by_dimension(df1, df2, dimension_missing_df1, dimension_missing_d
 
 \item{dimension_missing_df2}{string. The name of the dimension missing in df2.}
 }
+\value{
+a list with one object:
+\itemize{
+ \item{"df": }{a data frame, where df1 and df2 have been crossed to get a dataset with both dimensions filled).}
+}
+}
 \description{
 This function creates a dataset with most complete information using two datasets with partial information , by crossing the informations available in both datasets.
  It takes as input two datasets, each with partial information, but the full information is available if we consider both datasets. Each dataset used as input misses one dimension, the missing dimension in the dataset n°1 being available in the dataset n°2 and reversely. The functions uses both datasets to create a new dataset with the full information (i.e. with values filled for both dimensions on the dataset).

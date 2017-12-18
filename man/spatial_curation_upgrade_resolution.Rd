@@ -13,6 +13,13 @@ spatial_curation_upgrade_resolution(con, df_input, resolution)
 
 \item{resolution}{integer. Resolution to reach (in degrees). Currently, works only with 5.}
 }
+\value{
+a list with 2 objects: 
+ \itemize{
+ \item{"df": }{\code{df_input} where data have been aggregated}
+ \item{"stats": }{A data.frame with some information regarding the process}
+ }
+}
 \description{
 This function aggregates the data of a dataset on a grid with resolution equal to \code{resolution}. Data with resolutions inferior to \code{resolution} will be aggregated on the corresponding \code{resolution} quadrant. Data with resolutions superior to \code{resolution} will not be disaggregated. To disaggregate data with resolutions superior to \code{resolution}, use the function \code{spatial_curation_downgrade_resolution}
 }
