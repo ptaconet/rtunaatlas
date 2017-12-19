@@ -8,7 +8,7 @@
 \title{Load a dataset in Sardara database}
 \usage{
 load_raw_dataset_in_db(con,df_to_load,df_metadata,df_codelists_input,variable_name)
-load_codelist_in_db(con,df_to_load,df_metadata,dimension_name)
+load_codelist_in_db(con,df_to_load,df_metadata)
 load_mapping_in_db(con,df_to_load,df_metadata)
 }
 \arguments{
@@ -21,8 +21,6 @@ load_mapping_in_db(con,df_to_load,df_metadata)
 \item{df_codelists_input}{data.frame of the code lists used in case of loading of a raw_dataset. See section "Details" for the structure of the dataset}
 
 \item{variable_name}{string. Name of the variable that is loaded (e.g. "catch", "effort", "catch_at_size")}
-
-\item{dimension_name}{string. Name of the dimension for a code list}
 }
 \description{
 These functions enable to load a dataset in Sardara database. The datasets can be of type "raw_dataset", "df_input" or "mapping"
@@ -32,7 +30,7 @@ The data.frames must comply with defined structures.
 
 For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
 
-For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'labed'. Any additional column is accepted.
+For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted.
 
 For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
 \itemize{
