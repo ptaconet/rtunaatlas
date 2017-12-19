@@ -23,7 +23,7 @@
 #' 
 #' For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
 #' 
-#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted.
+#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted. For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format
 #' 
 #' For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
 #' \itemize{
@@ -447,7 +447,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   
   # Set rigths to the table
   
-  sql<-paste("ALTER TABLE ",dimension_name,".",dimension_name,"
+  sql<-paste("ALTER TABLE ",table_name,"
   OWNER TO tunaatlas_u;
   GRANT ALL ON TABLE ",table_name," TO tunaatlas_u;
   GRANT SELECT ON TABLE ",table_name," TO invsardara;",sep="")
@@ -458,6 +458,21 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   if(nrow(test_if_code_list_is_inserted)>0){
     cat(paste0("\nThe code list was successfully loaded. It is in the table ",table_name," of the database"))
   }
+  
+  
+  # Add a column geometry if geospatial code list
+  if (dimension_name=="area"){
+# Add the column
+    sql<-paste("ALTER TABLE ",table_name," ADD COLUMN geom GEOMETRY(MultiPolygon,4326);",sep="")
+    dbSendQuery(con, sql)
+# Calculate the column    
+   sql<-paste("UPDATE ",table_name," SET geom=ST_GeomFromText(geom_wkt,4326);",sep="")
+    dbSendQuery(con, sql)
+# Remove the column geom_wkt
+    sql<-paste("ALTER TABLE ",table_name," DROP COLUMN geom_wkt;",sep="")
+    dbSendQuery(con, sql)
+  }
+    
   
   ### Updates the view that gives the labels, with the new code list just inserted ### Works for all except area. area will be dealt in a next version.
   if (dimension_name!="area"){
@@ -521,8 +536,8 @@ load_mapping_in_db<-function(con,df_to_load,df_metadata){
   # Check errors: TO DO  (are tables existing? etc.)
   
 # get table_name corresponding to dataset_name of src_codingsystem and trg_codingsystem
-src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_name='",unique(df_to_load$src_codingsystem),"'"))$table_name
-trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT table_name FROM metadata.metadata where dataset_name='",unique(df_to_load$trg_codingsystem),"'"))$table_name
+src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$src_codingsystem),"'"))$table_name
+trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$trg_codingsystem),"'"))$table_name
 
 DBDimensionName=gsub("\\..*","",src_codingsystem_table_name)
 
