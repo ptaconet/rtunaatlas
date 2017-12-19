@@ -340,11 +340,8 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   codelist_dataset_name<-df_metadata$identifier
   dimension_name<-sub('\\..*', '', df_metadata$database_table_name)
   
-  #table_name<-paste0(dimension_name,".",codelist_dataset_name)
-  #df_metadata$table_name<-table_name
+  table_name<-df_metadata$database_table_name
   
-
-
   colnames(df_to_load)<-tolower(colnames(df_to_load))
 
   # if there are points in the columns of the input code list, replace them with underscores
