@@ -29,6 +29,12 @@ generate_metadata<-function(metadata_file,dataset_type){
 
 df_metadata<-NULL
 
+for (i in 1:ncol(metadata_file)){
+  if (identical(metadata_file[,colnames(metadata_file)[i]],"")){
+    metadata_file[,colnames(metadata_file)[i]]<-NA
+  }
+}
+
 if (dataset_type=="raw_dataset"){
 ### dataset_time_start and dataset_time_end.
 df_metadata$dataset_time_start<-metadata_file$dataset_time_start
@@ -74,8 +80,10 @@ roles<-gsub("contact_","",columns_contacts_and_roles)
 
 contacts_and_roles<-NULL
 for (j in 1:length(columns_contacts_and_roles)){
+  if (!is.na(metadata_file[,columns_contacts_and_roles[j]])){
   contact_j<-create_contacts_and_roles(metadata_file[,columns_contacts_and_roles[j]],roles[j])
   contacts_and_roles<-paste0(contacts_and_roles,contact_j)
+  }
 }
 
 ## Get contact and roles for processor
@@ -104,7 +112,9 @@ roles<-gsub("date_","",columns_dates)
 
 date<-NULL
 for (j in 1:length(columns_dates)){
+  if (!is.na(metadata_file[,columns_dates[j]])){
   date<-paste0(date,roles[j],"=",metadata_file[,columns_dates[j]],";")
+  }
 }
 
 df_metadata$date<-date
@@ -122,7 +132,9 @@ roles<-gsub("relation_","",columns_relation)
 
 relation<-NULL
 for (j in 1:length(columns_relation)){
+  if (!is.na(metadata_file[,columns_relation[j]])){
   relation<-paste0(relation,roles[j],"=",metadata_file[,columns_relation[j]],";")
+  }
 }
 
 df_metadata$relation<-relation
