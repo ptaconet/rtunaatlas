@@ -87,15 +87,8 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   FROM metadata.metadata_mapping
   WHERE metadata_mapping_id_from=",static_metadata_id,"
   )
-  SELECT DISTINCT dataset_origin_institution as keyword, 'ORIGIN_INSTITUTIONS' as thesaurus 
+  SELECT DISTINCT source as keyword, 'ORIGIN_INSTITUTIONS' as thesaurus 
   FROM metadata.metadata  
-  WHERE id_metadata IN 
-  (SELECT * FROM id_metadata_genealogy)
-  UNION 
-  SELECT DISTINCT name_en_origin_institution as keyword, 'ORIGIN_INSTITUTIONS' as thesaurus 
-  FROM metadata.metadata 
-  JOIN metadata.origin_institution
-  ON origin_institution.code_origin_institution=metadata.dataset_origin_institution
   WHERE id_metadata IN 
   (SELECT * FROM id_metadata_genealogy)
    order by keyword ;",sep="")
