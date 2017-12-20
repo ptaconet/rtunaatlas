@@ -607,7 +607,7 @@ MapFinal<-merge(MapFromTableWithMappingTable,ToTable,by.y=paste("codesource_",DB
 
 
 MapFinal <- MapFinal[c(paste0("id_",DBDimensionName,".x"),paste0("id_",DBDimensionName,".y"))]
-MapFinal$mapping_relation_type<-NA
+MapFinal$mapping_relation_type<-"NA"
 colnames(MapFinal)<-c(paste0(DBDimensionName,"_mapping_id_from"),paste0(DBDimensionName,"_mapping_id_to"),paste0(DBDimensionName,"_mapping_relation_type"))
 
 
