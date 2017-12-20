@@ -5,7 +5,7 @@
 #' @export load_raw_dataset_in_db load_codelist_in_db load_mapping_in_db
 #'
 #' @usage 
-#' load_raw_dataset_in_db(con,df_to_load,df_metadata,df_codelists_input,variable_name)
+#' load_raw_dataset_in_db(con,df_to_load,df_metadata,df_codelists_input)
 #' load_codelist_in_db(con,df_to_load,df_metadata)
 #' load_mapping_in_db(con,df_to_load,df_metadata)
 #' 
@@ -14,7 +14,6 @@
 #' @param df_to_load data.frame to load. See section "Details" for the structure of the dataset
 #' @param df_metadata data.frame of metadata of to the df_to_load. See section "Details" for the structure of the dataset
 #' @param df_codelists_input data.frame of the code lists used in case of loading of a raw_dataset. See section "Details" for the structure of the dataset
-#' @param variable_name string. Name of the variable that is loaded (e.g. "catch", "effort", "catch_at_size")
 #' 
 #' 
 #' @details 
@@ -23,7 +22,7 @@
 #' 
 #' For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
 #' 
-#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted. For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format
+#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list, ans a column "label" with associated label. Any additional column is accepted. For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format
 #' 
 #' For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
 #' \itemize{
@@ -51,25 +50,25 @@
 # Efforts <- c("flag","gear","time_start","time_end","area","schooltype","effortunit","v_effort")
 # Catches <- c("flag","gear","time_start","time_end","area","schooltype","species","catchtype","catchunit","v_catch")
 # Catch-at-size <- c("flag","gear","time_start","time_end","area","schooltype","species","catchtype","catchunit","sex","size_step","size_min","v_catch")
-# The dataset to upload can have two additional columns "ocean" and "rfmo" but they are not mandatory
 # In the datasets, unknown values must be set to either "ALL" or "UNK"
 
 
 # This is the full load script. The user has to provide the metadata of the dataset that is imported + the name of the code lists tables (available in Sardara) for each dimension. The code lists must be available in Sardara. If one/several code lists are not available in Sardara, they HAVE to be imported previously in Sardara with the dedicated script. 
 
-# This script uses 1 external dataset: db_dimensions_parameters.csv a
+# This script uses 1 external dataset: db_dimensions_parameters.csv
 
 
 load_raw_dataset_in_db<- function(
   con, # connection to the DB
   df_to_load, # data.frame of of the dataset to upload
   df_metadata, # data.frame of metadata. format as : CsvMetadata
-  df_codelists_input, # data.frame of the code lists to use for each dimensions
-  variable_name  #{catch,effort,catch_at_size}
+  df_codelists_input # data.frame of the code lists to use for each dimensions
 ){
   
   
   db_dimensions_parameters<-read.csv(system.file("extdata", "db_dimensions_parameters.csv",package="rtunaatlas"),stringsAsFactors = F,strip.white=TRUE)
+  
+  variable_name<-gsub("fact_tables.","",df_metadata$database_table_name)
   
   dimensions<-list_variable_available_dimensions(con,variable_name)
   
@@ -317,9 +316,6 @@ load_raw_dataset_in_db<- function(
     cat("Data loaded\n")
     
     
-    #copy file to disk
-    # write.csv(df_to_load,paste(OutputDatasetsPath,paste(variable_name_to_upload_in,"_run_",Sys.Date(),"_",operator_origin_institution,".csv",sep=""),row.names = F)
-    
     ## Update some metadata elements
     # spatial_coverage
     #saptial_coverage<-paste0("SELECT st_envelope(st_union(geom)) FROM ",df_metadata$database_table_name," JOIN area.area_labels USING (id_area) WHERE id_metadata=",PK_metadata,"
@@ -330,6 +326,10 @@ load_raw_dataset_in_db<- function(
     dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
     
     # metadata_mapping
+    # dataset-mappings (le dataset x utilise les mappings x,y,z) 
+    # dataset-codelists (le dataset x utilise les codelist x,y,z) 
+    # dataset-dataset  (le dataset x utilise les dataset x,y,z)
+    
     
     # Create the materialized view if set in the metadata
     if(!is.null(df_metadata$database_view_name)){
@@ -339,7 +339,6 @@ load_raw_dataset_in_db<- function(
       
     }
     
-    #dbDisconnect(con)
     print(paste("Your dataset has been uploaded to the database successfully. It has the id n° ",pk," in the metadata table of the database"),sep="")
     
   }
