@@ -140,7 +140,7 @@ for (j in 1:length(columns_relation)){
 df_metadata$relation<-relation
 
 ### spatial_coverage
-# TO DO AFTER THE UPLOAD OF THE DATASET
+# DONE AFTER THE UPLOAD OF THE DATASET (in the function load_dataset_in_db)
 
 
 ### rights
@@ -161,7 +161,8 @@ df_metadata$supplemental_information<-metadata_file$supplemental_information
 df_metadata$dataset_type<-dataset_type
 
 ### sql_query_dataset_extraction
-# TO DO AFTER THE UPLOAD OF THE DATASET
+
+# DONE AFTER THE UPLOAD OF THE DATASET (in the function load_dataset_in_db)
 
 ### database_table_name
 df_metadata$database_table_name<-metadata_file$database_table_name

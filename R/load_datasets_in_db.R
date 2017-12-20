@@ -245,17 +245,17 @@ load_raw_dataset_in_db<- function(
       
       if (length(index.na)>0){
         
-        sql<-paste("SELECT code_wkt,code_wkt as code_wkt_merge from area.area_wkt")
+        sql<-paste("SELECT code,code as code_wkt_merge from area.area_wkt")
         df_inputFromDB<-dbGetQuery(con, sql)
         
         df_to_load<-data.table(df_to_load)
-        df_to_load<-merge(df_to_load,df_inputFromDB,by.x="area",by.y="code_wkt",all.x=TRUE)
+        df_to_load<-merge(df_to_load,df_inputFromDB,by.x="area",by.y="code",all.x=TRUE)
         df_to_load<-as.data.frame(df_to_load)
         
         # upload the new wkt to the db
         CodesToLoad<-unique(df_to_load[index.na,"area"])
         
-        sql4 <- paste0("COPY  area.area_wkt (code_wkt) FROM STDIN NULL 'NA' ")
+        sql4 <- paste0("COPY  area.area_wkt (code) FROM STDIN NULL 'NA' ")
         postgresqlpqExec(con, sql4)
         postgresqlCopyInDataframe(con, data.frame(CodesToLoad))
         rs <- postgresqlgetResult(con)
@@ -275,10 +275,13 @@ load_raw_dataset_in_db<- function(
           "area_wkt"
         )
       }
-      
+     
+      ## Refresh materialized view area.area_labels to take into account the new WKT codes just inserted
+      dbSendQuery(con,"REFRESH MATERIALIZED VIEW area.area_labels")
+       
     }
     
-    cat("Data merged with code lists of Sardara\n")
+    cat("Data merged with code lists of database\n")
     
     
     # Load metadata
@@ -317,8 +320,27 @@ load_raw_dataset_in_db<- function(
     #copy file to disk
     # write.csv(df_to_load,paste(OutputDatasetsPath,paste(variable_name_to_upload_in,"_run_",Sys.Date(),"_",operator_origin_institution,".csv",sep=""),row.names = F)
     
+    ## Update some metadata elements
+    # spatial_coverage
+    # TO DO
+    
+    # sql_query_dataset_extraction
+    df_metadata$id_metadata<-PK_metadata
+    sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
+    dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
+    
+    # metadata_mapping
+    
+    # Create the materialized view if set in the metadata
+    if(!is.null(df_metadata$database_view_name)){
+      
+      
+      
+      
+    }
+    
     #dbDisconnect(con)
-    print(paste("Your dataset has been uploaded to Sardara successfully. It has the id n° ",pk," in the metadata table of Sardara"),sep="")
+    print(paste("Your dataset has been uploaded to the database successfully. It has the id n° ",pk," in the metadata table of the database"),sep="")
     
   }
   
@@ -460,23 +482,22 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   }
   
   
-  # Add a column geometry if geospatial code list
+  # Add a column geometry if geospatial code list. For now: must be a polygon or multipolygon with SRID=4326
   if (dimension_name=="area"){
+    cat(paste0("\nAdding geometry..."))
 # Add the column
     sql<-paste("ALTER TABLE ",table_name," ADD COLUMN geom GEOMETRY(MultiPolygon,4326);",sep="")
     dbSendQuery(con, sql)
 # Calculate the column    
-   sql<-paste("UPDATE ",table_name," SET geom=ST_GeomFromText(geom_wkt,4326);",sep="")
+   sql<-paste("UPDATE ",table_name," SET geom=ST_Multi(ST_GeomFromText(geom_wkt,4326));",sep="")
     dbSendQuery(con, sql)
 # Remove the column geom_wkt
     sql<-paste("ALTER TABLE ",table_name," DROP COLUMN geom_wkt;",sep="")
     dbSendQuery(con, sql)
   }
     
-  
-  ### Updates the view that gives the labels, with the new code list just inserted ### Works for all except area. area will be dealt in a next version.
-  if (dimension_name!="area"){
-  
+  ### Updates the view that gives the labels, with the new code list just inserted 
+
    table_name_without_schema<-gsub(".*\\.","",table_name)
    
    name_view_labels<-paste0(dimension_name,"_labels")
@@ -507,10 +528,17 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   # these are the columns that will not be updated (they will be set with NULL values. User will have then to fill the right columns... to improve in next version)
   columns_names_types_view_label<-columns_names_types_view_label %>% filter (!(column %in% c(colname_view_id,colname_view_codesource,colname_view_tablesource,colname_view_label)))
 
+  if ("geom" %in% columns_names_types_view_label$column){
+    columns_names_types_view_label = columns_names_types_view_label[columns_names_types_view_label$column != "geom",]
+  }
+  
   query_null_columns<-NULL
   for (i in 1:nrow(columns_names_types_view_label)){
     query_null_columns_this_column<-paste0("NULL::",columns_names_types_view_label$datatype[i]," as ",columns_names_types_view_label$column[i])
     query_null_columns<-paste(query_null_columns,query_null_columns_this_column,sep=",")
+  }
+  if (dimension_name=="area"){
+    query_null_columns<-paste0(query_null_columns,",geom")
   }
   
   sql_query_for_view_label_new_codelist<-paste0(" UNION SELECT ",colname_view_id,",",colname_view_codesource,",",colname_view_tablesource,",label as source_label")
@@ -520,10 +548,31 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   query_create_view_label<-gsub(";","",query_create_view_label)
   query_create_view_label<-paste("CREATE OR REPLACE VIEW ",dimension_name,".",name_view_labels," AS ",query_create_view_label,sql_query_for_view_label_new_codelist,sep="")
   
+  # View of labels for geometry is a bit special since there is the geom. CODE BELOW TO IMPROVE!!!!
+  if (dimension_name=="area"){
+    pattern="CREATE OR REPLACE VIEW area.area_labels AS  WITH vue AS (.*?) SELECT vue.id_area"
+    query_create_view_label<-regmatches(query_create_view_label,regexec(pattern,query_create_view_label))[[1]][1]
+    query_create_view_label<-gsub(")\n SELECT vue.id_area","",query_create_view_label)
+    query_create_view_label<-paste0(query_create_view_label,sql_query_for_view_label_new_codelist," )
+ SELECT vue.id_area,
+    vue.codesource_area,
+    vue.tablesource_area,
+    vue.source_label,
+    vue.source_french_label,
+    vue.source_spanish_label,
+    st_setsrid(vue.geom, 4326) AS geom
+   FROM vue")
+    query_create_view_label<-gsub(";","",query_create_view_label)
+    query_create_view_label<-gsub("CREATE OR REPLACE VIEW","DROP MATERIALIZED VIEW area.area_labels; CREATE MATERIALIZED VIEW",query_create_view_label)
+  }
+  
   #finally send the query to recreate the view for the labels with the new code list inserted
   dbSendQuery(con,query_create_view_label)
-  }
-
+  
+  ## fill-in metadata 'sql_query_dataset_extraction'
+  df_metadata$id_metadata<-PK_metadata
+  sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
+  dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
   }
 
 
@@ -571,6 +620,18 @@ MapFinal$id_metadata<-PK_metadata
 # Insert mapping into mapping table
 
 dbWriteTable(con, c(DBDimensionName, paste(DBDimensionName,"_mapping",sep="")), value = MapFinal,row.names=FALSE,append=TRUE)
+
+
+## Update some metadata elements
+
+# metadata_mapping
+# TO DO
+
+# 'sql_query_dataset_extraction'
+df_metadata$id_metadata<-PK_metadata
+sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
+dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
+
 
 }
 

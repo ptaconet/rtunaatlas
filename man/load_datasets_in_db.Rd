@@ -30,7 +30,7 @@ The data.frames must comply with defined structures.
 
 For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
 
-For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted.
+For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list. If there is a column of label, the latter should be named 'label'. Any additional column is accepted. For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format
 
 For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
 \itemize{
