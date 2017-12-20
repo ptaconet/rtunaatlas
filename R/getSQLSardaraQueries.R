@@ -58,7 +58,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   #static_metadata_date_of_what <- dataset_metadata$date
 
   static_metadata_dataset_origin_institution <- dataset_metadata$source
-  static_metadata_table_type <- dataset_metadata$type
+  static_metadata_table_type <- dataset_metadata$dataset_type
   
   static_metadata_table_description <- dataset_metadata$description
   static_metadata_dataset_name <- dataset_metadata$identifier
@@ -109,32 +109,31 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     ##logger.info("Setting SQL queries specific to CODELIST")
     
     # 1) extraction des noms de colonnes code et label du code list source. Ces infos sont contenues dans la table metadata.codelists_codes_labels_column_names. ces colonnes seront nommees 'code' et 'label' dans le codelist extrait (WFS et csv)
-    code_label_column_name<-dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",static_metadata_table_name,"'"))  
+    #code_label_column_name<-dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",static_metadata_table_name,"'"))  
     # 2) S'il n'y a pas de label, on remplit la colonne 'label' avec des 'NULL'  
-    if (is.na(code_label_column_name$english_label_column[1])){
-      code_label_column_name$english_label_column[1]="NULL"
-    }
+    #if (is.na(code_label_column_name$english_label_column[1])){
+    #  code_label_column_name$english_label_column[1]="NULL"
+    #}
     # 3)  on va chercher les autres colonnes du code list
     all_column_names<-dbGetQuery(con,paste0("SELECT column_name from information_schema.columns where table_schema||'.'||table_name='",static_metadata_table_name,"'"))
     all_column_names_vector <- as.vector(all_column_names$column_name)
-    other_columns_column_names<-setdiff(all_column_names_vector, c(code_label_column_name$code_column[1],code_label_column_name$english_label_column[1]))
-    if (length(other_columns_column_names)>0){
-      other_columns_column_names<-paste0(", ",paste(as.character(other_columns_column_names),collapse=", ",sep="")," ")
-    } else {
-      other_columns_column_names<-NULL
-    }
+    all_column_names_vector<-setdiff(all_column_names_vector,"geom")
+    #other_columns_column_names<-setdiff(all_column_names_vector, c(code_label_column_name$code_column[1],code_label_column_name$english_label_column[1]))
+    all_column_names<-paste(as.character(all_column_names_vector),collapse=", ",sep="")
     # 4) s'il s'agit d'un code list de type spatial, on prend en plus la geometrie. Ce morceau de requete SQL est a  changer pour le CSV car on ne prendra pas l'attribut "the_geom" mais plutot un WKT.
     if (substr(static_metadata_table_name,1,4)=='area'){
       # Get geometry column name, type and srid
       table_geometry_information<-dbGetQuery(con,paste0("select * from geometry_columns where f_table_schema='area' and f_table_name='",substring(static_metadata_table_name, 6),"'"))
-      SQL$query_wfs_wms<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, ",table_geometry_information$f_geometry_column," as the_geom ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
-      SQL$query_CSV<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
+      #SQL$query_wfs_wms<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, ",table_geometry_information$f_geometry_column," as the_geom ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
+      #SQL$query_CSV<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
+      SQL$query_wfs_wms<-paste("SELECT ",all_column_names,",",table_geometry_information$f_geometry_column," as the_geom  FROM ",static_metadata_table_name,sep="")
+      SQL$query_CSV<-paste("SELECT ",all_column_names,",","st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt  FROM ",static_metadata_table_name,sep="")
       
       
     } else {
       
       # 5) s'il s'agit d'un code list non spatial (classique), on prend le code list 
-      SQL$query_CSV <- paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
+      SQL$query_CSV<-paste("SELECT ",all_column_names," FROM ",static_metadata_table_name,sep="")
       SQL$query_wfs_wms <- SQL$query_CSV
       # TO BE DONE => ADD SQL QUERIES FOR KEYWORDS ...
       
