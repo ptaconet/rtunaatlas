@@ -312,7 +312,7 @@ load_raw_dataset_in_db<- function(
     
     # Upload file to database
     
-    rs<-FUNUploadDatasetToTableInDB(con,df_to_load,paste("fact_tables.",variable_name,sep=""))
+    rs<-FUNUploadDatasetToTableInDB(con,df_to_load,df_metadata$database_table_name)
     
     cat("Data loaded\n")
     
@@ -322,7 +322,7 @@ load_raw_dataset_in_db<- function(
     
     ## Update some metadata elements
     # spatial_coverage
-    # TO DO
+    #saptial_coverage<-paste0("SELECT st_envelope(st_union(geom)) FROM ",df_metadata$database_table_name," JOIN area.area_labels USING (id_area) WHERE id_metadata=",PK_metadata,"
     
     # sql_query_dataset_extraction
     df_metadata$id_metadata<-PK_metadata
@@ -581,23 +581,22 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
 
 load_mapping_in_db<-function(con,df_to_load,df_metadata){
   
-
-  # Check errors: TO DO  (are tables existing? etc.)
+# Check errors: TO DO  (are tables existing? etc.)
   
 # get table_name corresponding to dataset_name of src_codingsystem and trg_codingsystem
-src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$src_codingsystem),"'"))$table_name
-trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$trg_codingsystem),"'"))$table_name
+src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$src_codingsystem),"'"))
+trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$trg_codingsystem),"'"))
 
-DBDimensionName=gsub("\\..*","",src_codingsystem_table_name)
+DBDimensionName=gsub("\\..*","",src_codingsystem_table_name$database_table_name)
 
-src_codingsystem_table_name<-gsub(".*\\.","",src_codingsystem_table_name)
-trg_codingsystem_table_name<-gsub(".*\\.","",trg_codingsystem_table_name)
+src_codingsystem_table_name$database_table_name<-gsub(".*\\.","",src_codingsystem_table_name$database_table_name)
+trg_codingsystem_table_name$database_table_name<-gsub(".*\\.","",trg_codingsystem_table_name$database_table_name)
 
 # Get the PK of the two tables (DBToTableName and DBFromTableName)
-sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",src_codingsystem_table_name,"'",sep="")   
+sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",src_codingsystem_table_name$database_table_name,"'",sep="")   
 FromTable<-dbGetQuery(con, sql)
 
-sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",trg_codingsystem_table_name,"'",sep="")   
+sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",trg_codingsystem_table_name$database_table_name,"'",sep="")   
 ToTable<-dbGetQuery(con, sql)
 
 # Make mapping
@@ -608,12 +607,18 @@ MapFinal<-merge(MapFromTableWithMappingTable,ToTable,by.y=paste("codesource_",DB
 
 
 MapFinal <- MapFinal[c(paste0("id_",DBDimensionName,".x"),paste0("id_",DBDimensionName,".y"))]
-colnames(MapFinal)<-c("id_from","id_to")
-#MapFinal$mapping_relation_type<-RelationType
+MapFinal$mapping_relation_type<-NA
+colnames(MapFinal)<-c(paste0(DBDimensionName,"_mapping_id_from"),paste0(DBDimensionName,"_mapping_id_to"),paste0(DBDimensionName,"_mapping_relation_type"))
 
-# load metadata
-table_name=paste0(DBDimensionName,".codelist_mapping_",src_codingsystem_table_name,"_",trg_codingsystem_table_name)
-PK_metadata<-FUNUploadMetadataInDB(con,df_metadata,"mapping",table_name)
+
+# Load metadata
+rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
+cat("Metadata loaded\n")
+
+# Retrieve the PK of the metadata for the line just inserted
+sql<- "SELECT max(id_metadata) FROM metadata.metadata"
+PK_metadata <- dbGetQuery(con, sql)
+PK_metadata<-as.integer(PK_metadata$max[1])
 
 MapFinal$id_metadata<-PK_metadata
 
@@ -625,9 +630,13 @@ dbWriteTable(con, c(DBDimensionName, paste(DBDimensionName,"_mapping",sep="")), 
 ## Update some metadata elements
 
 # metadata_mapping
-# TO DO
+sql<-paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES 
+       (",PK_metadata,",",src_codingsystem_table_name$id_metadata,"),
+       (",PK_metadata,",",trg_codingsystem_table_name$id_metadata,")")
+dbSendQuery(con,sql)
 
-# 'sql_query_dataset_extraction'
+
+# sql_query_dataset_extraction
 df_metadata$id_metadata<-PK_metadata
 sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
 dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
