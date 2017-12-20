@@ -52,28 +52,19 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
   #similar static definitions same as in write_tuna_atlas_metadata
   #to facilitate later editing of metadata fieldname changes, but to simplify the parameters of the function...too many parameters is crazy and unreadable
-  static_metadata_table_name<- dataset_metadata$table_name # TO BE DONE => REMOVE IT / NOT USED FOR NOW
+  static_metadata_table_name<- dataset_metadata$database_table_name # TO BE DONE => REMOVE IT / NOT USED FOR NOW
   static_metadata_id <- dataset_metadata$id_metadata
-  static_metadata_permanent_id <- dataset_metadata$dataset_permanent_identifier
-  static_metadata_date_of_what <- dataset_metadata$date
-  static_metadata_URL_of_what <- dataset_metadata$url_report_process # TO BE DONE => REMOVE IT / NOT USED FOR NOW
+  static_metadata_permanent_id <- dataset_metadata$persistent_identifier
+  #static_metadata_date_of_what <- dataset_metadata$date
+
+  static_metadata_dataset_origin_institution <- dataset_metadata$source
+  static_metadata_table_type <- dataset_metadata$type
   
-  static_metadata_dataset_origin_institution <- dataset_metadata$dataset_origin_institution
-  static_metadata_table_type <- dataset_metadata$table_type
-  
-  static_metadata_type_operation <- dataset_metadata$type_operation # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
-  static_metadata_url_download_page <- dataset_metadata$url_download_page # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_table_description <- dataset_metadata$table_description
-  static_metadata_table_purpose <- dataset_metadata$table_short_description
-  static_metadata_url_original_file <- dataset_metadata$url_original_file # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_description_report_url <- dataset_metadata$dataset_description_report_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_description_report_original_url <- dataset_metadata$dataset_description_report_original_url # TO BE DONE => REMOVE THE COLUMN AND PUT ITS CONTENT IN A NEW ONE FOR ALL URLs / NOT USED FOR NOW
-  static_metadata_dataset_name <- dataset_metadata$dataset_name
-  static_metadata_dataset_release_date <- dataset_metadata$dataset_release_date  # TO BE DONE => REMOVE THE COLUMN / NOT USED FOR NOW
-  static_metadata_dataset_available_dimensions <- dataset_metadata$dataset_available_dimensions
-  static_metadata_table_sql_query <- dataset_metadata$table_sql_query
-  static_metadata_table_dataset_title <- dataset_metadata$dataset_title
-  static_metadata_table_view_name <- dataset_metadata$view_name
+  static_metadata_table_description <- dataset_metadata$description
+  static_metadata_dataset_name <- dataset_metadata$identifier
+  static_metadata_table_sql_query <- dataset_metadata$sql_query_dataset_extraction
+  static_metadata_table_dataset_title <- dataset_metadata$title
+  static_metadata_table_view_name <- dataset_metadata$database_view_name
   
   #logger.info("Setting SQL queries according to dataset type (codelist / mapping / raw_dataset)")
   SQL <- list()
