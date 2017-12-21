@@ -243,8 +243,8 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     # write the queries
     if (grepl("nominal_catch",static_metadata_dataset_name)){
       #logger.info("This dataset is a raw_dataset STORING NOMINAL CATCH !  ######################")
-      geo_attributes<-",area.source_label,st_astext(ST_Envelope(geom)) as the_geom"
-      geo_attributes_NetCDF<-",area.source_label,st_astext(ST_Envelope(geom)) as geom_wkt"
+      geo_attributes<-",area_labels.source_label,st_astext(ST_Envelope(geom)) as the_geom"
+      geo_attributes_NetCDF<-",area_labels.source_label,st_astext(ST_Envelope(geom)) as geom_wkt"
     }else{
       #logger.info("This dataset is a raw_dataset ######################")   
       geo_attributes<-",st_astext(geom) as the_geom,st_x(ST_Centroid(geom)) as longitude,st_y(ST_Centroid(geom)) as latitude"
