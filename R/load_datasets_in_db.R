@@ -342,6 +342,7 @@ load_raw_dataset_in_db<- function(
     
     # Create the materialized view if set in the metadata
     if(!is.null(df_metadata$database_view_name)){
+      cat(paste0("Creating materialized view ",df_metadata$database_view_name," (with codes and labels)\n"))
       # Check if schema exists
       list_of_schemas<-dbGetQuery(con,"select schema_name from information_schema.schemata")$schema_name
       # Get schema name where to store the materialized view
@@ -354,8 +355,6 @@ load_raw_dataset_in_db<- function(
       dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";
                              CREATE MATERIALIZED VIEW ",df_metadata$database_view_name," AS ",sql_query_dataset_extraction$query_CSV_with_labels))
     }
-    
-    print(paste("Your dataset has been uploaded to the database successfully. It has the id n° ",pk," in the metadata table of the database"),sep="")
     
     }
   
@@ -645,6 +644,7 @@ load_mapping_in_db<-function(con,df_to_load,df_metadata){
   ## Update some metadata elements
   
   # metadata_mapping
+  
   sql<-paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES 
        (",PK_metadata,",",src_codingsystem_table_name$id_metadata,"),
        (",PK_metadata,",",trg_codingsystem_table_name$id_metadata,")")
