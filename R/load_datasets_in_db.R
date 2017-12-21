@@ -348,7 +348,7 @@ load_raw_dataset_in_db<- function(
       # Get schema name where to store the materialized view
       schema_name<-sub('\\..*', '', df_metadata$database_view_name)
       # Create the schema if it does not exist
-      if (!(schema_name %in% "list_of_schemas")){
+      if (!(schema_name %in% list_of_schemas)){
         dbSendQuery(con,paste0("CREATE SCHEMA ",schema_name))
       }
       # Create the materialized view

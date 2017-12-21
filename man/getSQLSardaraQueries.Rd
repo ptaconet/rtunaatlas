@@ -14,7 +14,8 @@ getSQLSardaraQueries(con,dataset_metadata)
 \value{
 a list with SQL queries and informations on the dataset. Depending on the type of data (raw_dataset, codelist, mapping), the output elements of the list might vary. The elements of the list are:
 \itemize{
- \item{\code{query_CSV} :}{ Query to retrieve a data.frame }
+ \item{\code{query_CSV} :}{ Query to retrieve a data.frame with the codes}
+ \item{\code{query_CSV_with_labels} :}{ Query to retrieve a data.frame with codes and labels (for raw_datasets)} 
  \item{\code{query_NetCDF} :}{ }
  \item{\code{query_wfs_wms} :}{ }
  \item{\code{query_wfs_wms_aggregated_layer} :}{ }
