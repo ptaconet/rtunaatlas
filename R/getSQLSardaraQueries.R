@@ -12,7 +12,8 @@
 #' 
 #' @return a list with SQL queries and informations on the dataset. Depending on the type of data (raw_dataset, codelist, mapping), the output elements of the list might vary. The elements of the list are:
 #' \itemize{
-#'  \item{\code{query_CSV} :}{ Query to retrieve a data.frame }
+#'  \item{\code{query_CSV} :}{ Query to retrieve a data.frame with the codes}
+#'  \item{\code{query_CSV_with_labels} :}{ Query to retrieve a data.frame with codes and labels (for raw_datasets)} 
 #'  \item{\code{query_NetCDF} :}{ }
 #'  \item{\code{query_wfs_wms} :}{ }
 #'  \item{\code{query_wfs_wms_aggregated_layer} :}{ }
@@ -196,6 +197,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     } else {  # else we recreate the query that outputs the data.frame
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       where_clause<-paste0(" WHERE tab.id_metadata=",static_metadata_id)
       tab_name <- paste(static_metadata_table_name," tab",sep=" ")
@@ -204,6 +206,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=" ",sep="") 
     select_query_netcdf<-paste(columns_netcdf,collapse=" ",sep="") 
+    select_query_csv_wms_wfs_with_labels<-paste(columns_csv_wms_wfs_with_labels,collapse=" ",sep="") 
     
     # we remove commas that should not be here
     select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
@@ -211,6 +214,10 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     select_query_netcdf<-substr(select_query_netcdf, 1, nchar(select_query_netcdf)-1)
     select_query_netcdf<-gsub(",$", "", select_query_netcdf)
+    
+    select_query_csv_wms_wfs_with_labels<-substr(select_query_csv_wms_wfs_with_labels, 1, nchar(select_query_csv_wms_wfs_with_labels)-1)
+    select_query_csv_wms_wfs_with_labels<-gsub(",$", "", select_query_csv_wms_wfs_with_labels)
+    
     
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
@@ -248,6 +255,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     #logger.info("Writing SQL Queries for CSV, NetCDF, WMS, WFS")
     
     SQL$query_CSV<-paste("SELECT ",select_query_csv_wms_wfs,geo_attributes,",value FROM ",tab_name, join_clause, where_clause, sep=" ")
+    SQL$query_CSV_with_labels<-paste("SELECT ",select_query_csv_wms_wfs_with_labels,geo_attributes,",value FROM ",tab_name, join_clause, where_clause, sep=" ")
     
     SQL$query_NetCDF <- paste ("SELECT ",select_query_netcdf,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
