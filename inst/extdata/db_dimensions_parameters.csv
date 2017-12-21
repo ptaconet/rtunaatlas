@@ -16,9 +16,9 @@ time.time_end,",,LEFT OUTER JOIN time.time USING (id_time)
 area,area.area,id_area,id_area,codesource_area,tablesource_area,geographic_identifier,TRUE,"geographic_identifier,","tab.id_area,
 Area.codesource_area as geographic_identifier,",,,"areas_with_geom.label as geographic_identifier_label,","LEFT OUTER JOIN area.area USING (id_area) 
 LEFT JOIN area.area_labels USING (id_area)"
-catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,"catchtype,",catchtype_labels.codesource_catchtype AS catchtype,"catchtype,","catchtype_labels.codesource_catchtype AS catchtype,
+catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,"catchtype,","catchtype_labels.codesource_catchtype AS catchtype,","catchtype,","catchtype_labels.codesource_catchtype AS catchtype,
 ","Catchtype_labels.source_label AS catchtype_label,",LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
-unit,unit.unit,id_unit,id_unit,codesource_unit,tablesource_unit,unit,TRUE,"unit,",unit_labels.codesource_unit AS unit,"unit,","catchunit_labels.codesource_catchunit as unit,
+unit,unit.unit,id_unit,id_unit,codesource_unit,tablesource_unit,unit,TRUE,"unit,","unit_labels.codesource_unit AS unit,","unit,","catchunit_labels.codesource_catchunit as unit,
 ","unit_labels.source_label as unit_label,",LEFT OUTER JOIN unit.unit_labels USING (id_unit)
 sex,sex.sex,id_sex,id_sex,codesource_sex,tablesource_sex,sex,TRUE,"sex,","sex_labels.codesource_sex as sex,
 ","sex,","sex_labels.codesource_sex as sex,
