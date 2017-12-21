@@ -65,7 +65,6 @@ load_raw_dataset_in_db<- function(
   df_codelists_input # data.frame of the code lists to use for each dimensions
 ){
   
-  
   db_dimensions_parameters<-read.csv(system.file("extdata", "db_dimensions_parameters.csv",package="rtunaatlas"),stringsAsFactors = F,strip.white=TRUE)
   
   variable_name<-gsub("fact_tables.","",df_metadata$database_table_name)
@@ -74,7 +73,7 @@ load_raw_dataset_in_db<- function(
   
   # Set df_inputs to use
   df_codelists_input<-df_codelists_input[which(df_codelists_input$dimension %in% dimensions),]
-
+  
   df_to_load$value<-as.numeric(df_to_load$value)
   
   #### First we deal with all the dimensions that are "real" code lists: area,catchtype,catchunit,effortunit,flag,gear,schooltype,species,sex,ocean
@@ -82,13 +81,10 @@ load_raw_dataset_in_db<- function(
   
   db_dimensions_parameters<-db_dimensions_parameters[which(db_dimensions_parameters$dimension %in% dimensions),]
   
-  # remove rfmo if exists
-  db_dimensions_parameters<-db_dimensions_parameters[!(db_dimensions_parameters$dimension=="rfmo"),]
-  
   #Keep only dimensions that are code list (i.e. dimensions time and sizeclass will be dealt separately,as non-code list dimension)
-  db_df_inputlike_dimensions_parameters<-db_dimensions_parameters[ which(db_dimensions_parameters$df_input_table==TRUE), ]
+  db_df_inputlike_dimensions_parameters<-db_dimensions_parameters[ which(db_dimensions_parameters$codelist_table==TRUE), ]
   
-  area_df_inputtouse<-df_codelists_input[which(df_codelists_input$dimension=="area"),]$code_list_table_name
+  area_df_inputtouse<-df_codelists_input[which(df_codelists_input$dimension=="area"),]$code_list_identifier
   # if the area code list to use is wkt, remove from the dimensions that are code lists. It will be treated later
   if (area_df_inputtouse == "area_wkt"){
     db_df_inputlike_dimensions_parameters<-db_df_inputlike_dimensions_parameters[-which(db_df_inputlike_dimensions_parameters$dimension=="area"),]
@@ -119,10 +115,10 @@ load_raw_dataset_in_db<- function(
     
     #Retrieve the name of the code list to use
     index<-which(df_codelists_input$dimension==db_df_inputlike_dimensions_parameters$dimension[i])
-    db_df_inputstouse<-df_codelists_input$code_list_table_name[index]
+    db_df_inputstouse<-df_codelists_input$code_list_identifier[index]
     
     # Merge the dimension 
-    df_to_load<-FUNMergeDimensions_df_inputLike(
+    df_to_load<-FUNMergeDimensions_CodeListLike(
       con,
       db_df_inputlike_dimensions_parameters$db_tablename[i],
       db_df_inputlike_dimensions_parameters$db_pkattribute_colname[i],
@@ -138,6 +134,8 @@ load_raw_dataset_in_db<- function(
     
     if (length(index.na)>0){
       missingCodesInDB<-unique(df_to_load[index.na,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]])
+    } else {
+      missingCodesInDB<-NULL
     }
     
     
@@ -174,7 +172,7 @@ load_raw_dataset_in_db<- function(
     ## Now deal with non-code list like dimensions (time,sizeclass). For these dimensions, the column names on the dataset to upload MUST BE the sames as the DBs ones. i.e. for time, the dataset to upload must have a "time_start" and a "time_end" column , and the DB table "time" must also have the same "time_start" and "time_end" columns
     
     #Keep only the dimensions that are non-code list
-    db_nondf_inputlike_dimensions_parameters<-db_dimensions_parameters[ which(db_dimensions_parameters$df_input_table==FALSE), ]
+    db_nondf_inputlike_dimensions_parameters<-db_dimensions_parameters[ which(db_dimensions_parameters$codelist_table==FALSE), ]
     
     # One by one, retrieve the numeric codes
     for (dim in 1:nrow(db_nondf_inputlike_dimensions_parameters)){
@@ -185,7 +183,7 @@ load_raw_dataset_in_db<- function(
       }
       
       # Merge to get back the ID from the DB
-      df_to_load <- FUNMergeDimensions_Nondf_inputLike(
+      df_to_load <- FUNMergeDimensions_NonCodeListLike(
         con,
         df_to_load,
         db_nondf_inputlike_dimensions_parameters$db_pkattribute_colname[dim],
@@ -207,7 +205,7 @@ load_raw_dataset_in_db<- function(
         
         df_to_load[,db_nondf_inputlike_dimensions_parameters$db_pkattribute_colname[dim]]<-NULL
         
-        df_to_load <- FUNMergeDimensions_Nondf_inputLike(
+        df_to_load <- FUNMergeDimensions_NonCodeListLike(
           con,
           df_to_load,
           db_nondf_inputlike_dimensions_parameters$db_pkattribute_colname[dim],
@@ -274,10 +272,10 @@ load_raw_dataset_in_db<- function(
           "area_wkt"
         )
       }
-     
+      
       ## Refresh materialized view area.area_labels to take into account the new WKT codes just inserted
       dbSendQuery(con,"REFRESH MATERIALIZED VIEW area.area_labels")
-       
+      
     }
     
     cat("Data merged with code lists of database\n")
@@ -323,25 +321,43 @@ load_raw_dataset_in_db<- function(
     # sql_query_dataset_extraction
     df_metadata$id_metadata<-PK_metadata
     sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
-    dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
+    dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV_with_labels,"' WHERE identifier='",df_metadata$identifier,"'"))
+    
+    # spatial coverage
+    sp_extent_sql<-paste0("SELECT st_astext(ST_Extent(geom)) FROM ",df_metadata$database_table_name," c LEFT JOIN area.area_labels USING (id_area) WHERE id_metadata='",PK_metadata,"'")
+    sp_extent<-dbGetQuery(con,sp_extent_sql)$st_astext
+    dbSendQuery(con,paste0("UPDATE metadata.metadata SET spatial_coverage='",sp_extent,"' WHERE identifier='",df_metadata$identifier,"'"))
+    
     
     # metadata_mapping
-    # dataset-mappings (le dataset x utilise les mappings x,y,z) 
-    # dataset-codelists (le dataset x utilise les codelist x,y,z) 
-    # dataset-dataset  (le dataset x utilise les dataset x,y,z)
+    # 1) dataset-codelists (le dataset x utilise les codelist x,y,z) 
+    for (i in 1:nrow(df_codelists_input)){
+      id_metadata_code_list<-dbGetQuery(con,paste0("SELECT id_metadata from metadata.metadata where identifier='",df_codelists_input$code_list_identifier[i],"'"))
+      dbSendQuery(con,paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES (",PK_metadata,",",id_metadata_code_list,")"))
+    }
+    
+    # 2) dataset-mappings (le dataset x utilise les mappings x,y,z) -> PAS ENCORE GERE
+    # 3) dataset-dataset  (le dataset x utilise les dataset x,y,z) -> PAS ENCORE GERE
     
     
     # Create the materialized view if set in the metadata
     if(!is.null(df_metadata$database_view_name)){
-      
-      
-      
-      
+      # Check if schema exists
+      list_of_schemas<-dbGetQuery(con,"select schema_name from information_schema.schemata")$schema_name
+      # Get schema name where to store the materialized view
+      schema_name<-sub('\\..*', '', df_metadata$database_view_name)
+      # Create the schema if it does not exist
+      if (!(schema_name %in% "list_of_schemas")){
+        dbSendQuery(con,paste0("CREATE SCHEMA ",schema_name))
+      }
+      # Create the materialized view
+      dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";
+                             CREATE MATERIALIZED VIEW ",df_metadata$database_view_name," AS ",sql_query_dataset_extraction$query_CSV_with_labels))
     }
     
     print(paste("Your dataset has been uploaded to the database successfully. It has the id n° ",pk," in the metadata table of the database"),sep="")
     
-  }
+    }
   
 }
 
@@ -364,7 +380,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   table_name<-df_metadata$database_table_name
   
   colnames(df_to_load)<-tolower(colnames(df_to_load))
-
+  
   # if there are points in the columns of the input code list, replace them with underscores
   colnames(df_to_load)<-gsub('.', '_', colnames(df_to_load),fixed=TRUE)
   
@@ -420,7 +436,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   sql<- "SELECT max(id_metadata) FROM metadata.metadata"
   PK_metadata <- dbGetQuery(con, sql)
   PK_metadata<-as.integer(PK_metadata$max[1])
-
+  
   
   ### Add code list table in the DB, with constraints (data types and primary key) and triggers
   #First create table ...
@@ -469,9 +485,9 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   # Set rigths to the table
   
   sql<-paste("ALTER TABLE ",table_name,"
-  OWNER TO tunaatlas_u;
-  GRANT ALL ON TABLE ",table_name," TO tunaatlas_u;
-  GRANT SELECT ON TABLE ",table_name," TO invsardara;",sep="")
+             OWNER TO tunaatlas_u;
+             GRANT ALL ON TABLE ",table_name," TO tunaatlas_u;
+             GRANT SELECT ON TABLE ",table_name," TO invsardara;",sep="")
   
   dbSendQuery(con, sql)
   
@@ -484,22 +500,22 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   # Add a column geometry if geospatial code list. For now: must be a polygon or multipolygon with SRID=4326
   if (dimension_name=="area"){
     cat(paste0("\nAdding geometry..."))
-# Add the column
+    # Add the column
     sql<-paste("ALTER TABLE ",table_name," ADD COLUMN geom GEOMETRY(MultiPolygon,4326);",sep="")
     dbSendQuery(con, sql)
-# Calculate the column    
-   sql<-paste("UPDATE ",table_name," SET geom=ST_Multi(ST_GeomFromText(geom_wkt,4326));",sep="")
+    # Calculate the column    
+    sql<-paste("UPDATE ",table_name," SET geom=ST_Multi(ST_GeomFromText(geom_wkt,4326));",sep="")
     dbSendQuery(con, sql)
-# Remove the column geom_wkt
+    # Remove the column geom_wkt
     sql<-paste("ALTER TABLE ",table_name," DROP COLUMN geom_wkt;",sep="")
     dbSendQuery(con, sql)
   }
-    
+  
   ### Updates the view that gives the labels, with the new code list just inserted 
-
-   table_name_without_schema<-gsub(".*\\.","",table_name)
-   
-   name_view_labels<-paste0(dimension_name,"_labels")
+  
+  table_name_without_schema<-gsub(".*\\.","",table_name)
+  
+  name_view_labels<-paste0(dimension_name,"_labels")
   
   colname_view_id<-paste0("id_",dimension_name)
   colname_view_codesource<-paste0("codesource_",dimension_name)
@@ -510,23 +526,23 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   
   ### Get name of the columns of the view
   columns_names_types_view_label<-dbGetQuery(con,paste0("SELECT
-  a.attname as column,
-  pg_catalog.format_type(a.atttypid, a.atttypmod) as datatype
-  FROM
-  pg_catalog.pg_attribute a
-  WHERE
-  a.attnum > 0
-  AND NOT a.attisdropped
-  AND a.attrelid = (
-    SELECT c.oid
-    FROM pg_catalog.pg_class c
-    LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
-    WHERE c.relname = '",name_view_labels,"' 
-  )"))
+                                                        a.attname as column,
+                                                        pg_catalog.format_type(a.atttypid, a.atttypmod) as datatype
+                                                        FROM
+                                                        pg_catalog.pg_attribute a
+                                                        WHERE
+                                                        a.attnum > 0
+                                                        AND NOT a.attisdropped
+                                                        AND a.attrelid = (
+                                                        SELECT c.oid
+                                                        FROM pg_catalog.pg_class c
+                                                        LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+                                                        WHERE c.relname = '",name_view_labels,"' 
+                                                        )"))
   
   # these are the columns that will not be updated (they will be set with NULL values. User will have then to fill the right columns... to improve in next version)
   columns_names_types_view_label<-columns_names_types_view_label %>% filter (!(column %in% c(colname_view_id,colname_view_codesource,colname_view_tablesource,colname_view_label)))
-
+  
   if ("geom" %in% columns_names_types_view_label$column){
     columns_names_types_view_label = columns_names_types_view_label[columns_names_types_view_label$column != "geom",]
   }
@@ -553,14 +569,14 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
     query_create_view_label<-regmatches(query_create_view_label,regexec(pattern,query_create_view_label))[[1]][1]
     query_create_view_label<-gsub(")\n SELECT vue.id_area","",query_create_view_label)
     query_create_view_label<-paste0(query_create_view_label,sql_query_for_view_label_new_codelist," )
- SELECT vue.id_area,
-    vue.codesource_area,
-    vue.tablesource_area,
-    vue.source_label,
-    vue.source_french_label,
-    vue.source_spanish_label,
-    st_setsrid(vue.geom, 4326) AS geom
-   FROM vue")
+                                    SELECT vue.id_area,
+                                    vue.codesource_area,
+                                    vue.tablesource_area,
+                                    vue.source_label,
+                                    vue.source_french_label,
+                                    vue.source_spanish_label,
+                                    st_setsrid(vue.geom, 4326) AS geom
+                                    FROM vue")
     query_create_view_label<-gsub(";","",query_create_view_label)
     query_create_view_label<-gsub("CREATE OR REPLACE VIEW","DROP MATERIALIZED VIEW area.area_labels; CREATE MATERIALIZED VIEW",query_create_view_label)
   }
@@ -572,7 +588,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   df_metadata$id_metadata<-PK_metadata
   sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
   dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
-  }
+}
 
 
 
@@ -580,67 +596,67 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
 
 load_mapping_in_db<-function(con,df_to_load,df_metadata){
   
-# Check errors: TO DO  (are tables existing? etc.)
+  # Check errors: TO DO  (are tables existing? etc.)
   
-# get table_name corresponding to dataset_name of src_codingsystem and trg_codingsystem
-src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$src_codingsystem),"'"))
-trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$trg_codingsystem),"'"))
-
-DBDimensionName=gsub("\\..*","",src_codingsystem_table_name$database_table_name)
-
-src_codingsystem_table_name$database_table_name<-gsub(".*\\.","",src_codingsystem_table_name$database_table_name)
-trg_codingsystem_table_name$database_table_name<-gsub(".*\\.","",trg_codingsystem_table_name$database_table_name)
-
-# Get the PK of the two tables (DBToTableName and DBFromTableName)
-sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",src_codingsystem_table_name$database_table_name,"'",sep="")   
-FromTable<-dbGetQuery(con, sql)
-
-sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",trg_codingsystem_table_name$database_table_name,"'",sep="")   
-ToTable<-dbGetQuery(con, sql)
-
-# Make mapping
-
-MapFromTableWithMappingTable<-merge(FromTable,df_to_load,by.y="src_code",by.x=paste("codesource_",DBDimensionName,sep=""),all.y=T,all.x=F)
-
-MapFinal<-merge(MapFromTableWithMappingTable,ToTable,by.y=paste("codesource_",DBDimensionName,sep=""),by.x="trg_code",all.x=T,all.y=F)
-
-
-MapFinal <- MapFinal[c(paste0("id_",DBDimensionName,".x"),paste0("id_",DBDimensionName,".y"))]
-MapFinal$mapping_relation_type<-"NA"
-colnames(MapFinal)<-c(paste0(DBDimensionName,"_mapping_id_from"),paste0(DBDimensionName,"_mapping_id_to"),paste0(DBDimensionName,"_mapping_relation_type"))
-
-
-# Load metadata
-rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
-cat("Metadata loaded\n")
-
-# Retrieve the PK of the metadata for the line just inserted
-sql<- "SELECT max(id_metadata) FROM metadata.metadata"
-PK_metadata <- dbGetQuery(con, sql)
-PK_metadata<-as.integer(PK_metadata$max[1])
-
-MapFinal$id_metadata<-PK_metadata
-
-# Insert mapping into mapping table
-
-dbWriteTable(con, c(DBDimensionName, paste(DBDimensionName,"_mapping",sep="")), value = MapFinal,row.names=FALSE,append=TRUE)
-
-
-## Update some metadata elements
-
-# metadata_mapping
-sql<-paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES 
+  # get table_name corresponding to dataset_name of src_codingsystem and trg_codingsystem
+  src_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$src_codingsystem),"'"))
+  trg_codingsystem_table_name<-dbGetQuery(con,paste0("SELECT id_metadata,database_table_name FROM metadata.metadata where identifier='",unique(df_to_load$trg_codingsystem),"'"))
+  
+  DBDimensionName=gsub("\\..*","",src_codingsystem_table_name$database_table_name)
+  
+  src_codingsystem_table_name$database_table_name<-gsub(".*\\.","",src_codingsystem_table_name$database_table_name)
+  trg_codingsystem_table_name$database_table_name<-gsub(".*\\.","",trg_codingsystem_table_name$database_table_name)
+  
+  # Get the PK of the two tables (DBToTableName and DBFromTableName)
+  sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",src_codingsystem_table_name$database_table_name,"'",sep="")   
+  FromTable<-dbGetQuery(con, sql)
+  
+  sql<- paste("SELECT id_",DBDimensionName,",codesource_",DBDimensionName," FROM ",DBDimensionName,".",DBDimensionName," WHERE tablesource_",DBDimensionName,"='",trg_codingsystem_table_name$database_table_name,"'",sep="")   
+  ToTable<-dbGetQuery(con, sql)
+  
+  # Make mapping
+  
+  MapFromTableWithMappingTable<-merge(FromTable,df_to_load,by.y="src_code",by.x=paste("codesource_",DBDimensionName,sep=""),all.y=T,all.x=F)
+  
+  MapFinal<-merge(MapFromTableWithMappingTable,ToTable,by.y=paste("codesource_",DBDimensionName,sep=""),by.x="trg_code",all.x=T,all.y=F)
+  
+  
+  MapFinal <- MapFinal[c(paste0("id_",DBDimensionName,".x"),paste0("id_",DBDimensionName,".y"))]
+  MapFinal$mapping_relation_type<-"NA"
+  colnames(MapFinal)<-c(paste0(DBDimensionName,"_mapping_id_from"),paste0(DBDimensionName,"_mapping_id_to"),paste0(DBDimensionName,"_mapping_relation_type"))
+  
+  
+  # Load metadata
+  rs<-FUNUploadDatasetToTableInDB(con,df_metadata,"metadata.metadata")
+  cat("Metadata loaded\n")
+  
+  # Retrieve the PK of the metadata for the line just inserted
+  sql<- "SELECT max(id_metadata) FROM metadata.metadata"
+  PK_metadata <- dbGetQuery(con, sql)
+  PK_metadata<-as.integer(PK_metadata$max[1])
+  
+  MapFinal$id_metadata<-PK_metadata
+  
+  # Insert mapping into mapping table
+  
+  dbWriteTable(con, c(DBDimensionName, paste(DBDimensionName,"_mapping",sep="")), value = MapFinal,row.names=FALSE,append=TRUE)
+  
+  
+  ## Update some metadata elements
+  
+  # metadata_mapping
+  sql<-paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES 
        (",PK_metadata,",",src_codingsystem_table_name$id_metadata,"),
        (",PK_metadata,",",trg_codingsystem_table_name$id_metadata,")")
-dbSendQuery(con,sql)
-
-
-# sql_query_dataset_extraction
-df_metadata$id_metadata<-PK_metadata
-sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
-dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
-
-
+  dbSendQuery(con,sql)
+  
+  
+  # sql_query_dataset_extraction
+  df_metadata$id_metadata<-PK_metadata
+  sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
+  dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
+  
+  
 }
 
 
