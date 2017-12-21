@@ -290,7 +290,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     } #else { SQL$dynamic_metadata_Keywords_schooltype = NULL }
     
     if (any(dataset_available_dimensions == "unit") & static_metadata_table_name=='fact_tables.effort'){
-       SQL$query_dynamic_list_keywords_effortunit <-paste("SELECT DISTINCT effortunit_rfmo_english_label AS keyword, 'FISHING_EFFORT_UNIT' AS thesaurus FROM ",static_metadata_table_name," JOIN effortunit.effortunit_labels USING (id_effortunit) WHERE id_metadata= ",static_metadata_id,";",sep="")
+       SQL$query_dynamic_list_keywords_effortunit <-paste("SELECT DISTINCT effortunit_rfmo_english_label AS keyword, 'FISHING_EFFORT_UNIT' AS thesaurus FROM ",static_metadata_table_name," JOIN unit.unit_labels USING (id_unit) WHERE id_metadata= ",static_metadata_id,";",sep="")
       #logger.info(paste("SQL Query to get dynamic keywords for effortunit: \n", SQL$query_dynamic_list_keywords_effortunit," \n", sep=" "))
       #logger.info("Running SQL Queries to get dynamic metadata keywords for effortunit  ######################")
        #SQL$dynamic_metadata_Keywords_effortunit <- dbGetQuery(con, SQL$query_dynamic_list_keywords_effortunit)

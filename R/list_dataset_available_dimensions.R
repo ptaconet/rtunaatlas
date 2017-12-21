@@ -54,11 +54,11 @@ list_dataset_available_dimensions<-function(con,dataset_metadata){
   db_dimensions_parameters<-read.csv(system.file("extdata", "db_dimensions_parameters.csv",package="rtunaatlas"),stringsAsFactors = F)
   
   # get type of variable of the dataset
-  table_name=dataset_metadata$table_name
+  table_name=dataset_metadata$database_table_name
   id_metadata=dataset_metadata$id_metadata
-  table_type=dataset_metadata$table_type
+  dataset_type=dataset_metadata$dataset_type
   
-  if (!(table_type=="raw_dataset")) { stop("the dataset provided is not a raw_dataset. You must provide a dataset of type raw_dataset") }
+  if (!(dataset_type=="raw_dataset")) { stop("the dataset provided is not a raw_dataset. You must provide a dataset of type raw_dataset") }
   
   
   variable<-gsub("fact_tables.","",table_name)
