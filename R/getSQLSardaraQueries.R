@@ -206,7 +206,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     select_query_netcdf<-paste(columns_netcdf,collapse=" ",sep="") 
     
     # we remove commas that should not be here
-    select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
+    #select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
     select_query_csv_wms_wfs<-gsub(",$", "", select_query_csv_wms_wfs)
     
     select_query_netcdf<-substr(select_query_netcdf, 1, nchar(select_query_netcdf)-1)
