@@ -190,7 +190,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      join_clause<-" LEFT JOIN area.areas_with_geom area USING (id_area) "
+      join_clause<-" LEFT JOIN area.area_labels area USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
     } else {  # else we recreate the query that outputs the data.frame
@@ -252,8 +252,8 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     SQL$query_NetCDF <- paste ("SELECT ",select_query_netcdf,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
-    SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
-    SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.areas_with_geom tab_geom USING (id_area) ",sep="")
+    SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
+    SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) ",sep="")
     } else {
       SQL$query_wfs_wms <- "You must create a table or a materialized view out of the dataset prior to the creation of the WMS/WFS"
       SQL$query_wfs_wms_aggregated_layer <-   "You must create a table or a materialized view out of the dataset prior to the creation of the WMS/WFS"
@@ -298,9 +298,9 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     #logger.info("Writing SQL Queries for SPATIAL AND TEMPORAL COVERAGES, SRID, FEATURES COUNT  ######################")
      SQL$query_dynamic_metadata_count_features <-  paste("SELECT count(*) FROM ",static_metadata_table_name," c WHERE c.id_metadata = ",static_metadata_id,";", sep="")
-     SQL$query_dynamic_metadata_spatial_Extent <- paste("SELECT ST_XMin(ST_SetSRID(ST_Extent(geom),4326)) as xmin, ST_YMin(ST_SetSRID(ST_Extent(geom),4326)) AS ymin, ST_XMax(ST_SetSRID(ST_Extent(geom),4326)) AS xmax, ST_Ymax(ST_SetSRID(ST_Extent(geom),4326)) AS ymax FROM ",static_metadata_table_name," c LEFT JOIN area.areas_with_geom USING (id_area) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
+     SQL$query_dynamic_metadata_spatial_Extent <- paste("SELECT ST_XMin(ST_SetSRID(ST_Extent(geom),4326)) as xmin, ST_YMin(ST_SetSRID(ST_Extent(geom),4326)) AS ymin, ST_XMax(ST_SetSRID(ST_Extent(geom),4326)) AS xmax, ST_Ymax(ST_SetSRID(ST_Extent(geom),4326)) AS ymax FROM ",static_metadata_table_name," c LEFT JOIN area.area_labels USING (id_area) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
      SQL$query_dynamic_metadata_temporal_Extent <- paste("SELECT MIN(time.time_start) AS start_date, MAX(time.time_end) AS end_date FROM ",static_metadata_table_name," c LEFT JOIN time.time USING (id_time) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
-     SQL$query_dynamic_metadata_get_SRID <-  paste("SELECT ST_SRID(geom) AS SRID FROM ",static_metadata_table_name," c LEFT JOIN area.areas_with_geom USING (id_area)  WHERE c.id_metadata = ",static_metadata_id," LIMIT 1;", sep="")
+     SQL$query_dynamic_metadata_get_SRID <-  paste("SELECT ST_SRID(geom) AS SRID FROM ",static_metadata_table_name," c LEFT JOIN area.area_labels USING (id_area)  WHERE c.id_metadata = ",static_metadata_id," LIMIT 1;", sep="")
     
     #logger.info("Running SQL Queries for SPATIAL AND TEMPORAL COVERAGES, SRID, FEATURES COUNT  ######################")
      #SQL$dynamic_metadata_count_features <- dbGetQuery(con, SQL$query_dynamic_metadata_count_features)
