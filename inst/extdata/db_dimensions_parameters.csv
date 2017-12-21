@@ -14,7 +14,7 @@ time.year,
 Time.time_period,","time_start,time_end,","time.time_start,
 time.time_end,",,LEFT OUTER JOIN time.time USING (id_time)
 area,area.area,id_area,id_area,codesource_area,tablesource_area,geographic_identifier,TRUE,"geographic_identifier,","tab.id_area,
-Area.codesource_area as geographic_identifier,",,,"area_label.source_label as geographic_identifier_label,","LEFT OUTER JOIN area.area USING (id_area) 
+Area.codesource_area as geographic_identifier,",,,"area_labels.source_label as geographic_identifier_label,","LEFT OUTER JOIN area.area USING (id_area) 
 LEFT JOIN area.area_labels USING (id_area)"
 catchtype,catchtype.catchtype,id_catchtype,id_catchtype,codesource_catchtype,tablesource_catchtype,catchtype,TRUE,"catchtype,","catchtype_labels.codesource_catchtype AS catchtype,","catchtype,","catchtype_labels.codesource_catchtype AS catchtype,
 ","Catchtype_labels.source_label AS catchtype_label,",LEFT OUTER JOIN catchtype.catchtype_labels USING (id_catchtype)
