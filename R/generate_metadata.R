@@ -52,6 +52,9 @@ df_metadata$title<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df
 ### temporal_coverage
 df_metadata$temporal_coverage<-paste0("start=",df_metadata$dataset_time_start,";end=",df_metadata$dataset_time_end,";")
 
+### Subject: list of dimensions associated to the dataset
+df_metadata$subject=metadata_file$subject
+
 } else {
   df_metadata$identifier<-metadata_file$persistent_identifier
   df_metadata$title<-metadata_file$title

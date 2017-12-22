@@ -315,8 +315,10 @@ load_raw_dataset_in_db<- function(
     
     
     ## Update some metadata elements
-    # spatial_coverage
-    #saptial_coverage<-paste0("SELECT st_envelope(st_union(geom)) FROM ",df_metadata$database_table_name," JOIN area.area_labels USING (id_area) WHERE id_metadata=",PK_metadata,"
+     # first drop materialized view
+    if(!is.null(df_metadata$database_view_name)){
+    dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";"))
+    }
     
     # sql_query_dataset_extraction
     df_metadata$id_metadata<-PK_metadata
