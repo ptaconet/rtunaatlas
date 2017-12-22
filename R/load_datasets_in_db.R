@@ -18,13 +18,19 @@
 #' 
 #' @details 
 #'
-#' The data.frames must comply with defined structures. 
+#' The input data.frames (parameters \code{df_to_load}) must comply with defined structures. 
 #' 
-#' For raw datasets (df_to_load used in function load_raw_dataset_in_db): A REDIGER
+#' For raw datasets: A REDIGER
 #' 
-#' For code lists (df_to_load used in function load_codelist_in_db): df_to_load should have at minimum 1 column 'code', containing the unique and not null codes for the code list, ans a column "label" with associated label. Any additional column is accepted. For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format
+#' For code lists: 
+#' \itemize{
+#' \item{1 column named 'code':}  containing the unique and not null codes for the code list
+#' \item{1 column named 'label':}  associated label. 
+#' \item{Any additional column is accepted}. 
+#' \item{For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format}
+#' }
 #' 
-#' For mappings (df_to_load used in function load_mapping_in_db):: The code lists used in the mapping must be available in the DB. df_to_load should have the following structure:
+#' For code lists mappings: 
 #' \itemize{
 #' \item{1 column named 'src_code':} {code of the code list source (code to map)}
 #' \item{1 column named 'trg_code':} {code of the code list target}
@@ -32,9 +38,11 @@
 #' \item{1 column named 'trg_codingsystem':} {name (dataset_name) of the coding system in Sardara from where the code target is extracted. The code list must be in the database.}
 #' }
 #' 
-#' For df_codelists_input: a template is available under inst/extdata/template_df_codelist
+#' In addition, The code lists used in the mapping must be available in the DB.
 #' 
-#' For df_metadata: a template of the metadata data.frame to use is available under inst/extdata/template_metadata.csv
+#' For \code{df_codelists_input}: a template is available under inst/extdata/template_df_code_list.csv
+#' 
+#' For \code{df_metadata}: a template of the metadata data.frame to use is available under inst/extdata/template_metadata.csv
 #' 
 #' @family load data to database
 #' 

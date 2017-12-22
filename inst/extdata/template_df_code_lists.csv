@@ -1,8 +1,7 @@
-dimension,sardara_code_list_table_name
+dimension,code_list_identifier
 area,area_wkt
 catchtype,catchtype_ob7
-catchunit,catchunit_rfmos
-effortunit,effortunit_rfmos
+unit,catchunit_rfmos
 flag,flag_fao_cwp
 gear,geargroup_tunaatlas
 schooltype,schooltype_rfmos
