@@ -119,8 +119,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
                                                                                  u1.codesource_area as geographic_identifier,
                                                                                  u2.codesource_area as conv_factor_df_geo_id
                                                                                  from
-                                                                                 area.areas_with_geom u1,
-                                                                                 area.areas_with_geom u2
+                                                                                 area.area_labels u1,
+                                                                                 area.area_labels u2
                                                                                  where
                                                                                  u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') and u1.tablesource_area='",codelist_geoidentifiers_df_input,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"')
                                                                                  and ST_Contains(u2.geom, u1.geom)",sep=""))
