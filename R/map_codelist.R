@@ -76,7 +76,7 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
   
   #group by the new dimension
   if (keep_src_code==FALSE){
-    df_input<-df_input %>% group_by_(.dots = setdiff(column_names_df_input,"value")) %>% summarize(value=sum(value))
+    df_input<-df_input %>% group_by_(.dots = setdiff(column_names_df_input,"value")) %>% summarise(value=sum(value))
   }
   
   df_input<-data.frame(df_input)
