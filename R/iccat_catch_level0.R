@@ -41,7 +41,7 @@ iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
   
   datasets_permanent_identifiers="'atlantic_ocean_catch_tunaatlasICCAT_level0__noSchool'"
   
-  metadata_datasets_WithoutSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_WithoutSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
@@ -51,7 +51,7 @@ iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
   if (include_type_of_school==TRUE){
     # Retrieve ICCAT dataset with schooltype information (task2 by operation mode) (https://goo.gl/f2jz5R). We do not use the template (template_query_catches) because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
    datasets_permanent_identifiers="'atlantic_ocean_catch_1deg_1m_ps_tunaatlasICCAT_level0__bySchool'"
-   metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+   metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
     
     iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
 

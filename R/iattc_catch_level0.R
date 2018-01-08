@@ -48,15 +48,15 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_
   
   # The data that are not Purse Seine do not suffer any correction for level 0. They are taken as distributed by IATTC.
   datasets_permanent_identifiers_notPS="'east_pacific_ocean_catch_1deg_1m_bb_tunaatlasIATTC_level0__tuna_byFlag','east_pacific_ocean_catch_5deg_1m_ll_tunaatlasIATTC_level0__tuna_billfish','east_pacific_ocean_catch_5deg_1m_ll_tunaatlasIATTC_level0__shark'"
-  metadata_datasets_notPS<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_notPS,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_notPS<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_notPS,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # Datasets that are stratified by schooltype but not by flag
   datasets_permanent_identifiers_PSSetType="'east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_bySchool','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_bySchool','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_bySchool'"
-  metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_PSSetType,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSSetType,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # Datasets that are stratified by flag but not by schooltype
   datasets_permanent_identifiers_PSFlag="'east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_byFlag','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_byFlag','east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_byFlag'"
-  metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers_PSFlag,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSFlag,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # Retrieve IATTC georef. catches not Purse Seine
   df_iattc_notps<-extract_and_merge_multiple_datasets(con,metadata_datasets_notPS,columns_to_keep)

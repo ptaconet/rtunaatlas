@@ -33,7 +33,7 @@ ccsbt_catch_level0<-function(year_tunaatlas){
   # retrieves 2 lines. CCSBT level0 is only the combination of the 2 CCSBT catch-and-effort datasets: southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface , southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0
   datasets_permanent_identifiers="'southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface','southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0'"
   
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
