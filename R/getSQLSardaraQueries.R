@@ -192,7 +192,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
-      join_clause<-" LEFT JOIN area.area_labels area USING (id_area) "
+      join_clause<-" LEFT JOIN area.area_labels USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
     } else {  # else we recreate the query that outputs the data.frame
