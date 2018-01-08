@@ -66,15 +66,15 @@
     where_clause<-NULL
     
     if(!is.null(dataset_name)){
-      where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+      where_clause<-paste0(where_clause," and identifier = '",dataset_name,"'")
     }
     
     if(!is.null(source_authority)){
       source_authority<-paste(source_authority, collapse = "','")
-      where_clause<-paste0(where_clause," and dataset_origin_institution IN ('",source_authority,"')")
+      where_clause<-paste0(where_clause," and source IN ('",source_authority,"')")
     }
     
-    metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null ",where_clause," order by dataset_origin_institution,table_name",sep=))
+    metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where lineage is not null ",where_clause," order by source,identifier",sep=))
     
     if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
     
@@ -86,12 +86,12 @@ list_metadata_codelists<-function(con,dataset_name=NULL,source_authority=NULL,di
   where_clause<-NULL
   
   if(!is.null(dataset_name)){
-    where_clause<-paste0(where_clause," and dataset_name = '",dataset_name,"'")
+    where_clause<-paste0(where_clause," and identifier = '",dataset_name,"'")
   }
   
   if(!is.null(source_authority)){
     source_authority<-paste(source_authority, collapse = "','")
-    where_clause<-paste0(where_clause," and dataset_origin_institution IN ('",source_authority,"')")
+    where_clause<-paste0(where_clause," and source IN ('",source_authority,"')")
   }
   
   if(!is.null(dimension)){
@@ -99,7 +99,7 @@ list_metadata_codelists<-function(con,dataset_name=NULL,source_authority=NULL,di
     where_clause<-paste0(where_clause," and split_part(table_name, '.', 1) IN ('",dimension,"')")
   }
   
-  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='codelist' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where lineage is not null and dataset_type='codelist' ",where_clause," order by source,identifier",sep=))
   
   if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
