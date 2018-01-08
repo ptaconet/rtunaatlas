@@ -27,7 +27,7 @@
 #' \item{1 column named 'code':}  containing the unique and not null codes for the code list
 #' \item{1 column named 'label':}  associated label. 
 #' \item{Any additional column is accepted}. 
-#' \item{For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format}
+#' \item{For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format. If geometries are missing, the colum must be filled-in with value NA}
 #' }
 #' 
 #' For code lists mappings: 
@@ -521,6 +521,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   }
   
   ### Updates the view that gives the labels, with the new code list just inserted 
+  cat("Updating materialized view of labels...\n")
   
   table_name_without_schema<-gsub(".*\\.","",table_name)
   
@@ -588,10 +589,12 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
                                     FROM vue")
     query_create_view_label<-gsub(";","",query_create_view_label)
     query_create_view_label<-gsub("CREATE OR REPLACE VIEW","DROP MATERIALIZED VIEW area.area_labels; CREATE MATERIALIZED VIEW",query_create_view_label)
-  }
+    }
   
   #finally send the query to recreate the view for the labels with the new code list inserted
   dbSendQuery(con,query_create_view_label)
+  cat("Materialized view of labels updated\n")
+  
   
   ## fill-in metadata 'sql_query_dataset_extraction'
   df_metadata$id_metadata<-PK_metadata
