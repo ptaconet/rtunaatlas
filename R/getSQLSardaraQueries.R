@@ -191,6 +191,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
       join_clause<-" LEFT JOIN area.area_labels area USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
@@ -207,7 +208,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=" ",sep="") 
     select_query_netcdf<-paste(columns_netcdf,collapse=" ",sep="") 
     select_query_csv_wms_wfs_with_labels<-paste(columns_csv_wms_wfs_with_labels,collapse=" ",sep="") 
-    
+
     # we remove commas that should not be here
     select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
     select_query_csv_wms_wfs<-gsub(",$", "", select_query_csv_wms_wfs)
@@ -217,8 +218,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
     
     select_query_csv_wms_wfs_with_labels<-substr(select_query_csv_wms_wfs_with_labels, 1, nchar(select_query_csv_wms_wfs_with_labels)-1)
     select_query_csv_wms_wfs_with_labels<-gsub(",$", "", select_query_csv_wms_wfs_with_labels)
-    
-    
+
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
     # create WHERE clause for queries wms/wfs
