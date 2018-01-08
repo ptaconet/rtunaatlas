@@ -27,9 +27,8 @@
 ccsbt_catch_level0<-function(year_tunaatlas){
   
   # Select ccsbt raw datasets release on the year year_tunaatlas
-  
   drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
+  con <- dbConnect(drv, dbname="tunaatlas", user="tunaatlas_u", password="21c0551e7ed2911", host="db-tuna.d4science.org")
   
   # retrieves 2 lines. CCSBT level0 is only the combination of the 2 CCSBT catch-and-effort datasets: southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface , southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0
   datasets_permanent_identifiers="'southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface','southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0'"

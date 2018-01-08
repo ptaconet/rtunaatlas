@@ -29,7 +29,7 @@ wcpfc_catch_level0<-function(year_tunaatlas){
   # Select wcpfc raw datasets release on the year year_tunaatlas
   
   drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
+  con <- dbConnect(drv, dbname="tunaatlas", user="tunaatlas_u", password="21c0551e7ed2911", host="db-tuna.d4science.org")
   
   # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
   
