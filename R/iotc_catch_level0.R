@@ -29,13 +29,13 @@ iotc_catch_level0<-function(year_tunaatlas){
   # Select iotc raw datasets release on the year year_tunaatlas
   
   drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
+  con <- dbConnect(drv, dbname="tunaatlas", user="tunaatlas_u", password="21c0551e7ed2911", host="db-tuna.d4science.org")
   
   # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
   
   datasets_permanent_identifiers="'indian_ocean_catch_ll_tunaatlasIOTC_level0','indian_ocean_catch_tunaatlasIOTC_level0__coastal','indian_ocean_catch_tunaatlasIOTC_level0__surface'"
   
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
   
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
