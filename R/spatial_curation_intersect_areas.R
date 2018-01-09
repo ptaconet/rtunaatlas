@@ -98,8 +98,8 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
   
   inputAreas_forQuery<-paste(unique(df_input$geographic_identifier), collapse = '\',\'')
   
-  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where identifier='",df_spatial_code_list_name,"'"))$table_name
-  db_table_name_intersectionArea<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where identifier='",intersection_spatial_code_list_name,"'"))$table_name
+  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT identifier from metadata.metadata where identifier='",df_spatial_code_list_name,"'"))$table_name
+  db_table_name_intersectionArea<-dbGetQuery(con,paste0("SELECT identifier from metadata.metadata where identifier='",intersection_spatial_code_list_name,"'"))$table_name
   
   #names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
   #names_codes_labels_table_intersectionArea<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_intersectionArea,"'"))
