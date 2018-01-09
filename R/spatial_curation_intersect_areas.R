@@ -98,22 +98,41 @@ spatial_curation_intersect_areas<-function(con, df_input, df_spatial_code_list_n
   
   inputAreas_forQuery<-paste(unique(df_input$geographic_identifier), collapse = '\',\'')
   
-  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",df_spatial_code_list_name,"'"))$table_name
-  db_table_name_intersectionArea<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",intersection_spatial_code_list_name,"'"))$table_name
+  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where identifier='",df_spatial_code_list_name,"'"))$table_name
+  db_table_name_intersectionArea<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where identifier='",intersection_spatial_code_list_name,"'"))$table_name
   
-  names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
-  names_codes_labels_table_intersectionArea<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_intersectionArea,"'"))
+  #names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
+  #names_codes_labels_table_intersectionArea<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_intersectionArea,"'"))
   
-  name_geom_table_inputAreas<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))
-  name_geom_table_intersectionArea<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_intersectionArea,"'"))
+  #name_geom_table_inputAreas<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))
+  #name_geom_table_intersectionArea<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_intersectionArea,"'"))
   
+  
+  #query_data_inland<-paste("WITH 
+  #                         source_layer AS (
+  #                         SELECT ",names_codes_labels_table_inputAreas$code," as code, ",names_codes_labels_table_inputAreas$english_label_column," AS label, ",name_geom_table_inputAreas$f_geometry_column," as geom FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')
+  #                         ),intersection_layer
+  #                         AS (
+  #                         SELECT ",names_codes_labels_table_intersectionArea$code," as code, ",names_codes_labels_table_intersectionArea$english_label_column," AS label, ",name_geom_table_intersectionArea$f_geometry_column," as geom FROM area.",intersection_spatial_code_list_name,"
+  #                         )
+  #                         SELECT 
+  #                         source_layer.code as geographic_identifier_source_layer,
+  #                         intersection_layer.code as geographic_identifier_intersection_layer,
+  #                         '",df_spatial_code_list_name,"' as codelist_source_layer,
+  #                         '",intersection_spatial_code_list_name,"' as codelist_intersection_layer,
+  #                         ST_Area(ST_Intersection(source_layer.geom, intersection_layer.geom))/ST_Area(source_layer.geom) as proportion_source_area_intersection
+  #                         FROM 
+  #                         source_layer,intersection_layer
+  #                         WHERE
+  #                         ST_Intersects(source_layer.geom, intersection_layer.geom)"
+  #                         ,sep="")
   
   query_data_inland<-paste("WITH 
                            source_layer AS (
-                           SELECT ",names_codes_labels_table_inputAreas$code," as code, ",names_codes_labels_table_inputAreas$english_label_column," AS label, ",name_geom_table_inputAreas$f_geometry_column," as geom FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')
+                           SELECT code, label, geom FROM area.",df_spatial_code_list_name," WHERE code IN ('",inputAreas_forQuery,"')
                            ),intersection_layer
                            AS (
-                           SELECT ",names_codes_labels_table_intersectionArea$code," as code, ",names_codes_labels_table_intersectionArea$english_label_column," AS label, ",name_geom_table_intersectionArea$f_geometry_column," as geom FROM area.",intersection_spatial_code_list_name,"
+                           SELECT code, label, geom FROM area.",intersection_spatial_code_list_name,"
                            )
                            SELECT 
                            source_layer.code as geographic_identifier_source_layer,
