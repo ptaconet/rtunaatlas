@@ -361,9 +361,9 @@ load_raw_dataset_in_db<- function(
       if (!(schema_name %in% list_of_schemas)){
         dbSendQuery(con,paste0("CREATE SCHEMA ",schema_name))
       }
-      # Create the materialized view
+      # Create the materialized view without the labels (to get the labels, replace sql_query_dataset_extraction$query_CSV by sql_query_dataset_extraction$query_CSV_with_labels)
       dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";
-                             CREATE MATERIALIZED VIEW ",df_metadata$database_view_name," AS ",sql_query_dataset_extraction$query_CSV_with_labels))
+                             CREATE MATERIALIZED VIEW ",df_metadata$database_view_name," AS ",sql_query_dataset_extraction$query_CSV))
     }
     
     }
