@@ -377,7 +377,7 @@ load_raw_dataset_in_db<- function(
 ## Code to add a new code list in the Sardara DB
 load_codelist_in_db<-function(con,df_to_load,df_metadata){
   
-  ## change all columns to "text" format. in the db, the columns will all be set to "all"
+  ## change all columns to "text" format. in the db, the columns will all be set to "text"
   df_to_load<-df_to_load %>% mutate_all(as.character)
   df_metadata<-df_metadata %>% mutate_all(as.character)
   
