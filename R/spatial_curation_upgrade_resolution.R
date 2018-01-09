@@ -52,7 +52,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
                                                                   USING (geom)
                                                                   WHERE codesource_area IN ('",df_input_distinct_area,"')
                                                                   AND tablesource_area='areas_tuna_rfmos_task2'
-                                                                  and spatial_resolution=",resolution))
+                                                                  and spatial_resolution='",resolution,"'"))
   
   # df_input that is already 5deg resolution, with the cwp code associated
   df_input_to_leave_as_so<-inner_join(df_input,cwp_grid_data_with_resolution_to_upgrade,by="geographic_identifier")
