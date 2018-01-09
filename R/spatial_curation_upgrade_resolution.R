@@ -81,13 +81,13 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
       ST_Within(a2.geom, a1.geom)
       UNION
       SELECT
-      a2.code_area as input_geographic_identifier,
+      a2.code as input_geographic_identifier,
       left(a1.code,7) as geographic_identifier_project
       from
       area.cwp_grid a1,
       area.irregular_areas_task2_iotc a2
       where
-      a2.code_area IN ('",area_changeresolution,"') and
+      a2.code IN ('",area_changeresolution,"') and
       a1.size_grid='6' and 
       ST_Within(a2.geom, a1.geom)"))
   
@@ -120,13 +120,13 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
     ST_Within(a1.geom, a2.geom)
     UNION
     SELECT
-    a2.code_area as input_geographic_identifier,
+    a2.code as input_geographic_identifier,
     left(a1.code,7) as geographic_identifier_project
     from
     area.cwp_grid a1,
     area.irregular_areas_task2_iotc a2
     where
-    a2.code_area IN ( '",area_changeresolution,"') and
+    a2.code IN ( '",area_changeresolution,"') and
     a1.size_grid='6' and 
     ST_Within(a1.geom, a2.geom)"))
 
