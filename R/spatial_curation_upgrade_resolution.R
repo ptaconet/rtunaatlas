@@ -77,7 +77,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
       area.cwp_grid a2
       where
       a2.code IN ('",area_changeresolution,"') and
-      a1.size_grid = 6 and a2.size_grid = 5 and 
+      a1.size_grid = '6' and a2.size_grid = '5' and 
       ST_Within(a2.geom, a1.geom)
       UNION
       SELECT
@@ -88,7 +88,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
       area.irregular_areas_task2_iotc a2
       where
       a2.code_area IN ('",area_changeresolution,"') and
-      a1.size_grid=6 and 
+      a1.size_grid='6' and 
       ST_Within(a2.geom, a1.geom)"))
   
   if (nrow(areas_to_project_data_to_aggregate)>0){
@@ -116,7 +116,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
     area.cwp_grid a2
     where
     a2.code IN ( '",area_changeresolution,"') and
-    a1.size_grid=6 and a2.size_grid IN (1,2,7,8,9) and 
+    a1.size_grid='6' and a2.size_grid IN ('1','2','7','8','9') and 
     ST_Within(a1.geom, a2.geom)
     UNION
     SELECT
@@ -127,7 +127,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
     area.irregular_areas_task2_iotc a2
     where
     a2.code_area IN ( '",area_changeresolution,"') and
-    a1.size_grid=6 and 
+    a1.size_grid='6' and 
     ST_Within(a1.geom, a2.geom)"))
 
 if (nrow(areas_to_project_data_to_disaggregate)>0){
