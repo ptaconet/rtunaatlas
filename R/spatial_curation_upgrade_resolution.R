@@ -47,7 +47,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   df_input_distinct_area<-paste(unique(df_input_distinct_area), collapse = '\',\'')
   
   # get distinct of areas in 5° in the df_input
-  cwp_grid_data_with_resolution_to_upgrade<-dbGetQuery(con,paste0("SELECT codesource_area as geographic_identifier,left(cwp_grid.gridcode_cwp,7) as gridcode_cwp FROM area.areas_with_geom 
+  cwp_grid_data_with_resolution_to_upgrade<-dbGetQuery(con,paste0("SELECT codesource_area as geographic_identifier,left(cwp_grid.gridcode_cwp,7) as gridcode_cwp FROM area.area_labels 
                                                                   JOIN area.cwp_grid
                                                                   USING (geom)
                                                                   WHERE codesource_area IN ('",df_input_distinct_area,"')
