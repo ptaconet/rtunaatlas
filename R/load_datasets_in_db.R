@@ -592,7 +592,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
     }
   
   #finally send the query to recreate the view for the labels with the new code list inserted
-  ###### dbSendQuery(con,query_create_view_label)
+  dbSendQuery(con,query_create_view_label)
   cat("Materialized view of labels updated\n")
   
   
