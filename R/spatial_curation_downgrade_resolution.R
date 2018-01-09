@@ -72,10 +72,10 @@ spatial_curation_downgrade_resolution<-function(con,df_input,resolution){
   # get areas to project data that are superior to 5°/1°
   
   if (resolution==1){
-    a1.size_grid=5
+    a1.size_grid='5'
     a2.size_grid="('1','2','6','7','8','9')"
   } else if (resolution==5){
-    a1.size_grid=6
+    a1.size_grid='6'
     a2.size_grid="('1','2','7','8','9')"
   }
   
