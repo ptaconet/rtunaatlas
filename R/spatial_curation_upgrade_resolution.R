@@ -47,7 +47,7 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   df_input_distinct_area<-paste(unique(df_input_distinct_area), collapse = '\',\'')
   
   # get distinct of areas in 5° in the df_input
-  cwp_grid_data_with_resolution_to_upgrade<-dbGetQuery(con,paste0("SELECT codesource_area as geographic_identifier,left(cwp_grid.gridcode_cwp,7) as gridcode_cwp FROM area.area_labels 
+  cwp_grid_data_with_resolution_to_upgrade<-dbGetQuery(con,paste0("SELECT codesource_area as geographic_identifier,left(cwp_grid.code,7) as code FROM area.area_labels 
                                                                   JOIN area.cwp_grid
                                                                   USING (geom)
                                                                   WHERE codesource_area IN ('",df_input_distinct_area,"')
@@ -56,8 +56,8 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   
   # df_input that is already 5deg resolution, with the cwp code associated
   df_input_to_leave_as_so<-inner_join(df_input,cwp_grid_data_with_resolution_to_upgrade,by="geographic_identifier")
-  df_input_to_leave_as_so$geographic_identifier<-df_input_to_leave_as_so$gridcode_cwp
-  df_input_to_leave_as_so$gridcode_cwp<-NULL
+  df_input_to_leave_as_so$geographic_identifier<-df_input_to_leave_as_so$code
+  df_input_to_leave_as_so$code<-NULL
   
   
   # get distinct of areas not in 5° in the df_input (either > or < to 5°)
@@ -70,19 +70,19 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   areas_to_project_data_to_aggregate<-
     dbGetQuery(con,paste0( 
       "SELECT
-      left(a2.gridcode_cwp,7) as input_geographic_identifier,
-      left(a1.gridcode_cwp,7) as geographic_identifier_project
+      left(a2.code,7) as input_geographic_identifier,
+      left(a1.code,7) as geographic_identifier_project
       from
       area.cwp_grid a1,
       area.cwp_grid a2
       where
-      a2.gridcode_cwp IN ('",area_changeresolution,"') and
+      a2.code IN ('",area_changeresolution,"') and
       a1.size_grid = 6 and a2.size_grid = 5 and 
       ST_Within(a2.geom, a1.geom)
       UNION
       SELECT
       a2.code_area as input_geographic_identifier,
-      left(a1.gridcode_cwp,7) as geographic_identifier_project
+      left(a1.code,7) as geographic_identifier_project
       from
       area.cwp_grid a1,
       area.irregular_areas_task2_iotc a2
@@ -109,19 +109,19 @@ spatial_curation_upgrade_resolution<-function(con,df_input,resolution){
   # get df_input that is defined on resolution superior to 5° ( = neither defined on 5° nor on resolutions inferior to 5°)
   areas_to_project_data_to_disaggregate<-dbGetQuery(con,paste0( 
     "SELECT
-    left(a2.gridcode_cwp,7) as input_geographic_identifier,
-    left(a1.gridcode_cwp,7) as geographic_identifier_project
+    left(a2.code,7) as input_geographic_identifier,
+    left(a1.code,7) as geographic_identifier_project
     from
     area.cwp_grid a1,
     area.cwp_grid a2
     where
-    a2.gridcode_cwp IN ( '",area_changeresolution,"') and
+    a2.code IN ( '",area_changeresolution,"') and
     a1.size_grid=6 and a2.size_grid IN (1,2,7,8,9) and 
     ST_Within(a1.geom, a2.geom)
     UNION
     SELECT
     a2.code_area as input_geographic_identifier,
-    left(a1.gridcode_cwp,7) as geographic_identifier_project
+    left(a1.code,7) as geographic_identifier_project
     from
     area.cwp_grid a1,
     area.irregular_areas_task2_iotc a2
