@@ -167,7 +167,7 @@ df_metadata$lineage<-metadata_file$lineage
 
 words_to_replace<-gsub("[\\%\\%]", "", regmatches(df_metadata$lineage, gregexpr("\\%.*?\\%", df_metadata$lineage))[[1]])
 if (length(words_to_replace>0)){
-for (i in 1:words_to_replace){
+for (i in 1:length(words_to_replace)){
   df_metadata$lineage<-gsub(paste0("%",words_to_replace[i],"%"),metadata_file[,words_to_replace],df_metadata$lineage)
 }
 }
