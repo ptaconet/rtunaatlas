@@ -359,7 +359,7 @@ load_raw_dataset_in_db<- function(
       schema_name<-sub('\\..*', '', df_metadata$database_view_name)
       # Create the schema if it does not exist
       if (!(schema_name %in% list_of_schemas)){
-        dbSendQuery(con,paste0("CREATE SCHEMA ",schema_name))
+        dbSendQuery(con,paste0("CREATE SCHEMA ",schema_name,"; GRANT USAGE ON SCHEMA ",schema_name," TO tunaatlas_inv;ALTER DEFAULT PRIVILEGES IN SCHEMA ",schema_name," GRANT SELECT ON TABLES TO tunaatlas_inv;"))
       }
       # Create the materialized view without the labels (to get the labels, replace sql_query_dataset_extraction$query_CSV by sql_query_dataset_extraction$query_CSV_with_labels)
       dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";

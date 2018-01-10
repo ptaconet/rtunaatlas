@@ -35,9 +35,7 @@
 iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
   
   # Select iccat raw datasets release on the year year_tunaatlas
-  
-  drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="tunaatlas", user="tunaatlas_u", password="21c0551e7ed2911", host="db-tuna.d4science.org")
+  con <- db_connection_tunaatlas_world()
   
   datasets_permanent_identifiers="'atlantic_ocean_catch_tunaatlasICCAT_level0__noSchool'"
   

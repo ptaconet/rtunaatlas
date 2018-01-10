@@ -43,8 +43,7 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
   
   # Select iattc raw datasets release on the year year_tunaatlas
-  drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="tunaatlas", user="tunaatlas_u", password="21c0551e7ed2911", host="db-tuna.d4science.org")
+  con <- db_connection_tunaatlas_world()
   
   # The data that are not Purse Seine do not suffer any correction for level 0. They are taken as distributed by IATTC.
   datasets_permanent_identifiers_notPS="'east_pacific_ocean_catch_1deg_1m_bb_tunaatlasIATTC_level0__tuna_byFlag','east_pacific_ocean_catch_5deg_1m_ll_tunaatlasIATTC_level0__tuna_billfish','east_pacific_ocean_catch_5deg_1m_ll_tunaatlasIATTC_level0__shark'"
