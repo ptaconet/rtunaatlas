@@ -42,12 +42,18 @@ df_metadata$dataset_time_end<-metadata_file$dataset_time_end
 
 ### identifier
 df_metadata$identifier<-gsub("tunaatlas",paste(df_metadata$dataset_time_start,df_metadata$dataset_time_end,"tunaatlas",sep="_"),metadata_file$persistent_identifier)
-df_metadata$identifier<-gsub("level0",paste(metadata_file$year_tuna_atlas,"level0",sep="_"),df_metadata$identifier)
+#df_metadata$identifier<-gsub("level0",paste(metadata_file$year_tuna_atlas,"level0",sep="_"),df_metadata$identifier)
+df_metadata$identifier<-gsub("level",paste0(metadata_file$year_tuna_atlas,"_level"),df_metadata$identifier)
 df_metadata$identifier<-gsub("-","_",df_metadata$identifier)
 
 ### title
 df_metadata$title<-gsub("%date_start%",substr(df_metadata$dataset_time_start,1,4),metadata_file$title)
 df_metadata$title<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df_metadata$title)
+
+### description
+df_metadata$description<-gsub("%date_start%",substr(df_metadata$dataset_time_start,1,4),metadata_file$description)
+df_metadata$description<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df_metadata$description)
+
 
 ### temporal_coverage
 df_metadata$temporal_coverage<-paste0("start=",df_metadata$dataset_time_start,";end=",df_metadata$dataset_time_end,";")
