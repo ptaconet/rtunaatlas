@@ -33,7 +33,7 @@ wcpfc_catch_level0<-function(year_tunaatlas){
   
   datasets_permanent_identifiers="'west_pacific_ocean_catch_5deg_1m_ll_tunaatlasWCPFC_level0__1950to1970','west_pacific_ocean_catch_5deg_1m_ll_tunaatlasWCPFC_level0__1990to2000','west_pacific_ocean_catch_5deg_1m_tunaatlasWCPFC_level0__driftnet','west_pacific_ocean_catch_5deg_1m_ll_tunaatlasWCPFC_level0__2000','west_pacific_ocean_catch_5deg_1m_bb_tunaatlasWCPFC_level0','west_pacific_ocean_catch_5deg_1m_ps_tunaatlasWCPFC_level0','west_pacific_ocean_catch_5deg_1m_ll_tunaatlasWCPFC_level0__1970to1980','west_pacific_ocean_catch_5deg_1m_ll_tunaatlasWCPFC_level0__1980to1990'"
   
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_%'"))
+  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_level0%'"))
   
   # columns for catch
   columns_to_keep<-c("source_authority","species","gear","flag","schooltype","time_start","time_end","geographic_identifier","catchtype","unit","value")
