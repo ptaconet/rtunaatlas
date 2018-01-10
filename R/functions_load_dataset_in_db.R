@@ -71,7 +71,7 @@ FUNMergeDimensions_NonCodeListLike<-function(DBconnection,   # connection to DB
   
   # Merge inputDataset codes with Sardara codes
   inputDataset<-data.table(inputDataset)
-  inputDatasetMergedWithDBCodeList<-merge(inputDataset,CodeListFromDB,by=colnames_to_merge_vectorformat,all.x=TRUE)
+  inputDatasetMergedWithDBCodeList<-left_join(inputDataset,CodeListFromDB,by=colnames_to_merge_vectorformat,all.x=TRUE)
   inputDatasetMergedWithDBCodeList<-as.data.frame(inputDatasetMergedWithDBCodeList)
   
   return(inputDatasetMergedWithDBCodeList)
