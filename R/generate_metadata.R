@@ -63,6 +63,7 @@ df_metadata$temporal_coverage<-paste0("start=",df_metadata$dataset_time_start,";
 } else {
   df_metadata$identifier<-metadata_file$persistent_identifier
   df_metadata$title<-metadata_file$title
+  df_metadata$description<-metadata_file$description
 }
 
 ### Subject
@@ -112,9 +113,6 @@ df_metadata$contacts_and_roles<-paste0(contacts_and_roles,contact_processor)
 
 ### subject
 df_metadata$subject<-metadata_file$subject
-
-### description
-df_metadata$description<-metadata_file$description
 
 ### date
 columns_dates<-colnames(metadata_file)[grep("date_",colnames(metadata_file))]
