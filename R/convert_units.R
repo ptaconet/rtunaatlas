@@ -190,9 +190,9 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   
   stats_before_conversion<-df_input %>%
-    rename(unit_source = unit) %>%
-    group_by(unit_source,unit_target) %>%
-    summarize(sum_unit_source_before_conversion=sum(value)) %>%
+    #rename(unit_source = unit) %>%
+    group_by(unit,unit_target) %>%
+    summarise(sum_unit_source_before_conversion=sum(value)) %>%
     filter(!is.na(unit_target)) 
   # mutate(unit_target = ifelse(is.na(unit_target), unit_source,unit_target))
   
@@ -210,9 +210,9 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   df_input$value[index.not_na.conv_factor]<-df_input$value[index.not_na.conv_factor]*df_input$conversion_factor[index.not_na.conv_factor]
   
   stats_after_conversion<-df_input %>% 
-    rename(unit_source = unit) %>%
-    group_by(unit_source,unit_target) %>%
-    summarize(sum_unit_target_after_conversion=sum(value)) %>%
+    #rename(unit_source = unit) %>%
+    group_by(unit,unit_target) %>%
+    summarise(sum_unit_target_after_conversion=sum(value)) %>%
     filter(!is.na(unit_target))
   # mutate(unit_target = ifelse(is.na(unit_target), unit_source,unit_target))
   
@@ -240,11 +240,11 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   
   
-  stats %>% group_by(unit_source)%>%
-    summarize(sum_unit_source_before_conversion=sum(sum_unit_source_before_conversion))
+  stats %>% group_by(unit)%>%
+    summarise(sum_unit_source_before_conversion=sum(sum_unit_source_before_conversion))
   
   stats %>% group_by(unit_target)%>%
-    summarize(sum_unit_target_after_conversion=sum(sum_unit_target_after_conversion))
+    summarise(sum_unit_target_after_conversion=sum(sum_unit_target_after_conversion))
   
   
   
