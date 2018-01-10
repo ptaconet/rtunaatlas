@@ -121,13 +121,15 @@ columns_dates<-colnames(metadata_file)[grep("date_",colnames(metadata_file))]
 roles<-gsub("date_","",columns_dates)
 
 date<-NULL
+
+if (length(columns_dates)>0){
 for (j in 1:length(columns_dates)){
   if (!is.na(metadata_file[,columns_dates[j]])){
   date<-paste0(date,roles[j],"=",metadata_file[,columns_dates[j]],";")
   }
 }
-
 df_metadata$date<-date
+}
 
 ### format
 df_metadata$format<-metadata_file$format
@@ -141,14 +143,14 @@ columns_relation<-colnames(metadata_file)[grep("relation_",colnames(metadata_fil
 roles<-gsub("relation_","",columns_relation)
 
 relation<-NULL
+if (length(columns_dates)>0){
 for (j in 1:length(columns_relation)){
   if (!is.na(metadata_file[,columns_relation[j]])){
   relation<-paste0(relation,roles[j],"=",metadata_file[,columns_relation[j]],";")
   }
 }
-
 df_metadata$relation<-relation
-
+}
 ### spatial_coverage
 # DONE AFTER THE UPLOAD OF THE DATASET (in the function load_dataset_in_db)
 
@@ -160,9 +162,19 @@ df_metadata$rights<-metadata_file$rights
 df_metadata$source<-metadata_file$source
 
 ### lineage
-df_metadata$lineage<-gsub("%date_download%",metadata_file$date_download,metadata_file$lineage)
-df_metadata$lineage<-gsub("%relation_source_dataset%",metadata_file$relation_source_dataset,df_metadata$lineage)
-df_metadata$lineage<-gsub("%relation_source_download%",metadata_file$relation_source_download,df_metadata$lineage)
+
+df_metadata$lineage<-metadata_file$lineage
+
+words_to_replace<-gsub("[\\%\\%]", "", regmatches(df_metadata$lineage, gregexpr("\\%.*?\\%", df_metadata$lineage))[[1]])
+if (length(words_to_replace>0)){
+for (i in 1:words_to_replace){
+  df_metadata$lineage<-gsub(paste0("%",words_to_replace[i],"%"),metadata_file[,words_to_replace],df_metadata$lineage)
+}
+}
+
+#df_metadata$lineage<-gsub("%date_download%",metadata_file$date_download,df_metadata$lineage)
+#df_metadata$lineage<-gsub("%relation_source_dataset%",metadata_file$relation_source_dataset,df_metadata$lineage)
+#df_metadata$lineage<-gsub("%relation_source_download%",metadata_file$relation_source_download,df_metadata$lineage)
 
 ### supplemental_information
 df_metadata$supplemental_information<-metadata_file$supplemental_information
