@@ -502,7 +502,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   
   test_if_code_list_is_inserted<-dbGetQuery(con,paste0("SELECT * FROM ",table_name, " LIMIT 10"))
   if(nrow(test_if_code_list_is_inserted)>0){
-    cat(paste0("\nThe code list was successfully loaded. It is in the table ",table_name," of the database"))
+    cat(paste0("\nThe code list was successfully loaded. It is in the table ",table_name," of the database\n"))
   }
   
   
