@@ -84,6 +84,9 @@ df_metadata$subject<-paste0("DIMENSIONS =",dimensions," ; ",df_metadata$subject)
 ### persistent_identifier
 df_metadata$persistent_identifier<-metadata_file$persistent_identifier
 
+### identifier
+df_metadata$identifier<-metadata_file$identifier
+
 ### contacts_and_roles
 
 ## Function to generate contacts_and_roles when there are multiple roles
@@ -177,7 +180,7 @@ words_to_replace<-gsub("[\\%\\%]", "", regmatches(df_metadata$lineage, gregexpr(
 if (length(words_to_replace>0)){
 for (i in 1:length(words_to_replace)){
   if (words_to_replace[i] %in% colnames(metadata_file)){
-  df_metadata$lineage<-gsub(paste0("%",words_to_replace[i],"%"),metadata_file[,words_to_replace],df_metadata$lineage)
+  df_metadata$lineage<-gsub(paste0("%",words_to_replace[i],"%"),metadata_file[,words_to_replace[i]],df_metadata$lineage)
   }
  }
 }
@@ -190,7 +193,7 @@ for (i in 1:length(words_to_replace)){
 df_metadata$supplemental_information<-metadata_file$supplemental_information
 
 ### dataset_type
-df_metadata$dataset_type<-dataset_type
+df_metadata$dataset_type<-metadata_file$dataset_type
 
 ### sql_query_dataset_extraction
 
