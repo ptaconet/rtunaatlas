@@ -9,7 +9,7 @@
 #' generate_metadata(metadata_file,dataset_type)
 #'    
 #' @param metadata_file data.frame of metadata (input)
-#' @param dataset_type string type of dataset (raw_dataset, codelist, mapping)
+#' @param dataset the dataset associated
 #'
 #' @return a data.frame of metadata with the structure to use as input of the functions to load a dataset
 #'
@@ -25,7 +25,7 @@
 #'
 
 ##### Generate the dataset of metadata, that will be loaded in the DB
-generate_metadata<-function(metadata_file,dataset_type){
+generate_metadata<-function(metadata_file,dataset){
 
 df_metadata<-NULL
 
@@ -35,17 +35,11 @@ for (i in 1:ncol(metadata_file)){
   }
 }
 
-if (dataset_type=="raw_dataset"){
-### dataset_time_start and dataset_time_end.
-df_metadata$dataset_time_start<-metadata_file$dataset_time_start
-df_metadata$dataset_time_end<-metadata_file$dataset_time_end
-
-### identifier
-df_metadata$identifier<-gsub("tunaatlas",paste(df_metadata$dataset_time_start,df_metadata$dataset_time_end,"tunaatlas",sep="_"),metadata_file$persistent_identifier)
-#df_metadata$identifier<-gsub("level0",paste(metadata_file$year_tuna_atlas,"level0",sep="_"),df_metadata$identifier)
-df_metadata$identifier<-gsub("level",paste0(metadata_file$year_tuna_atlas,"_level"),df_metadata$identifier)
-df_metadata$identifier<-gsub("-","_",df_metadata$identifier)
-
+if (metadata_file$dataset_type=="raw_dataset"){
+### dataset_time_start and dataset_time_end
+df_metadata$dataset_time_start<-as.character(min(as.Date(dataset$time_start)))
+df_metadata$dataset_time_end<-as.character(max(as.Date(dataset$time_end)))
+  
 ### title
 df_metadata$title<-gsub("%date_start%",substr(df_metadata$dataset_time_start,1,4),metadata_file$title)
 df_metadata$title<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df_metadata$title)
@@ -54,20 +48,38 @@ df_metadata$title<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df
 df_metadata$description<-gsub("%date_start%",substr(df_metadata$dataset_time_start,1,4),metadata_file$description)
 df_metadata$description<-gsub("%date_end%",substr(df_metadata$dataset_time_end,1,4),df_metadata$description)
 
-
 ### temporal_coverage
 df_metadata$temporal_coverage<-paste0("start=",df_metadata$dataset_time_start,";end=",df_metadata$dataset_time_end,";")
+
+### subject
+# Get list of dimensions associated to the dataset
+# Check one by one if the columns have different values
+dimensions<-NULL
+for (col in 1:ncol(dataset)){
+  dimension_name<-colnames(dataset[col])
+  if (!(dimension_name %in% c("value","time_start","time_end"))){
+    unique_values<-unique(dataset[dimension_name])
+    if (nrow(unique_values)>1){
+      dimensions<-paste(dimensions,dimension_name,sep=", ")
+    }
+  }
+}
+
+if ("time_start" %in% colnames(dataset)){
+  dimensions<-paste(dimensions,"time",sep=", ")
+}
+
+dimensions<-substring(dimensions, 2)
+df_metadata$subject<-paste0("DIMENSIONS =",dimensions," ; ",df_metadata$subject)
 
 
 
 } else {
-  df_metadata$identifier<-metadata_file$persistent_identifier
   df_metadata$title<-metadata_file$title
   df_metadata$description<-metadata_file$description
+  df_metadata$subject<-metadata_file$subject
 }
 
-### Subject
-df_metadata$subject=metadata_file$subject
 
 ### persistent_identifier
 df_metadata$persistent_identifier<-metadata_file$persistent_identifier
@@ -111,8 +123,6 @@ for (i in 1:number_of_steps){
 
 df_metadata$contacts_and_roles<-paste0(contacts_and_roles,contact_processor)
 
-### subject
-df_metadata$subject<-metadata_file$subject
 
 ### date
 columns_dates<-colnames(metadata_file)[grep("date_",colnames(metadata_file))]
