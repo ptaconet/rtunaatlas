@@ -46,6 +46,7 @@ if (metadata_file$dataset_type=="raw_dataset"){
 
 
 # Complete metadata with any other parameter that might have been generated through the R script of dataset generation. It will be pasted to the appropriate column
+metadata_columns_input<-colnames(metadata_file)
 for (i in 1:length(metadata_columns_input)){
   content_metadata<-metadata[[metadata_columns_input[i]]][[1]]
   if (!(is.null(content_metadata))){
@@ -55,7 +56,6 @@ for (i in 1:length(metadata_columns_input)){
 }
 
 ### Replace holes with metadata elements from other columns of the file
-metadata_columns_input<-colnames(metadata_file)
 for (i in 1:length(metadata_columns_input)){
   this_metadata_element<-metadata_file[metadata_columns_input[i]][[1]]
   words_to_replace<-gsub("[\\%\\%]", "", regmatches(this_metadata_element, gregexpr("\\%.*?\\%", this_metadata_element))[[1]])
