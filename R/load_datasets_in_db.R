@@ -364,7 +364,7 @@ load_raw_dataset_in_db<- function(
       # Create the materialized view without the labels (to get the labels, replace sql_query_dataset_extraction$query_CSV by sql_query_dataset_extraction$query_CSV_with_labels)
       dbSendQuery(con,paste0("DROP MATERIALIZED VIEW IF EXISTS ",df_metadata$database_view_name,";
                              CREATE MATERIALIZED VIEW ",df_metadata$database_view_name," AS ",sql_query_dataset_extraction$query_CSV,";
-                             COMMENT ON MATERIALIZED VIEW ",df_metadata$database_view_name," IS ",df_metadata$title))
+                             COMMENT ON MATERIALIZED VIEW ",df_metadata$database_view_name," IS '",df_metadata$title,"'"))
     }
     
     }
@@ -492,7 +492,7 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   sql<-paste("UPDATE ",dimension_name,".",dimension_name," SET id_metadata=",PK_metadata," WHERE tablesource_",dimension_name,"='",codelist_dataset_name,"'",sep="")
   dbSendQuery(con, sql)
   
-  dbSendQuery(con,paste0("COMMENT ON TABLE ",table_name," IS ",df_metadata$title))
+  dbSendQuery(con,paste0("COMMENT ON TABLE ",table_name," IS '",df_metadata$title,"'"))
   
   test_if_code_list_is_inserted<-dbGetQuery(con,paste0("SELECT * FROM ",table_name, " LIMIT 10"))
   if(nrow(test_if_code_list_is_inserted)>0){
