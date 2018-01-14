@@ -153,6 +153,7 @@ columns_to_keep<-intersect(metadata_columns_output,colnames(metadata_file))
 metadata_file<-metadata_file[columns_to_keep]
 
 metadata_file<-data.frame(metadata_file,stringsAsFactors = FALSE)
+metadata_file[metadata_file==""]  <- NA
 
 return(metadata_file)
 
