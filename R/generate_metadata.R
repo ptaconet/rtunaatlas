@@ -141,11 +141,10 @@ if (metadata_file$dataset_type=="raw_dataset"){
   subject_element<-"DIMENSIONS"
 } else if (metadata_file$dataset_type=="codelist"){
   subject_element<-"COLUMNS"
-} else if (metadata_file$dataset_type=="mapping"){
-  subject_element<-NULL
-  dimensions<-NULL
-}
+} 
+if (metadata_file$dataset_type %in% c("raw_dataset","codelist")){
 metadata_file$subject<-paste0(subject_element," = ",dimensions," ; ",metadata_file$subject)
+}
 
 ## Keep only pertinent columns
 
