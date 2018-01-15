@@ -155,6 +155,8 @@ metadata_file<-metadata_file[columns_to_keep]
 metadata_file<-data.frame(metadata_file,stringsAsFactors = FALSE)
 metadata_file[metadata_file==""]  <- NA
 
+dbDisconnect(con)
+
 return(metadata_file)
 
 }
