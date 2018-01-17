@@ -139,8 +139,11 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     dimension<-sub("\\..*", "", static_metadata_table_name)
   
-    SQL$query_CSV<-paste0("SELECT sub1.codesource as src_code,
+    SQL$query_CSV<-paste0("SELECT 
+sub1.codesource as src_code,
+sub1.codesource as src_label,
                         sub2.codetarget as trg_code,
+                        sub2.codetarget as trg_label,
                         sub1.db_tablesource as src_codingsystem,
                         sub2.db_tabletarget as trg_codingsystem
                         FROM
@@ -152,7 +155,6 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
                         WHERE ",dimension,".tablesource_",dimension," = (SELECT distinct src.tablesource_",dimension,"
                         FROM ",static_metadata_table_name,"
                         JOIN ",dimension,".",dimension," src ON src.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_from
-                        JOIN ",dimension,".",dimension," trg ON trg.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_to
                         WHERE ",dimension,"_mapping.id_metadata=",static_metadata_id,")::text) sub1
                         LEFT JOIN ( SELECT ",dimension,"_mapping.",dimension,"_mapping_id_from,
                         ",dimension,"_mapping.",dimension,"_mapping_id_to AS db_idtarget,
@@ -163,7 +165,6 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
                         JOIN metadata.metadata ON metadata.id_metadata = ",dimension,".id_metadata
                         WHERE  ",dimension,"_mapping.id_metadata=",static_metadata_id," AND ",dimension,".tablesource_",dimension," = (SELECT distinct trg.tablesource_",dimension,"
                         FROM ",static_metadata_table_name,"
-                        JOIN ",dimension,".",dimension," src ON src.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_from
                         JOIN ",dimension,".",dimension," trg ON trg.id_",dimension,"=",dimension,"_mapping.",dimension,"_mapping_id_to
                         WHERE ",dimension,"_mapping.id_metadata=",static_metadata_id,")::text) sub2 ON sub1.db_idsource = sub2.",dimension,"_mapping_id_from
                         ORDER BY sub2.db_tabletarget,sub1.codesource")
