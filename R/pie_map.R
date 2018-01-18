@@ -67,11 +67,12 @@ if("unit" %in% colnames(df_input)){
   
   inputAreas_forQuery<-paste(unique(df_input$geographic_identifier), collapse = '\',\'')
   
-  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT table_name from metadata.metadata where dataset_name='",df_spatial_code_list_name,"'"))$table_name
-  names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE table_name='",db_table_name_inputAreas,"'"))
-  colname_geom<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))$f_geometry_column
+  db_table_name_inputAreas<-dbGetQuery(con,paste0("SELECT database_table_name from metadata.metadata where identifier='",df_spatial_code_list_name,"'"))$database_table_name
+  #names_codes_labels_table_inputAreas<- dbGetQuery(con,paste0("SELECT code_column,english_label_column FROM metadata.codelists_codes_labels_column_names WHERE identifier='",db_table_name_inputAreas,"'"))
+  #colname_geom<- dbGetQuery(con,paste0("SELECT f_geometry_column FROM geometry_columns WHERE 'area.'||f_table_name='",db_table_name_inputAreas,"'"))$f_geometry_column
 
-  areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(",colname_geom,") FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
+  #areas_lat_lon_wkt<-paste("SELECT ",names_codes_labels_table_inputAreas$code," as geographic_identifier, ST_x(ST_Centroid(",colname_geom,")) as lng, ST_y(ST_Centroid(",colname_geom,")) as lat, st_astext(",colname_geom,") FROM area.",df_spatial_code_list_name," WHERE ",names_codes_labels_table_inputAreas$code," IN ('",inputAreas_forQuery,"')",sep="")
+  areas_lat_lon_wkt<-paste("SELECT code as geographic_identifier, ST_x(ST_Centroid(geom)) as lng, ST_y(ST_Centroid(geom)) as lat, st_astext(geom) FROM area.",df_spatial_code_list_name," WHERE code IN ('",inputAreas_forQuery,"')",sep="")
   
   areas_lat_lon_wkt<-dbGetQuery(con,areas_lat_lon_wkt)
   areas_wkt<-areas_lat_lon_wkt$st_astext
