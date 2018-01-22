@@ -9,7 +9,7 @@ generate_metadata(metadata_file,dataset_type)
 \arguments{
 \item{metadata_file}{data.frame of metadata (input)}
 
-\item{dataset_type}{string type of dataset (raw_dataset, codelist, mapping)}
+\item{dataset}{the dataset associated}
 }
 \value{
 a data.frame of metadata with the structure to use as input of the functions to load a dataset

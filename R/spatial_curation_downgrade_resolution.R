@@ -1,13 +1,14 @@
 #' @name spatial_curation_downgrade_resolution
 #' @aliases spatial_curation_downgrade_resolution
 #' @title Disaggregate gridded data
-#' @description This function disaggregates the data of a df_input on a grid with resolution equal to \code{resolution}. Data with resolutions superior to \code{resolution} will be disaggregated on the corresponding \code{resolution} quadrant by dividing the catch equally on the overlappings \code{resolution} quadrants. Data with resolutions inferior to \code{resolution} will not be aggregated. To aggregate data with resolutions inferior to \code{resolution}, use the function \code{spatial_curation_upgrade_resolution} 
+#' @description This function disaggregates or remove the data of a df_input on a grid with resolution equal to \code{resolution}. Data with resolutions superior to \code{resolution} will be disaggregated on the corresponding \code{resolution} quadrant by dividing the catch equally on the overlappings \code{resolution} quadrants, or removed. Data with resolutions inferior to \code{resolution} will not be aggregated. To aggregate data with resolutions inferior to \code{resolution}, use the function \code{spatial_curation_upgrade_resolution} 
 #' @export 
 #' 
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param df_input data.frame of fact. The data frame must contain at least one column "geographical_identifier" with CWP grid codification or IOTC irregular areas from catch-and-effort datasets.
 #' @param resolution integer. Resolution to reach (in degrees). Currently, works with 1 and 5. 
-#'
+#' @param remove boolean. Remove from the dataset data that are defined on resolutions superior to \code{resolution}? Default is FALSE
+#' 
 #' @return a list with 2 objects: 
 #'  \itemize{
 #'  \item{"df": }{\code{df_input} where data have been disaggregated}
@@ -40,7 +41,7 @@
 #' 
 
 
-spatial_curation_downgrade_resolution<-function(con,df_input,resolution){
+spatial_curation_downgrade_resolution<-function(con,df_input,resolution,remove=FALSE){
   
   #colnames(df_input)[which(grepl("unit",colnames(df_input)))]<-"unit"
   columns_dataset_input<-colnames(df_input)
@@ -161,9 +162,12 @@ spatial_curation_downgrade_resolution<-function(con,df_input,resolution){
   
   } else if (resolution==1) { dataset_areas_inf_to_resolution_to_disaggregate=NULL  }
   
-  # merge data that was already in 5°/1°, data that has been downgraded to 5°/1° and data that has resolution inferior to 5°/1°
+  # merge or remove data that was already in 5°/1°, data that has been downgraded to 5°/1° and data that has resolution inferior to 5°/1°
+  if (remove==TRUE){
+  dataset_final_disaggregated_on_resolution_to_disaggregate<-rbind(data.frame(dataset_to_leave_as_so),data.frame(dataset_areas_inf_to_resolution_to_disaggregate))
+  } else {
   dataset_final_disaggregated_on_resolution_to_disaggregate<-rbind(data.frame(dataset_to_leave_as_so),data.frame(dataset_to_disaggregate),data.frame(dataset_areas_inf_to_resolution_to_disaggregate))
-  
+  }
   
   if (!is.null(dataset_to_disaggregate)){
     # some stats on the data that are reallocated

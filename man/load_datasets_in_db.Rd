@@ -33,7 +33,7 @@ For code lists:
 \item{1 column named 'code':}  containing the unique and not null codes for the code list
 \item{1 column named 'label':}  associated label. 
 \item{Any additional column is accepted}. 
-\item{For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format}
+\item{For spatial code lists, they must have a column named "geom_wkt" with the geometry in WKT format. If geometries are missing, the colum must be filled-in with value NA}
 }
 
 For code lists mappings: 
