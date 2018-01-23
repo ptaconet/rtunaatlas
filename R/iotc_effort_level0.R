@@ -1,7 +1,7 @@
 #' @name iotc_effort_level0
 #' @aliases iotc_effort_level0
-#' @title Extract source georeferenced efforts datasets of IOTC from Sardara World database
-#' @description This function extracts the source georeferenced effort datasets stored in the Sardara World database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides efforts of tuna, tuna-like and shark species in the Indian ocean. Efforts are stratified by month, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of effort. Data are expressed using IOTC's coding system.
+#' @title Extract source georeferenced efforts datasets of IOTC from the Tuna atlas database
+#' @description This function extracts the source georeferenced effort datasets stored in the Tuna atlas database coming from the Indian Ocean Tuna Commission (IOTC). The output dataset provides efforts of tuna, tuna-like and shark species in the Indian ocean. Efforts are stratified by month, gear, vessel flag reporting country, fishing mode (i.e. type of school used), area (usualy 1° or 5° square) and unit of effort. Data are expressed using IOTC's coding system.
 #' @export
 #'
 #' @usage iotc_effort_level0(year_tunaatlas)
@@ -26,41 +26,21 @@
 iotc_effort_level0<-function(year_tunaatlas){
   
   # Select iotc raw datasets release on the year year_release
-  
-  drv <- dbDriver("PostgreSQL")
-  con <- dbConnect(drv, dbname="sardara_world", user="invsardara", password="fle087", host="db-tuna.d4science.org")
+  con <- db_connection_tunaatlas_world()
   
   # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_effort_ll_tunaatlasdf_level0 , indian_ocean_effort_tunaatlasdf_level0__coastal , indian_ocean_effort_tunaatlasdf_level0__surface
   
-  datasets_permanent_identifiers="'indian_ocean_effort_ll_tunaatlasdf_level0','indian_ocean_effort_tunaatlasdf_level0__coastal','indian_ocean_effort_tunaatlasdf_level0__surface'"
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where dataset_permanent_identifier IN (",datasets_permanent_identifiers,") and dataset_name LIKE '%_",year_tunaatlas,"_%'"))
+  datasets_permanent_identifiers="'indian_ocean_effort_ll_tunaatlasIOTC_level0','indian_ocean_effort_tunaatlasIOTC_level0__coastal','indian_ocean_effort_tunaatlasIOTC_level0__surface'"
+  
+  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_level0%'"))
   
   # columns for efforts
-  columns_to_keep<-c("source_authority","gear","flag","schooltype","time_start","time_end","geographic_identifier","effortunit","value")
+  columns_to_keep<-c("source_authority","gear","flag","schooltype","time_start","time_end","geographic_identifier","unit","value")
   
   # Retrieve IOTC georef. catches 
-  df_level0<-NULL
-  for (i in 1:nrow(metadata_datasets)){
-    cat(paste0("\nretrieving data from dataset ",metadata_datasets$dataset_name[i]))
-    df_level0_thisdf<-extract_dataset(con,metadata_datasets[i,])
-    
-    # keep only wanted columns
-    df_level0_thisdf <- df_level0_thisdf[(names(df_level0_thisdf) %in% columns_to_keep)]
-    
-    # add missing columns and fill them with "UNK" values
-    for (j in 1:length(columns_to_keep)){
-      if (!(columns_to_keep[j]) %in% names(df_level0_thisdf)){
-        cat(paste0("\ndimension ",columns_to_keep[j]," is missing in the dataset. Adding this dimension to the dataset and filling values of this dimension with UNK (unknown)"))
-        df_level0_thisdf[,columns_to_keep[j]]<-"UNK"
-      }
-    }
-    
-    df_level0<-rbind(df_level0,df_level0_thisdf)
-  }
+  df_level0<-extract_and_merge_multiple_datasets(con,metadata_datasets,columns_to_keep)
   
   dbDisconnect(con)
-  
-  df_level0$source_authority<-"IOTC"
   
   return(df_level0)
   
