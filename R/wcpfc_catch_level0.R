@@ -43,8 +43,6 @@ wcpfc_catch_level0<-function(year_tunaatlas){
   
   dbDisconnect(con)
   
-  df_level0$source_authority<-"WCPFC"
-  
   return(df_level0)
   
 }

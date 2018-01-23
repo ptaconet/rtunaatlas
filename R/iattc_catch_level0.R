@@ -90,8 +90,6 @@ iattc_catch_level0<-function(year_tunaatlas,raise_flags_to_schooltype,dimension_
   
   dbDisconnect(con)
   
-  df_level0$source_authority<-"IATTC"
-  
   return(df_level0)
   
 }

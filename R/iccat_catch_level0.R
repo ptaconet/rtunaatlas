@@ -67,9 +67,7 @@ iccat_catch_level0<-function(year_tunaatlas,include_type_of_school){
   }
   
   dbDisconnect(con)
-  
-  df_level0$source_authority<-"ICCAT"
-  
+
   return(df_level0)
   
 }

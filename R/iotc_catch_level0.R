@@ -43,8 +43,6 @@ iotc_catch_level0<-function(year_tunaatlas){
   
   dbDisconnect(con)
   
-  df_level0$source_authority<-"IOTC"
-  
   return(df_level0)
   
 }
