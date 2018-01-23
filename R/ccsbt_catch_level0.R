@@ -1,7 +1,7 @@
 #' @name ccsbt_catch_level0
 #' @aliases ccsbt_catch_level0
 #' @title Extract source georeferenced catch datasets of ccsbt from Sardara World database
-#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Commission for the Conservation of Southern Bluefin Tuna (CCSBT). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the CCSBT Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number).
+#' @description This function extracts the source georeferenced catch datasets stored in the Sardara World database coming from the Commission for the Conservation of Southern Bluefin Tuna (CCSBT). The output dataset provides the catch of tuna and tuna-like species in the area managed under the jurisdiction of the CCSBT. Catches are stratified by month, species, gear, vessel flag reporting country, area (1° or 5° square) and unit of catch (weight or number).
 #' @export
 #'
 #' @usage ccsbt_catch_level0(year_tunaatlas)
