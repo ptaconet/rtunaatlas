@@ -25,10 +25,13 @@ head(wcpfc_catch)
 
 }
 \seealso{
-Other process data: \code{\link{ccsbt_catch_level0}},
+Other process data: \code{\link{ccsbt_datasets_level0}},
+  \code{\link{ccsbt_effort_level0}},
   \code{\link{convert_units}},
-  \code{\link{iattc_catch_level0}},
+  \code{\link{get_rfmos_datasets_level0}},
+  \code{\link{iattc_datasets_level0}},
   \code{\link{iccat_catch_level0}},
+  \code{\link{iccat_effort_level0}},
   \code{\link{iotc_catch_level0}},
   \code{\link{iotc_effort_level0}},
   \code{\link{map_codelist}},
@@ -38,7 +41,8 @@ Other process data: \code{\link{ccsbt_catch_level0}},
   \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
   \code{\link{spatial_curation_reallocate_data}},
-  \code{\link{spatial_curation_upgrade_resolution}}
+  \code{\link{spatial_curation_upgrade_resolution}},
+  \code{\link{wcpfc_effort_level0}}
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}
