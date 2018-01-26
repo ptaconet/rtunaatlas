@@ -83,7 +83,7 @@ get_rfmos_datasets_level0<-function(rfmo,
     datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_tunaatlasICCAT_level0__noSchool'")
   }
   
-  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_level0_",year_tunaatlas,"%'"))
+  metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%__",year_tunaatlas,"%'"))
   
   df_level0<-extract_and_merge_multiple_datasets(con,metadata_datasets,columns_to_keep)
   
