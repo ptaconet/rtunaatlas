@@ -52,7 +52,6 @@ For \code{df_metadata}: a template of the metadata data.frame to use is availabl
 }
 \examples{
 
-
 }
 \author{
 Paul Taconet, \email{paul.taconet@ird.fr}

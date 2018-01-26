@@ -48,6 +48,8 @@
 #' 
 #' @examples
 #' 
+#' @import dplyr
+#' @import data.table
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'
