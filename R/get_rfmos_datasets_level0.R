@@ -91,7 +91,7 @@ get_rfmos_datasets_level0<-function(rfmo,
   if (rfmo=="ICCAT" && iccat_include_type_of_school==TRUE){ # We include in the dataset the data including the information on type of school
     # Retrieve ICCAT dataset with schooltype information (task2 by operation mode) (https://goo.gl/f2jz5R). We do not use the template (template_query_effortes) because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
     datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_1deg_1m_ps_tunaatlasICCAT_level0__bySchool'")
-    metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%_",year_tunaatlas,"_level0%'"))
+    metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%__",year_tunaatlas,"%'"))
     
     iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
     
@@ -110,11 +110,11 @@ get_rfmos_datasets_level0<-function(rfmo,
   if (rfmo=="IATTC"){
     
     # Retrieve IATTC georef. dataset Purse Seine by Schooltype
-    metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSSetType,") and identifier LIKE '%_",year_tunaatlas,"_level0%'"))
+    metadata_datasets_PSSetType<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSSetType,") and identifier LIKE '%__",year_tunaatlas,"%'"))
     df_iattc_PSSetType<-extract_and_merge_multiple_datasets(con,metadata_datasets_PSSetType,columns_to_keep)
     
     # Retrieve IATTC georef. dataset Purse Seine by Flag
-    metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSFlag,") and identifier LIKE '%_",year_tunaatlas,"_level0%'"))
+    metadata_datasets_PSFlag<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers_PSFlag,") and identifier LIKE '%__",year_tunaatlas,"%'"))
     df_iattc_PSFlag<-extract_and_merge_multiple_datasets(con,metadata_datasets_PSFlag,columns_to_keep)
     
     if (iattc_raise_flags_to_schooltype==TRUE){
