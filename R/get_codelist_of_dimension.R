@@ -18,9 +18,9 @@
 #'
 #'# Retrieve code list of dimension "gear" of dataset "indian_ocean_catch_ll_1952_11_01_2016_01_01_tunaatlasIOTC_2017_level0"
 #'
-#' con=db_connection_sardara_world()
+#' con=db_connection_tunaatlas_world()
 #'
-#' dataset_metadata<-list_metadata_datasets(con,dataset_name="indian_ocean_catch_ll_1952_11_01_2016_01_01_tunaatlasIOTC_2017_level0")
+#' dataset_metadata<-list_metadata_datasets(con,dataset_name="global_catch_1950_01_01_2016_01_01_tunaatlasird_level0__2017")
 #'
 #' # Get the dimensions available in the dataset
 #' #list_dataset_available_dimensions(con,dataset_metadata)

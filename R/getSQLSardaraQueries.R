@@ -189,6 +189,9 @@ sub1.codesource as src_label,
     union
     SELECT oid::regclass::text FROM   pg_class WHERE  relkind = 'm'")$`?column?`
     
+    # 
+    
+    
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
@@ -201,7 +204,33 @@ sub1.codesource as src_label,
       columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      where_clause<-paste0(" WHERE tab.id_metadata=",static_metadata_id)
+      ## where clause
+      # In the where clause, get gear_group and species_group 
+      if ("gear" %in% dataset_available_dimensions){
+        codelist_identifier<-rtunaatlas::get_codelist_of_dimension(con,dataset_metadata,"gear")$identifier
+        if (codelist_identifier %in% c("isscfg_revision_1","gear_iotc","gear_iccat","gear_iattc","gear_wcpfc","gear_ccsbt")){
+        switch(codelist_identifier,
+               isscfg_revision_1 = {geargroup_mapping_identifier <- "geargroup_tunaatlas"},
+               gear_iotc = {geargroup_mapping_identifier <- "geargroup_iotc"},
+               gear_iccat = {geargroup_mapping_identifier <- "geargroup_iccat"},
+               gear_iattc = {geargroup_mapping_identifier <- "geargroup_iattc"},
+               gear_wcpfc = {geargroup_mapping_identifier <- "geargroup_wcpfc"},
+               gear_ccsbt = {geargroup_mapping_identifier <- "geargroup_ccsbt"}
+               )
+        
+        where_clause_gear<-paste0("geargroup.trg_codingsystem='",geargroup_mapping_identifier,"' AND ")
+      } } else { where_clause_gear<-NULL }
+      if ("species" %in% dataset_available_dimensions){
+        codelist_identifier<-rtunaatlas::get_codelist_of_dimension(con,dataset_metadata,"species")$identifier
+        if (codelist_identifier=="species_asfis"){
+           speciesgroup_mapping_identifier <- "speciesgroup_tunaatlas"
+        where_clause_species<-paste0("speciesgroup.trg_codingsystem='",speciesgroup_mapping_identifier,"' AND ")
+      } } else { where_clause_species<-NULL }
+      
+      where_clause_metadata<-paste0("tab.id_metadata=",static_metadata_id)
+      
+      where_clause<-paste0("WHERE ",where_clause_gear,where_clause_species,where_clause_metadata)
+      
       tab_name <- paste(static_metadata_table_name," tab",sep=" ")
       }
     
