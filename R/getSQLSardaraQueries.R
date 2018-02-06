@@ -206,6 +206,8 @@ sub1.codesource as src_label,
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       ## where clause
       # In the where clause, get gear_group and species_group 
+      where_clause_gear<-NULL
+      where_clause_species<-NULL
       if ("gear" %in% dataset_available_dimensions){
         codelist_identifier<-rtunaatlas::get_codelist_of_dimension(con,dataset_metadata,"gear")$identifier
         if (codelist_identifier %in% c("isscfg_revision_1","gear_iotc","gear_iccat","gear_iattc","gear_wcpfc","gear_ccsbt")){
@@ -219,13 +221,13 @@ sub1.codesource as src_label,
                )
         
         where_clause_gear<-paste0("geargroup.trg_codingsystem='",geargroup_mapping_identifier,"' AND ")
-      } } else { where_clause_gear<-NULL }
+      } } 
       if ("species" %in% dataset_available_dimensions){
         codelist_identifier<-rtunaatlas::get_codelist_of_dimension(con,dataset_metadata,"species")$identifier
         if (codelist_identifier=="species_asfis"){
            speciesgroup_mapping_identifier <- "speciesgroup_tunaatlas"
         where_clause_species<-paste0("speciesgroup.trg_codingsystem='",speciesgroup_mapping_identifier,"' AND ")
-      } } else { where_clause_species<-NULL }
+      } }
       
       where_clause_metadata<-paste0("tab.id_metadata=",static_metadata_id)
       
