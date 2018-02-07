@@ -6,7 +6,8 @@ gear,gear.gear,id_gear,id_gear,codesource_gear,tablesource_gear,gear,TRUE,"gear,
 species,species.species,id_species,id_species,codesource_species,tablesource_species,species,TRUE,"species,","species_labels.codesource_species AS species,","species,","species_labels.codesource_species AS species,
 ","species_labels.source_label AS species_label,","species_label,","LEFT OUTER JOIN species.species_labels USING (id_species)
 "
-schooltype,schooltype.schooltype,id_schooltype,id_schooltype,codesource_schooltype,tablesource_schooltype,schooltype,TRUE,"schooltype,","schooltype_labels.codesource_schooltype AS schooltype,","schooltype,","schooltype_labels.codesource_schooltype AS schooltype,","schooltype_labels.source_label AS schooltype_label,","schooltype_label,",
+schooltype,schooltype.schooltype,id_schooltype,id_schooltype,codesource_schooltype,tablesource_schooltype,schooltype,TRUE,"schooltype,","schooltype_labels.codesource_schooltype AS schooltype,","schooltype,","schooltype_labels.codesource_schooltype AS schooltype,","schooltype_labels.source_label AS schooltype_label,","schooltype_label,","LEFT OUTER JOIN schooltype.schooltype_labels USING (id_schooltype)
+"
 time,time.time,id_time,id_time,NA,NA,"time_start,time_end",FALSE,"time_start,time_end,month,quarter,year,","time.time_start,
 time.time_end,
 time.month,
