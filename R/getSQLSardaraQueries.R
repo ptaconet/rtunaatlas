@@ -225,7 +225,7 @@ sub1.codesource as src_label,
         db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension=="species")]<-paste0(db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension=="species")]," LEFT OUTER JOIN species.species_mapping ON species_mapping.species_mapping_id_from=tab.id_species LEFT JOIN species.species_labels speciesgroup_label ON speciesgroup_label.id_species=species_mapping.species_mapping_id_to ")
         # where clause
         speciesgroup_mapping_identifier <- "codelist_mapping_species_asfis_speciesgroup_tunaatlas"
-        where_clause_species<-paste0("(speciesr_mapping.id_metadata=(SELECT id_metadata FROM metadata.metadata WHERE identifier='",geargroup_mapping_identifier,"' ) OR  species_mapping.species_mapping_id_from=0) AND ")
+        where_clause_species<-paste0("(species_mapping.id_metadata=(SELECT id_metadata FROM metadata.metadata WHERE identifier='",speciesgroup_mapping_identifier,"' ) OR  species_mapping.species_mapping_id_from=0) AND ")
       } }
     
     
