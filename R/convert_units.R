@@ -11,7 +11,7 @@
 #' @param df_conversion_factor a data.frame of factors of conversion between units
 #' @param codelist_geoidentifiers_df_input string. The name of the coding system used for the spatial dimension in df_input (i.e. table name in Sardara database).
 #' @param codelist_geoidentifiers_conversion_factors string. The name of the coding system used for the spatial dimension in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.
-#' @return a list with two objects:
+#' @return a list with two objectsff:
 #' \itemize{
 #'  \item{"df": }{The input data.frame of fact, where the measures and related units have been converted when factors of conversion were available. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their source unit (i.e. they are not removed from the dataset).}
 #'  \item{"stats": }{A data.frame with some information regarding the conversion. ####It provides, for each unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the dataset of mappings between code lists}
