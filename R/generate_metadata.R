@@ -25,7 +25,7 @@
 #'
 
 ##### Generate the dataset of metadata, that will be loaded in the DB
-generate_metadata<-function(metadata_file,dataset,metadata=NULL){
+generate_metadata<-function(metadata_file,dataset,additional_metadata=NULL){
   
 # Get available column names for metadata
 con<-rtunaatlas::db_connection_tunaatlas_world()  
@@ -48,7 +48,7 @@ if (metadata_file$dataset_type=="raw_dataset"){
 # Complete metadata with any other parameter that might have been generated through the R script of dataset generation. It will be pasted to the appropriate column
 metadata_columns_input<-colnames(metadata_file)
 for (i in 1:length(metadata_columns_input)){
-  content_metadata<-metadata[[metadata_columns_input[i]]][[1]]
+  content_metadata<-additional_metadata[[metadata_columns_input[i]]][[1]]
   if (!(is.null(content_metadata))){
     metadata_file[,metadata_columns_input[i]]<-gsub("@@automatically generated@@","",metadata_file[,metadata_columns_input[i]])
     metadata_file[,metadata_columns_input[i]]<-paste(metadata_file[,metadata_columns_input[i]],content_metadata,sep="\n")
