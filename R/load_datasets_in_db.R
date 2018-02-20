@@ -333,7 +333,7 @@ load_raw_dataset_in_db<- function(
     # sql_query_dataset_extraction
     df_metadata$id_metadata<-PK_metadata
     sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
-    dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV_with_labels,"' WHERE identifier='",df_metadata$identifier,"'"))
+    dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",gsub("'","''",sql_query_dataset_extraction$query_CSV_with_labels),"' WHERE identifier='",df_metadata$identifier,"'"))
     
     # spatial coverage
     sp_extent_sql<-paste0("SELECT st_astext(ST_Extent(geom)) FROM ",df_metadata$database_table_name," c LEFT JOIN area.area_labels USING (id_area) WHERE id_metadata='",PK_metadata,"'")
