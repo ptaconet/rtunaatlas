@@ -51,7 +51,7 @@ for (i in 1:length(metadata_columns_input)){
   content_metadata<-additional_metadata[[metadata_columns_input[i]]][[1]]
   if (!(is.null(content_metadata))){
     metadata_file[,metadata_columns_input[i]]<-gsub("@@automatically generated@@","",metadata_file[,metadata_columns_input[i]])
-    metadata_file[,metadata_columns_input[i]]<-paste(metadata_file[,metadata_columns_input[i]],content_metadata,sep="\n")
+    metadata_file[,metadata_columns_input[i]]<-paste0(metadata_file[,metadata_columns_input[i]],content_metadata)
   }
 }
 
