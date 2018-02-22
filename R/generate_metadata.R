@@ -87,7 +87,7 @@ generate_metadata_from_splitted_columns<-function(metadata_file,column_name_sour
       cont<-strsplit(metadata_element,split=";")[[1]] 
       if (length(cont)>1){
       for (j in 1:length(cont)){
-        metadata_file[column_name_final_metadata_file]<-paste0(metadata_file[column_name_final_metadata_file],role_name,"=",cont[i],";")
+        metadata_file[column_name_final_metadata_file]<-paste0(metadata_file[column_name_final_metadata_file],role_name,"=",cont[j],";")
       }
       } else {
         metadata_file[column_name_final_metadata_file]<-paste0(metadata_file[column_name_final_metadata_file],role_name,"=",metadata_element,";")
