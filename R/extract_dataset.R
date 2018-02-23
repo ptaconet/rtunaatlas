@@ -1,15 +1,16 @@
 #' @name extract_dataset
 #' @aliases extract_datasets
 #' @title Extract a dataset available in Sardara database
-#' @description This function outputs a dataset available in the Sardara database.
+#' @description This function outputs a dataset available in the Tuna atlas database.
 #' @export extract_dataset extract_and_merge_multiple_datasets
 #'
 #'
 #' @usage 
-#' extract_dataset(con,metadata_dataset)
+#' extract_dataset(con,metadata_dataset,labels=FALSE)
 #'    
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param metadata_dataset data.frame of type "metadata" (one row extracted from the table metadata.metadata).
+#' @param labels boolean extract the dataset with codes and labels? TRUE = codes + labels . FALSE = only codes. Default is FALSE
 #'
 #' @return a data.frame of the data available in the database and set as \code{dataset_name}
 #'
@@ -22,7 +23,7 @@
 #' 
 #' @examples
 #' 
-#' con=db_connection_sardara_world()
+#' con=db_connection_tunaatlas_world()
 #' 
 #' # Extract a raw dataset
 #' raw_dataset<-extract_dataset(con,list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
@@ -38,12 +39,16 @@
 #'
 
 
-extract_dataset<-function(con,metadata_dataset){
+extract_dataset<-function(con,metadata_dataset,labels=FALSE){
   
   if(nrow(metadata_dataset)==0){stop("There is no dataset that corresponds to your query")}
   
+  if (labels==FALSE){
   # retrieve query to execute using the function getSQLSardaraQueries
   query<-getSQLSardaraQueries(con,metadata_dataset)$query_CSV
+  } else {
+  query<-getSQLSardaraQueries(con,metadata_dataset)$query_CSV_with_labels
+  }
   
   df<-dbGetQuery(con,query)
 
