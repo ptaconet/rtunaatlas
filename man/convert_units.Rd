@@ -18,7 +18,7 @@ convert_units(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_inp
 \item{codelist_geoidentifiers_conversion_factors}{string. The name of the coding system used for the spatial dimension in df_conversion_factor (i.e. table name in Sardara database), or NULL if the coding system for the spatial dimension is the same as the one used in df_input. See section "details" for more details.}
 }
 \value{
-a list with two objects:
+a list with two objectsss:
 \itemize{
  \item{"df": }{The input data.frame of fact, where the measures and related units have been converted when factors of conversion were available. Some data might not be converted at all because no conversion factor exists for the stratum: these data are kept in their source unit (i.e. they are not removed from the dataset).}
  \item{"stats": }{A data.frame with some information regarding the conversion. ####It provides, for each unit of measure available in the input dataset, the sum and percentage of the data that could not be map because no correspondance are available in the dataset of mappings between code lists}

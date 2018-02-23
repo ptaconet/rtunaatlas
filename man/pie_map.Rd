@@ -19,6 +19,8 @@ pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
 \item{area_filter_wkt}{sting. A spatial filter (WKT format) or NULL if no spatial filter.}
 
 \item{number_of_classes}{integer. Number of classes to visualize in the pies.}
+
+\item{function_pie_size}{string. square_root, square, proportional}
 }
 \description{
 This function ouputs a pie map from the dataset provided as input
@@ -31,7 +33,7 @@ Column of spatial codes must be named 'geographic_identifier'.
 \examples{
 
 # Connect to Sardara DB
-con <- db_connection_sardara_world()
+con <- db_connection_tunaatlas_world()
 
 # Extract IOTC (Indian Ocean) georeferenced catch time series of catches from Sardara DB, in 5° resolution
 ind_catch_tunaatlasird_level2<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_catch_5deg_1m_1952_11_01_2016_01_01_tunaatlasIRD_level2"))

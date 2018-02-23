@@ -5,25 +5,27 @@
 \alias{extract_datasets}
 \title{Extract a dataset available in Sardara database}
 \usage{
-extract_dataset(con,metadata_dataset)
+extract_dataset(con,metadata_dataset,labels=FALSE)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
 \item{metadata_dataset}{data.frame of type "metadata" (one row extracted from the table metadata.metadata).}
+
+\item{labels}{boolean extract the dataset with codes and labels? TRUE = codes + labels . FALSE = only codes. Default is FALSE}
 }
 \value{
 a data.frame of the data available in the database and set as \code{dataset_name}
 }
 \description{
-This function outputs a dataset available in the Sardara database.
+This function outputs a dataset available in the Tuna atlas database.
 }
 \details{
 The meaning of the columns of a raw dataset is provided in the \href{https://docs.google.com/spreadsheets/d/1BUppXu-Z_YX8cJaNISfk9KrKrKJ6y0Dd2XCfIvjBRQc/edit#gid=747135938}{data dictionary of raw datasets}.  ## to fill in this description when it is finalized
 }
 \examples{
 
-con=db_connection_sardara_world()
+con=db_connection_tunaatlas_world()
 
 # Extract a raw dataset
 raw_dataset<-extract_dataset(con,list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
