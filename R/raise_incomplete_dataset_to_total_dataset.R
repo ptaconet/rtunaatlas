@@ -9,6 +9,7 @@
 #' @param df_input_total data.frame "total". Must have a set of dimensions (columns) + a value column
 #' @param df_rf data.frame of raising factors. Ouput of the function \link[rtunaatlas]{raise_get_rf}
 #' @param x_raising_dimensions vector of dimensions (i.e. dimensions that compose the stratum) to use for the computation of the raising factors. The dimensions must be available in both input data.frames.
+#' @param decrease_when_rf_inferior_to_one boolean. If the raising factor is inferior to 1 (i.e. data in \code{df_input_incomplete} is superior to data in \code{df_input_total}), should the incomplete data be descreaed? TRUE = decrease. FALSE = do not decrease. Default is TRUE
 #' @param threshold_rf numeric from 0 to 100. If the raising factor for a stratum is not above this treshold, the data will be removed from the dataset.
 #' 
 #' @return a list with three objects:
@@ -127,7 +128,7 @@
 #' @examples
 #' 
 #' # Connect to Sardara DB
-#' con <- db_connection_sardara_world()
+#' con <- db_connection_tunaatlas_world()
 #'
 #' # Extract IOTC georeferenced catch time series of catches from Sardara DB
 #' ind_catch_tunaatlasird_level1<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_catch_1952_11_01_2016_01_01_tunaatlasIRD_level1"))
@@ -167,6 +168,7 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
                                  df_input_total,
                                  df_rf,
                                  x_raising_dimensions,
+                                 decrease_when_rf_inferior_to_one=TRUE,
                                  threshold_rf=NULL){
   
   df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
@@ -215,10 +217,13 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
   
   # When there is a raising factor for a given stratum, we multiply the original value by the raising factor to get the raised value
-  index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
-  
-  df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
-  
+  if (decrease_when_rf_inferior_to_one==TRUE){
+    index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
+    df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+  } else {
+    index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]) & df_input_incomplete[,"rf"]>=1)
+    df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+  }
   
   if (!is.null(threshold_rf)){
     ## Remove the catches for which the rf threshold is above the threshold set by the user

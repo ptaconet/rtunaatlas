@@ -5,7 +5,8 @@
 \title{Create a pie map}
 \usage{
 pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
-  area_filter_wkt = NULL, number_of_classes = 1, function_pie_size = NULL)
+  area_filter_wkt = NULL, number_of_classes = 1, function_pie_size = NULL,
+  bounding_box = NULL)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
@@ -21,6 +22,8 @@ pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
 \item{number_of_classes}{integer. Number of classes to visualize in the pies.}
 
 \item{function_pie_size}{string. square_root, square, proportional}
+
+\item{bounding_box}{vector of bounding box for vizualisation (c(xmîn,xmax,ymin,ymax))}
 }
 \description{
 This function ouputs a pie map from the dataset provided as input

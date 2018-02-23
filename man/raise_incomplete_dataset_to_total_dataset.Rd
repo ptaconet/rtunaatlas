@@ -5,7 +5,8 @@
 \title{Raise incomplete dataset to total dataset}
 \usage{
 raise_incomplete_dataset_to_total_dataset(df_input_incomplete, df_input_total,
-  df_rf, x_raising_dimensions, threshold_rf = NULL)
+  df_rf, x_raising_dimensions, decrease_when_rf_inferior_to_one = TRUE,
+  threshold_rf = NULL)
 }
 \arguments{
 \item{df_input_incomplete}{data.frame "incomplete", to raise. Must have a set of dimensions (columns) + a value column}
@@ -15,6 +16,8 @@ raise_incomplete_dataset_to_total_dataset(df_input_incomplete, df_input_total,
 \item{df_rf}{data.frame of raising factors. Ouput of the function \link[rtunaatlas]{raise_get_rf}}
 
 \item{x_raising_dimensions}{vector of dimensions (i.e. dimensions that compose the stratum) to use for the computation of the raising factors. The dimensions must be available in both input data.frames.}
+
+\item{decrease_when_rf_inferior_to_one}{boolean. If the raising factor is inferior to 1 (i.e. data in \code{df_input_incomplete} is superior to data in \code{df_input_total}), should the incomplete data be descreaed? TRUE = decrease. FALSE = do not decrease. Default is TRUE}
 
 \item{threshold_rf}{numeric from 0 to 100. If the raising factor for a stratum is not above this treshold, the data will be removed from the dataset.}
 }
@@ -136,7 +139,7 @@ Usually, for catches: \code{x_raising_dimensions} = c("gear","flag","species","y
 \examples{
 
 # Connect to Sardara DB
-con <- db_connection_sardara_world()
+con <- db_connection_tunaatlas_world()
 
 # Extract IOTC georeferenced catch time series of catches from Sardara DB
 ind_catch_tunaatlasird_level1<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_catch_1952_11_01_2016_01_01_tunaatlasIRD_level1"))
