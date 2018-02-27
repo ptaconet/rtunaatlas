@@ -189,7 +189,8 @@ get_rfmos_datasets_level0<-function(rfmo,
       
       df_level0<-rbind(df_level0,df)
       
-    } else { # if variable=="catch"
+    }
+      } else { # if variable=="catch"
       
       # Function to extract the datasets of catch (for billfish and tuna) and raise them to the ratio effort tuna / effort billfish (or effort shark)
       function_raise_catch_to_effort<-function(metadata_dataset_tuna_effort,
@@ -275,8 +276,6 @@ get_rfmos_datasets_level0<-function(rfmo,
       }
       
       df_level0<-rbind(df_level0,df_catch_billfish,df_catch_shark,df_catch_tuna)
-
-      }
   
     }
   }

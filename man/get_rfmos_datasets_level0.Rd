@@ -4,20 +4,24 @@
 \alias{get_rfmos_datasets_level0}
 \title{Extract primary gridded tuna RFMOs datasets from the Tuna atlas database}
 \usage{
-get_rfmos_datasets_level0(rfmo,variable,year_tunaatlas,iattc_raise_flags_to_schooltype,iattc_dimension_to_use_if_no_raising_flags_to_schooltype,iccat_include_type_of_school)
+get_rfmos_datasets_level0(rfmo,variable,year_tunaatlas,iattc_raise_flags_to_schooltype,iattc_dimension_to_use_if_no_raising_flags_to_schooltype,iattc_ps_catch_billfish_shark_raise_to_effort,iattc_ps_effort_to_extract,iccat_include_type_of_school)
 }
 \arguments{
 \item{rfmo}{string. Acronym of the RFMO. Accepted values: "IOTC", "ICCAT", "IATTC", "WCPFC", "CCSBT". See additional parameters to set if \code{rfmo} is set to "IATTC" or "ICCAT"}
 
-\item{variable}{string. Variable to extract. Accepted values: "catch", "effort"}
+\item{variable}{string. Variable to extract. Values accepted: "catch", "effort"}
 
-\item{year_tunaatlas}{numeric. The year of the datasets to extract. Starts in 2017}
+\item{year_tunaatlas}{numeric. The year of the datasets to extract (i.e. year the datasets were released). Starts in 2017}
 
 \item{iattc_raise_flags_to_schooltype}{boolean. Use only if \code{rfmo}=="IATTC". Raise dataset with flag stratification to dataset with schooltype stratification? See section Details for more information.}
 
 \item{iattc_dimension_to_use_if_no_raising_flags_to_schooltype}{NULL or string. Use only if \code{rfmo}=="IATTC". Not nullable if \code{raise_flags_to_schooltype} is set to FALSE. if not NULL, either set to "flag" or "schooltype"}
 
-\item{iccat_include_type_of_school}{boolean. Use only if \code{rfmo}=="ICCAT". Set TRUE if you want the output dataset with school type stratification. FALSE will provide the stratification without the type of school. See details for more information.}
+\item{iattc_ps_catch_billfish_shark_raise_to_effort}{boolean. Use only if \code{rfmo}=="IATTC" and \code{variable}=="catch". IATTC Purse Seine datasets are available in separate files for tuna, billfish and sharks. TRUE: raise billfish (resp. shark) catch to ratio effort tuna / effort billfish (resp. shark). FALSE: keep billfish (resp. shark) catch as they are provided in the billfish (resp. shark) catch datasets.}
+
+\item{iattc_ps_effort_to_extract}{NULL or string. Use only if \code{rfmo}=="IATTC" and \code{variable}=="effort". IATTC Purse Seine datasets are available in separate files for tunas, billfishes and sharks. Which effort data should be kept between these 3 files? {"tuna","billfish","shark"}. See section Details for more information.}
+
+\item{iccat_include_type_of_school}{boolean. Use only if \code{rfmo}=="ICCAT". Set TRUE if you want the output dataset with school type stratification. FALSE will provide the stratification without the type of school. See section Details for more information.}
 }
 \description{
 This function extracts the primary gridded time series coming from the tuna Regional fisheries management organizations and stored in the Tuna atlas database. Data include geo-spatial gridded catch and efforts.
@@ -27,21 +31,35 @@ The output dataset lists catch or effort of tuna, tuna-like and shark species in
 
 Details on the use of the parameter \code{iattc_raise_flags_to_schooltype}: For confidentiality policies, information on flag and school type for the geo-referenced catches is available in separate files for IATTC Purse seine datasets.
 \itemize{
-\item{ If the parameter \code{iattc_raise_flags_to_schooltype} is set to TRUE, for each stratum, the catch/effort from the flag-detailed dataset will be raised to the catch/effort from the school type-detailed dataset to get an estimation of the catches by flag and school type in each stratum.}
-\item{ If the parameter \code{iattc_raise_flags_to_schooltype} is set to FALSE, one single dataset will be used and in this case, the parameter \code{dimension_to_use_if_no_raising_flags_to_schooltype} must be filled in: }
+\item{ If the parameter \code{iattc_raise_flags_to_schooltype} is set to \code{TRUE}, for each stratum, the catch/effort from the flag-detailed dataset will be raised to the catch/effort from the school type-detailed dataset to get an estimation of the catches by flag and school type in each stratum.}
+\item{ If the parameter \code{iattc_raise_flags_to_schooltype} is set to \code{FALSE}, one single dataset will be used and in this case, the parameter \code{dimension_to_use_if_no_raising_flags_to_schooltype} must be set: }
  \itemize{
-\item{ If the parameter \code{iattc_dimension_to_use_if_no_raising_flags_to_schooltype} is set to "flag", the data with flag information will be used.}
-\item{ If the parameter \code{iattc_dimension_to_use_if_no_raising_flags_to_schooltype} is set to "schooltype", the data with schooltype information will be used. }
+\item{ If the parameter \code{iattc_dimension_to_use_if_no_raising_flags_to_schooltype} is set to \code{flag}, only the data with flag information will be used.}
+\item{ If the parameter \code{iattc_dimension_to_use_if_no_raising_flags_to_schooltype} is set to \code{schooltype}, only the data with schooltype information will be used. }
 }
 }
 
-#' Details on the use of the parameter \code{iccat_include_type_of_school}: ICCAT delivers two catch-and-efforts datasets for purse seiners: one that gives the detail of the type of school (Fad|Free school) for purse seine fisheries and that starts in 1994 (called Task II catch|effort by operation mode Fad|Free school) and one that does not give the information of the type of school and that covers all the time period (from 1950) (called Task II catch|effort). These data are redundant (i.e. the data from the dataset Task II catch|effort by operation mode are also available in the dataset Task II catch|effort) but in the latter, the information on the type of school is not available.
+Details on the use of the parameter \code{iattc_ps_catch_billfish_shark_raise_to_effort}:  In addition to the separation flag / schooltype (see above), IATTC Purse seine catch-and-effort are available in 3 separate files according to the group of species: tuna, billfishes, sharks. This is due to the fact that PS data is collected from 2 sources, observer and fishing vessel logbooks. Observer records are used when available, and for unobserved trips logbooks are used. Both sources collect tuna data, but only observers collect shark and billfish data. So efforts in the billfish and shark datasets might represent only a proportion of the total effort allocated in some strata since it is the observed effort, i.e. for which there was an observer onboard. As a result, catch in the billfish and shark datasets might represent only a proportion of the total catch allocated in a some strata.
 \itemize{
-\item{ If the parameter \code{iccat_include_type_of_school} is set to TRUE, both datasets will be combined to produce a dataset that covers the whole time period, with fishing mode information (Fad | free school).}
-\item{ If the parameter \code{iccat_include_type_of_school} is set to FALSE, only the dataset without the type of school information will be used. The output dataset will hence not have the stratification by type of school. }
+\item{ \code{TRUE}: Raise billfish (resp. shark) catch to the ratio  effort tuna / effort billfish (resp. shark).}
+\item{ \code{FALSE}: Keep billfish (resp. shark) catch as they are provided in the billfish (resp. shark) catch datasets.}
 }
 
-The output dataset is expressed with the RFMO's coding system.
+Details on the use of the parameter \code{iattc_ps_effort_to_extract}: In addition to the separation flag / schooltype (see above), IATTC Purse seine catch-and-effort are available in 3 separate files according to the group of species: tuna, billfishes, sharks. This is due to the fact that PS data is collected from 2 sources, observer and fishing vessel logbooks. Observer records are used when available, and for unobserved trips logbooks are used. Both sources collect tuna data, but only observers collect shark and billfish data. So as an example a strata may have observer effort and the number of sets from the observed trips would be counted for tuna, shark and billfish. But there may have also been logbook data for unobserved sets in the same strata, so the tuna catch and number of sets for a cell would be added. This would make a higher total number of sets for tuna catch than shark or billfish.
+This parameter enables to select the effort dataset that the user wants to use:
+\itemize{
+\item{ \code{tuna}: Keep the effort from the tuna dataset. Likely to be the best approximation of effort. }
+\item{ \code{billfish}: Keep the effort from the billfish dataset.}
+\item{ \code{shark}: Keep the effort from the shark dataset. }
+}
+
+Details on the use of the parameter \code{iccat_include_type_of_school}: ICCAT delivers two catch-and-efforts datasets for purse seiners: one that gives the detail of the type of school (Fad|Free school) for purse seine fisheries and that starts in 1994 (called Task II catch|effort by operation mode Fad|Free school) and one that does not give the information of the type of school and that covers all the time period (from 1950) (called Task II catch|effort). These data are redundant (i.e. the data from the dataset Task II catch|effort by operation mode are also available in the dataset Task II catch|effort) but in the latter, the information on the type of school is not available.
+\itemize{
+\item{ If the parameter \code{iccat_include_type_of_school} is set to \code{TRUE}, both datasets will be combined to produce a dataset that covers the whole time period, with fishing mode information (Fad | free school).}
+\item{ If the parameter \code{iccat_include_type_of_school} is set to \code{FALSE}, only the dataset without the type of school information will be used. The output dataset will hence not have the stratification by type of school. }
+}
+
+The output dataset is expressed with the RFMO coding system.
 }
 \examples{
 
