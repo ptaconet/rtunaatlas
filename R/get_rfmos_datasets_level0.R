@@ -83,18 +83,18 @@ get_rfmos_datasets_level0<-function(rfmo,
 
   if (rfmo=="IOTC"){
     # retrieves 3 lines. IOTC level0 is only the combination of the 3 IOTC catch-and-effort datasets: indian_ocean_catch_ll_tunaatlasdf_level0 , indian_ocean_catch_tunaatlasdf_level0__coastal , indian_ocean_catch_tunaatlasdf_level0__surface
-    datasets_permanent_identifiers=paste0("'indian_ocean_",variable,"_ll_tunaatlasIOTC_level0','indian_ocean_",variable,"_tunaatlasIOTC_level0__coastal','indian_ocean_",variable,"_tunaatlasIOTC_level0__surface'")
+    datasets_permanent_identifiers=paste0("'indian_ocean_",variable,"_ll_tunaatlasiotc_level0','indian_ocean_",variable,"_tunaatlasiotc_level0__coastal','indian_ocean_",variable,"_tunaatlasiotc_level0__surface'")
   } else if (rfmo=="WCPFC"){
-    datasets_permanent_identifiers=paste0("'west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasWCPFC_level0__1950to1970','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasWCPFC_level0__1990to2000','west_pacific_ocean_",variable,"_5deg_1m_tunaatlasWCPFC_level0__driftnet','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasWCPFC_level0__2000','west_pacific_ocean_",variable,"_5deg_1m_bb_tunaatlasWCPFC_level0','west_pacific_ocean_",variable,"_5deg_1m_ps_tunaatlasWCPFC_level0','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasWCPFC_level0__1970to1980','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasWCPFC_level0__1980to1990'")
+    datasets_permanent_identifiers=paste0("'west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlaswcpfc_level0__1950to1970','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlaswcpfc_level0__1990to2000','west_pacific_ocean_",variable,"_5deg_1m_tunaatlaswcpfc_level0__driftnet','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlaswcpfc_level0__2000','west_pacific_ocean_",variable,"_5deg_1m_bb_tunaatlaswcpfc_level0','west_pacific_ocean_",variable,"_5deg_1m_ps_tunaatlaswcpfc_level0','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlaswcpfc_level0__1970to1980','west_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlaswcpfc_level0__1980to1990'")
   } else if (rfmo=="CCSBT"){
-    # retrieves 2 lines. CCSBT level0 is only the combination of the 2 CCSBT catch-and-effort datasets: southern_hemisphere_oceans_catch_1deg_1m_tunaatlasCCSBT_level0__surface , southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasCCSBT_level0
-    datasets_permanent_identifiers=paste0("'southern_hemisphere_oceans_",variable,"_1deg_1m_tunaatlasCCSBT_level0__surface','southern_hemisphere_oceans_",variable,"_5deg_1m_ll_tunaatlasCCSBT_level0'")
+    # retrieves 2 lines. CCSBT level0 is only the combination of the 2 CCSBT catch-and-effort datasets: southern_hemisphere_oceans_catch_1deg_1m_tunaatlasccsbt_level0__surface , southern_hemisphere_oceans_catch_5deg_1m_ll_tunaatlasccsbt_level0
+    datasets_permanent_identifiers=paste0("'southern_hemisphere_oceans_",variable,"_1deg_1m_tunaatlasccsbt_level0__surface','southern_hemisphere_oceans_",variable,"_5deg_1m_ll_tunaatlasccsbt_level0'")
   } else if (rfmo=="IATTC"){
     # The data that are not Purse Seine do not suffer any correction for level 0. They are taken as distributed by IATTC.
-    datasets_permanent_identifiers=paste0("'east_pacific_ocean_",variable,"_1deg_1m_bb_tunaatlasIATTC_level0__tuna_byFlag','east_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasIATTC_level0__tuna_billfish','east_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasIATTC_level0__shark'")
+    datasets_permanent_identifiers=paste0("'east_pacific_ocean_",variable,"_1deg_1m_bb_tunaatlasiattc_level0__tuna_byflag','east_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasiattc_level0__tuna_billfish','east_pacific_ocean_",variable,"_5deg_1m_ll_tunaatlasiattc_level0__shark'")
     # The PS data are dealt separately (after in the function)
   } else if (rfmo=="ICCAT"){
-    datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_tunaatlasICCAT_level0__noSchool'")
+    datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_tunaatlasiccat_level0__noschool'")
   }
   
   metadata_datasets<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%__",year_tunaatlas,"%'"))
@@ -104,7 +104,7 @@ get_rfmos_datasets_level0<-function(rfmo,
   # Deal with special case of ICCAT PS
   if (rfmo=="ICCAT" && iccat_ps_include_type_of_school==TRUE){ # We include in the dataset the data including the information on type of school
     # Retrieve ICCAT dataset with schooltype information (task2 by operation mode) (https://goo.gl/f2jz5R). We do not use the template (template_query_effortes) because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
-    datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_1deg_1m_ps_tunaatlasICCAT_level0__bySchool'")
+    datasets_permanent_identifiers=paste0("'atlantic_ocean_",variable,"_1deg_1m_ps_tunaatlasiccat_level0__byschool'")
     metadata_datasets_WithSchooltypeInfo<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier IN (",datasets_permanent_identifiers,") and identifier LIKE '%__",year_tunaatlas,"%'"))
     
     iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
@@ -135,24 +135,24 @@ get_rfmos_datasets_level0<-function(rfmo,
     # Commentaire Emmanuel Chassot: L’effort est exprimé ici en nombre de calées. Cela signifie dans le cas de l’EPO que les efforts donnés dans certains jeux de données peuvent correspondre à une partie de l’effort total alloué à une strate puisqu’il s’agit de l’effort observé, cà-d. pour lequel il y avait un observateur à bord du senneur. De mon point de vue, (1) L’effort unique et homogène serait celui des thons tropicaux et (2) pour uniformiser le jeu de captures par strate, il faut calculer un ratio de captures de requins par calée (observée) et de porte-épées par calée (observée) et de les multiplier ensuite par l’effort reporté pour les thons tropicaux puisqu’on considère que c’est l’effort de la pêcherie (qui cible les thons). Le raising factor est effort thons / effort billfish et effort thons / effort sharks.
 
     # Get metadata of Catch datasets (for tuna, billfish and shark, and stratified by flag and then by type of school)
-    metadata_dataset_PSSetType_tuna_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_tuna_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__tuna_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_tuna_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__tuna_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_tuna_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__tuna_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
-    metadata_dataset_PSSetType_billfish_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_billfish_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__billfish_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_billfish_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__billfish_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_billfish_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__billfish_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
-    metadata_dataset_PSSetType_shark_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_shark_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasIATTC_level0__shark_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_shark_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__shark_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_shark_catch<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_catch_1deg_1m_ps_tunaatlasiattc_level0__shark_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
     # Get metadata of Effort datasets (for tuna, billfish and shark, and stratified by flag and then by type of school)
-    metadata_dataset_PSSetType_tuna_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__tuna_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_tuna_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__tuna_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_tuna_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__tuna_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_tuna_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__tuna_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
-    metadata_dataset_PSSetType_billfish_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__billfish_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_billfish_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__billfish_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_billfish_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__billfish_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_billfish_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__billfish_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
-    metadata_dataset_PSSetType_shark_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__shark_bySchool' and identifier LIKE '%__",year_tunaatlas,"%'"))
-    metadata_dataset_PSFlag_shark_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasIATTC_level0__shark_byFlag' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSSetType_shark_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__shark_byschool' and identifier LIKE '%__",year_tunaatlas,"%'"))
+    metadata_dataset_PSFlag_shark_effort<-dbGetQuery(con,paste0("SELECT * from metadata.metadata where persistent_identifier='east_pacific_ocean_effort_1deg_1m_ps_tunaatlasiattc_level0__shark_byflag' and identifier LIKE '%__",year_tunaatlas,"%'"))
     
     columns_to_keep_effort=c("source_authority","gear","flag","schooltype","time_start","time_end","geographic_identifier","unit","value")
     
