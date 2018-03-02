@@ -70,8 +70,9 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
   df_input[,dimension_to_map]<-df_input$trg_code
   df_input <- df_input[column_names_df_input]
   } else {
-  colnames(df_input)[colnames(df_input) == "trg_code"] <-paste0(dimension_to_map,"_mapping")
-  df_input <- df_input[c(column_names_df_input,paste0(dimension_to_map,"_mapping"))]
+  colnames(df_input)[colnames(df_input) == dimension_to_map] <-paste0(dimension_to_map,"_src_code")
+  colnames(df_input)[colnames(df_input) == "trg_code"] <- dimension_to_map
+  df_input <- df_input[c(column_names_df_input,paste0(dimension_to_map,"_src_code"))]
   }
   
   #group by the new dimension
