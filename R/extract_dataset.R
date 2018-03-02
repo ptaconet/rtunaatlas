@@ -7,7 +7,7 @@
 #'
 #' @usage 
 #' extract_dataset(con,metadata_dataset,labels=FALSE)
-#'    
+#'
 #' @param con a wrapper of rpostgresql connection (connection to a database)
 #' @param metadata_dataset data.frame of type "metadata" (one row extracted from the table metadata.metadata).
 #' @param labels boolean extract the dataset with codes and labels? TRUE = codes + labels . FALSE = only codes. Default is FALSE
@@ -60,7 +60,7 @@ extract_dataset<-function(con,metadata_dataset,labels=FALSE){
 # columns_to_keep : vector of columns to keep. If columns of the source datasets are missing, a column with this dimension will be added to the dataset and filled with value = UNK (unknown)
 # metadata_datasets data.frame of type "metadata" (muliple rows extracted from the table metadata.metadata).
 
-extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_keep){
+extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_keep,labels=FALSE){
   
   if(nrow(metadata_datasets)==0){stop("There is no dataset that corresponds to your query")}
   
@@ -68,7 +68,7 @@ extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_k
   
   for (i in 1:nrow(metadata_datasets)){
     cat(paste0("\nretrieving dataset ",metadata_datasets$dataset_name[i]))
-    df_thisdf<-extract_dataset(con,metadata_datasets[i,])
+    df_thisdf<-extract_dataset(con,metadata_datasets[i,],labels)
     
     # keep only wanted columns
     df_thisdf <- df_thisdf[(names(df_thisdf) %in% columns_to_keep)]
