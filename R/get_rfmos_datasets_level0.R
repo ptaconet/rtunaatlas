@@ -186,9 +186,10 @@ get_rfmos_datasets_level0<-function(rfmo,
           df<-df_iattc_effort_PSSetType
         }
       
+      }
+      
       df_level0<-rbind(df_level0,df)
       
-    }
       } else { # if variable=="catch"
       
       # Function to extract the datasets of catch (for billfish and tuna) and raise them to the ratio effort tuna / effort billfish (or effort shark)
