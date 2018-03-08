@@ -67,7 +67,7 @@ extract_and_merge_multiple_datasets<-function(con,metadata_datasets,columns_to_k
   df<-NULL
   
   for (i in 1:nrow(metadata_datasets)){
-    cat(paste0("\nretrieving dataset ",metadata_datasets$dataset_name[i]))
+    cat(paste0("\nretrieving dataset ",metadata_datasets$identifier[i]))
     df_thisdf<-extract_dataset(con,metadata_datasets[i,],labels)
     
     # keep only wanted columns

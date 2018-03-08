@@ -110,7 +110,7 @@ get_rfmos_datasets_level0<-function(rfmo,
     iccat_ce_WithSchooltypeInfo<-extract_and_merge_multiple_datasets(con,metadata_datasets_WithSchooltypeInfo,columns_to_keep)
     
     # We need to map flag code list, because flag code list used in iccat task2 by operation mode dataset is different from flag code list used in ICCAT task2; however we have to use the same flag code list for data raising. In other words, we express all ICCAT datasets following ICCAT task2 flag code list.
-    flag_mapping_flag_iccat_from_ncandcas_to_flag_iccat<-rtunaatlas::extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_flag_iccat_from_ncandcas_flag_iccat"))
+    flag_mapping_flag_iccat_from_ncandcas_to_flag_iccat<-rtunaatlas::extract_dataset(con,list_metadata_datasets(con,identifier="codelist_mapping_flag_iccat_from_ncandcas_flag_iccat"))
     iccat_ce_WithSchooltypeInfo<-map_codelist(iccat_ce_WithSchooltypeInfo,flag_mapping_flag_iccat_from_ncandcas_to_flag_iccat,"flag")[[1]]
     
     strata_in_withoutschooltype_and_not_in_withshooltype<-anti_join (df_level0,iccat_ce_WithSchooltypeInfo,by=setdiff(columns_to_keep,c("value","schooltype")))
