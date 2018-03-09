@@ -236,9 +236,11 @@ pie_map<-function(con,
         }
         if (function_pie_size=="proportional"){
           fun_to_apply<-function(val){ val<-(val) ; return(val) }
+          fun_to_apply_text<-"The diamater of the pies is proportional to the value of catch"
         }
         if (function_pie_size=="unique"){
           fun_to_apply<-function(val){ val<-max_radius/2 ; return(val) }
+          fun_to_apply_text<-"The diamater of the pies is unique (i.e. not proportional to the value of catch)"
         }
         
       }
