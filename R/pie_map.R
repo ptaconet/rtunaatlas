@@ -239,7 +239,7 @@ pie_map<-function(con,
           fun_to_apply_text<-"The diamater of the pies is proportional to the value of catch"
         }
         if (function_pie_size=="unique"){
-          fun_to_apply<-function(val){ val<-max_radius/2 ; return(val) }
+          fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
           fun_to_apply_text<-"The diamater of the pies is unique (i.e. not proportional to the value of catch)"
         }
         
@@ -262,7 +262,11 @@ pie_map<-function(con,
     b=max_radius-a*fun_to_apply(max_catch)
     df_input.spdf$radius=a*fun_to_apply(df_input.spdf$TOTAL)+b
 
-    
+    if (!is.null(function_pie_size)){
+      if (function_pie_size=="unique"){
+        df_input.spdf$radius=max(df_input.spdf$radius)/2
+      }
+
   } else if (min_catch==max_catch){
     df_input.spdf$radius=max_radius
   }
