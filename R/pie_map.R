@@ -10,7 +10,7 @@
 #' @param df_spatial_code_list_name string. Name of the spatial coding system used in df_input (column 'geographic_identifier')
 #' @param area_filter_wkt sting. A spatial filter (WKT format) or NULL if no spatial filter.
 #' @param number_of_classes integer. Number of classes to visualize in the pies.
-#' @param function_pie_size string. square_root, square, proportional
+#' @param function_pie_size string. square_root, square, proportional, unique
 #' @param bounding_box vector of bounding box for vizualisation (c(xmîn,xmax,ymin,ymax))
 
 #' @details
@@ -53,7 +53,7 @@ pie_map<-function(con,
                   df_spatial_code_list_name, # Name of the spatial coding system used in the input data frame. The spatial coding system must be available in the database
                   area_filter_wkt=NULL, # WKT of the area filter
                   number_of_classes=1, #number of classes
-                  function_pie_size=NULL, # square_root, square, proportional
+                  function_pie_size=NULL, # square_root, square, proportional, unique
                   bounding_box=NULL # vector with c(xmîn,xmax,ymin,ymax)
 ){
   
@@ -255,9 +255,16 @@ pie_map<-function(con,
     a=(min_radius-max_radius)/(fun_to_apply(min_catch)-fun_to_apply(max_catch))
     b=max_radius-a*fun_to_apply(max_catch)
     df_input.spdf$radius=a*fun_to_apply(df_input.spdf$TOTAL)+b
+    
+    if (function_pie_size=="unique"){
+      df_input.spdf$radius=(max(df_input.spdf$radius)+min(df_input.spdf$radius))/2
+    }
+    
   } else if (min_catch==max_catch){
     df_input.spdf$radius=max_radius
   }
+  
+
   
   # to have a look at the profile of the radius in function of the circle: 
   #plot(df_map.spdf$TOTAL,df_map.spdf$radius)
