@@ -238,7 +238,7 @@ pie_map<-function(con,
           fun_to_apply<-function(val){ val<-(val) ; return(val) }
         }
         if (function_pie_size=="unique"){
-          fun_to_apply<-function(val){ val<-(min_radius+max_radius)/2 ; return(val) }
+          fun_to_apply<-function(val){ val<-max_radius/2 ; return(val) }
         }
         
       }
