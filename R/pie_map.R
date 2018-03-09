@@ -226,7 +226,7 @@ pie_map<-function(con,
         fun_to_apply<-function(val){ val<-(val)^2 ; return(val) }
         fun_to_apply_text<-"The diamater of the pies is proportional to the square of the catches.\n With this scale, the differences between the big values of catches are more visible than the differences between the small values of catches"
       }} else {
-        if (function_pie_size %in% c("square_root","unique")){
+        if (function_pie_size=="square_root"){
           fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
           fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches.\n With this scale, the differences between the small values of catches are more visible than the differences between the big values of catches"
         }
@@ -237,6 +237,10 @@ pie_map<-function(con,
         if (function_pie_size=="proportional"){
           fun_to_apply<-function(val){ val<-(val) ; return(val) }
         }
+        if (function_pie_size=="unique"){
+          fun_to_apply<-function(val){ val<-(min_radius+max_radius)/2 ; return(val) }
+        }
+        
       }
     
     # function sqrt -> the differences between the small values of catches are more visible than the differences between the big values of catches
@@ -255,10 +259,7 @@ pie_map<-function(con,
     a=(min_radius-max_radius)/(fun_to_apply(min_catch)-fun_to_apply(max_catch))
     b=max_radius-a*fun_to_apply(max_catch)
     df_input.spdf$radius=a*fun_to_apply(df_input.spdf$TOTAL)+b
-    
-    if (function_pie_size=="unique"){
-      df_input.spdf$radius=(max(df_input.spdf$radius)+min(df_input.spdf$radius))/2
-    }
+
     
   } else if (min_catch==max_catch){
     df_input.spdf$radius=max_radius
