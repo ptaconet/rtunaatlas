@@ -266,6 +266,7 @@ pie_map<-function(con,
       if (function_pie_size=="unique"){
         df_input.spdf$radius=max(df_input.spdf$radius)/2
       }
+    }
 
   } else if (min_catch==max_catch){
     df_input.spdf$radius=max_radius
