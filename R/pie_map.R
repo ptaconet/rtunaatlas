@@ -226,7 +226,7 @@ pie_map<-function(con,
         fun_to_apply<-function(val){ val<-(val)^2 ; return(val) }
         fun_to_apply_text<-"The diamater of the pies is proportional to the square of the catches.\n With this scale, the differences between the big values of catches are more visible than the differences between the small values of catches"
       }} else {
-        if (function_pie_size=="square_root"){
+        if (function_pie_size %in% c("square_root","unique")){
           fun_to_apply<-function(val){ val<-sqrt(val) ; return(val) }
           fun_to_apply_text<-"The diamater of the pies is proportional to the square root of the catches.\n With this scale, the differences between the small values of catches are more visible than the differences between the big values of catches"
         }
