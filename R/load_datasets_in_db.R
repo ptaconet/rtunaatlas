@@ -596,9 +596,6 @@ load_codelist_in_db<-function(con,df_to_load,df_metadata){
   df_metadata$id_metadata<-PK_metadata
   sql_query_dataset_extraction<-getSQLSardaraQueries(con,df_metadata)
   dbSendQuery(con,paste0("UPDATE metadata.metadata SET sql_query_dataset_extraction='",sql_query_dataset_extraction$query_CSV,"' WHERE identifier='",df_metadata$identifier,"'"))
-
-  # Comment 
-  dbSendQuery(con,paste0("COMMENT ON TABLE ",df_metadata$database_table_name," IS '",df_metadata$title,"'"))
   }
 
 
