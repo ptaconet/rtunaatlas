@@ -201,7 +201,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   
   ## Remove NAs and infinite from the raising factors. NAs are when data exist in partial dataset but do not exist in total dataset, or reversely
   index.na.rf<-which(is.na(df_rf$rf))
+  if(length(index.na.rf)>0){
   df_rf <- df_rf[-index.na.rf, ]
+  }
   df_rf <- df_rf[!is.infinite(df_rf$rf),]
   
   # apply the raising factors
