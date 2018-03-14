@@ -21,7 +21,7 @@ pie_map(con, df_input, dimension_group_by = NULL, df_spatial_code_list_name,
 
 \item{number_of_classes}{integer. Number of classes to visualize in the pies.}
 
-\item{function_pie_size}{string. square_root, square, proportional}
+\item{function_pie_size}{string. square_root, square, proportional, unique}
 
 \item{bounding_box}{vector of bounding box for vizualisation (c(xmîn,xmax,ymin,ymax))}
 }

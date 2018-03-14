@@ -7,21 +7,21 @@
 \alias{list_metadata_codelists_mapping}
 \title{List metadata of the datasets available in Sardara database}
 \usage{
-list_metadata_datasets(con,dataset_name=NULL,source_authority=NULL)
-list_metadata_raw_datasets(con,dataset_name=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
-list_metadata_codelists(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
-list_metadata_codelists_mapping(con,dataset_name=NULL,source_authority=NULL,dimension=NULL)
+list_metadata_datasets(con,identifier=NULL,source_authority=NULL)
+list_metadata_raw_datasets(con,identifier=NULL,source_authority=NULL,variable=NULL,spatial_resolution=NULL,level_of_correction=NULL)
+list_metadata_codelists(con,identifier=NULL,source_authority=NULL,dimension=NULL)
+list_metadata_codelists_mapping(con,identifier=NULL,source_authority=NULL,dimension=NULL)
 }
 \arguments{
 \item{con}{a wrapper of rpostgresql connection (connection to a database)}
 
-\item{dataset_name}{NULL or string. If not NULL, extracts the metadata row of the dataset_name stated. In this case, all the other parameters will be ignored}
+\item{identifier}{NULL or string. If not NULL, extracts the metadata of the identifier stated. In this case, all the other parameters will be ignored}
 
 \item{source_authority}{NULL or vector of strings. If not NULL, filter available datasets by the source authority in charge of producing the source statistics collated and harmonized. E.g. c("IOTC","ICCAT") will provide the metadata only for the data produced by IOTC and ICCAT.}
 
 \item{dimension}{NULL or vector of strings. For codelists and mappings only. If not NULL, filter available code lists / mappings by dimensions. E.g. c("gear","species") will provide the metadata only for code lists/mappings between code lists related to fishing gears and species.}
 
-\item{variable}{NULL or vector of strings. For datasets only. If not NULL, filter available code lists / mappings by variable. Three variables are available in Sardara: catch, effort, catch_at_size}
+\item{variable}{NULL or vector of strings. For datasets only. If not NULL, filter available code lists / mappings by variable. Three variables are available in the Tuna atlas database: catch, effort, catch_at_size}
 
 \item{spatial_resolution}{NULL or real. For datasets only. If not NULL, filter available datasets that are defined on that spatial resolution (in degrees).}
 
