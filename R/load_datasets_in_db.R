@@ -123,6 +123,12 @@ load_raw_dataset_in_db<- function(
   
   for (i in 1:nrow(db_df_inputlike_dimensions_parameters)){
     
+    if (length(unique(df_to_load[,db_df_inputlike_dimensions_parameters$dimension[i]]))==1 & unique(df_to_load[,db_df_inputlike_dimensions_parameters$dimension[i]])=="ALL"){
+      #if (unique(df_to_load[,db_df_inputlike_dimensions_parameters$dimension[i]])=="ALL"){
+      df_to_load[,db_df_inputlike_dimensions_parameters$db_pkattribute_colname[i]]=0
+       # }
+      } else {
+    
     #Retrieve the name of the code list to use
     index<-which(df_codelists_input$dimension==db_df_inputlike_dimensions_parameters$dimension[i])
     db_df_inputstouse<-df_codelists_input$code_list_identifier[index]
@@ -157,7 +163,7 @@ load_raw_dataset_in_db<- function(
       
       #warning(paste("Some code(s) exist in the dataset to upload but do not exist in the corresponding code list in the  do not exist in the table ",db_df_inputstouse," of the database. You should update the table ",db_df_inputstouse," of Sardara with these code before uploading the dataset in Sardara.",sep=""))
     }
-    
+  }
     #remove from the dataset to upload the column that has just been merged
     varsToDelete <- names(df_to_load) %in% db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]
     df_to_load <- df_to_load[!varsToDelete]
@@ -236,14 +242,14 @@ load_raw_dataset_in_db<- function(
     ### Deal with area in wkt format
     if (area_df_inputtouse=="area_wkt"){
       
-      df_to_load<-FUNMergeDimensions_df_inputLike(
+      df_to_load<-FUNMergeDimensions_CodeListLike(
         con,
         "area.area",
         "id_area",
         "codesource_area",
         "tablesource_area",
         df_to_load,
-        "area",
+        "geographic_identifier",
         "area_wkt"
       )
       
@@ -256,11 +262,11 @@ load_raw_dataset_in_db<- function(
         df_inputFromDB<-dbGetQuery(con, sql)
         
         df_to_load<-data.table(df_to_load)
-        df_to_load<-merge(df_to_load,df_inputFromDB,by.x="area",by.y="code",all.x=TRUE)
+        df_to_load<-merge(df_to_load,df_inputFromDB,by.x="geographic_identifier",by.y="code",all.x=TRUE)
         df_to_load<-as.data.frame(df_to_load)
         
         # upload the new wkt to the db
-        CodesToLoad<-unique(df_to_load[index.na,"area"])
+        CodesToLoad<-unique(df_to_load[index.na,"geographic_identifier"])
         
         sql4 <- paste0("COPY  area.area_wkt (code) FROM STDIN NULL 'NA' ")
         postgresqlpqExec(con, sql4)
@@ -271,14 +277,14 @@ load_raw_dataset_in_db<- function(
         
         df_to_load[,"id_area"]<-NULL
         
-        df_to_load<-FUNMergeDimensions_df_inputLike(
+        df_to_load<-FUNMergeDimensions_CodeListLike(
           con,
           "area.area",
           "id_area",
           "codesource_area",
           "tablesource_area",
           df_to_load,
-          "area",
+          "geographic_identifier",
           "area_wkt"
         )
       }
@@ -345,9 +351,10 @@ load_raw_dataset_in_db<- function(
     # 1) dataset-codelists (le dataset x utilise les codelist x,y,z) 
     for (i in 1:nrow(df_codelists_input)){
       id_metadata_code_list<-dbGetQuery(con,paste0("SELECT id_metadata from metadata.metadata where identifier='",df_codelists_input$code_list_identifier[i],"'"))
+      if(nrow(id_metadata_code_list)){
       dbSendQuery(con,paste0("INSERT INTO metadata.metadata_mapping(metadata_mapping_id_from,metadata_mapping_id_to) VALUES (",PK_metadata,",",id_metadata_code_list,")"))
     }
-    
+  }
     # 2) dataset-mappings (le dataset x utilise les mappings x,y,z) -> PAS ENCORE GERE
     # 3) dataset-dataset  (le dataset x utilise les dataset x,y,z) -> PAS ENCORE GERE
     
