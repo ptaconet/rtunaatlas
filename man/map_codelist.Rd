@@ -37,13 +37,16 @@ If \code{keep_src_code} is set to FALSE, the source coding system column will be
 If \code{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 }
 \examples{
+
+# Connect to Tuna atlas database
+con<-db_connection_tunaatlas_world()
+
   # Reads IOTC nominal catch dataset (2017 release)
-  con=db_connection_sardara_world()
-  iotc_nominal_catch<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
+  iotc_nominal_catch<-extract_dataset(con,list_metadata_datasets(con,identifier="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
   head(iotc_nominal_catch)
   
   # Read a mapping between code lists (in this case, mapping between codes for fishing gears used by the tuna RFMOs and the International Standard Statistical Classification of Fishing Gear)
-  df_mapping<-extract_dataset(con,list_metadata_datasets(con,dataset_name="codelist_mapping_gear_iotc_isscfg_revision_1")) 
+  df_mapping<-extract_dataset(con,list_metadata_datasets(con,identifier="codelist_mapping_gear_iotc_isscfg_revision_1")) 
   head(df_mapping)
  
   # Map code lists. Output is a list with two elements (see section "return"). Default conserves only target coding system in the output dataset. Set keep_src_code=TRUE to conserve both source and target coding systems in the output dataset.

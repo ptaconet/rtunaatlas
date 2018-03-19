@@ -65,10 +65,11 @@ This table means that the geograpical identifier "235140" intersects two areas o
 }
 \examples{
 
-con=db_connection_sardara_world()
+# Connect to Tuna atlas database
+con<-db_connection_tunaatlas_world()
 
 # Extract a dataset
-dataset_metadata<-list_metadata_datasets(con,dataset_name="west_pacific_ocean_catch_1970_01_01_2016_01_01_5deg_1m_ps_tunaatlasWCPFC_2017_level0")
+dataset_metadata<-list_metadata_datasets(con,identifier="west_pacific_ocean_catch_1970_01_01_2016_01_01_5deg_1m_ps_tunaatlasWCPFC_2017_level0")
 df<-extract_dataset(con,dataset_metadata)
 
 # Retrieve the spatial coding system used in the dataset

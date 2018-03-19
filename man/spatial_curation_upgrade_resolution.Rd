@@ -26,9 +26,10 @@ This function aggregates the data of a dataset on a grid with resolution equal t
 \examples{
 
 
-# Extract a df_input from Sardara World database
-con=db_connection_sardara_world()
-dataset_metadata<-list_metadata_datasets(con,dataset_name="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
+# Connect to Tuna atlas database
+con<-db_connection_tunaatlas_world()
+
+dataset_metadata<-list_metadata_datasets(con,identifier="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
 df<-extract_dataset(con,dataset_metadata)
 
 # Aggregate data with resolutions inferior to 5° on the corresponding 5° resolution grid:

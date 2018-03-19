@@ -25,7 +25,8 @@ The meaning of the columns of a raw dataset is provided in the \href{https://doc
 }
 \examples{
 
-con=db_connection_tunaatlas_world()
+# Connect to Tuna atlas database
+con<-db_connection_tunaatlas_world()
 
 # Extract a raw dataset
 raw_dataset<-extract_dataset(con,list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
