@@ -27,10 +27,11 @@
 #'
 #' @examples
 #' 
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #' 
-#' # Extract a dataset from Sardara World database
-#' con=db_connection_sardara_world()
-#' dataset_metadata<-list_metadata_datasets(con,dataset_name="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
+#' # Extract a dataset from Tuna atlas World database
+#' dataset_metadata<-list_metadata_datasets(con,identifier="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
 #' df<-extract_dataset(con,dataset_metadata)
 #' 
 #' # Retrieve the spatial coding system used in the dataset

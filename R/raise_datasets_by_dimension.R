@@ -38,19 +38,19 @@
 #' 
 #' @examples
 #'
-#' ## Retrieve some IATTC georeferenced times series of catch 
-#' # Connect to Sardara DB
-#' con <- db_connection_sardara_world()
-#' 
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
+#'
+#' # Retrieve some IATTC georeferenced times series of catch 
 #'
 #' # IATTC dataset stratified by schooltype (and not flag)
-#' dataset_iattc_ce_PSSetType<-extract_dataset(con,list_metadata_datasets(con,dataset_name="east_pacific_ocean_catch_1958_12_01_2016_01_01_1deg_1m_ps_tunaatlasIATTC_2017_level0__tuna_bySchool"))
+#' dataset_iattc_ce_PSSetType<-extract_dataset(con,list_metadata_datasets(con,identifier="east_pacific_ocean_catch_1958_12_01_2016_01_01_1deg_1m_ps_tunaatlasIATTC_2017_level0__tuna_bySchool"))
 #' head(dataset_iattc_ce_PSSetType)
 #' unique(dataset_iattc_ce_PSSetType$flag) # Note that the column "flag" is all set with "UNK"
 #' unique(dataset_iattc_ce_PSSetType$schooltype) # Note that the column "schooltype" is detailed
 #'
 #' # Same IATTC datasets, but stratified by flag (and not schooltype)
-#' dataset_iattc_ce_PSFlag<-extract_dataset(con,list_metadata_datasets(con,dataset_name="east_pacific_ocean_catch_1958_12_01_2016_01_01_1deg_1m_ps_tunaatlasIATTC_2017_level0__tuna_byFlag"))
+#' dataset_iattc_ce_PSFlag<-extract_dataset(con,list_metadata_datasets(con,identifier="east_pacific_ocean_catch_1958_12_01_2016_01_01_1deg_1m_ps_tunaatlasIATTC_2017_level0__tuna_byFlag"))
 #' head(dataset_iattc_ce_PSFlag)
 #' unique(dataset_iattc_ce_PSFlag$schooltype) # Note that the column "schooltype" is all set with "UNK"
 #' unique(dataset_iattc_ce_PSFlag$flag) # Note that the column "flag" is detailed

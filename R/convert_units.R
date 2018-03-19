@@ -54,8 +54,8 @@
 #' 
 #' @examples
 #' 
-#' # Connect to Sardara World DB
-#' con=db_connection_sardara_world()
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #' 
 #' # Retrieve IOTC georeferenced catch data from 2017
 #' df_input<-iotc_catch_level0(2017)

@@ -127,15 +127,15 @@
 #' @family process data
 #' @examples
 #' 
-#' # Connect to Sardara DB
-#' con <- db_connection_tunaatlas_world()
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #'
 #' # Extract IOTC georeferenced catch time series of catches from Sardara DB
-#' ind_catch_tunaatlasird_level1<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_catch_1952_11_01_2016_01_01_tunaatlasIRD_level1"))
+#' ind_catch_tunaatlasird_level1<-extract_dataset(con,list_metadata_datasets(con,identifier="indian_ocean_catch_1952_11_01_2016_01_01_tunaatlasIRD_level1"))
 #' head(ind_catch_tunaatlasird_level1)
 #'
 #' # Extract IOTC total (nominal) catch time series from Sardara DB
-#' ind_nominal_catch_tunaatlasiotc_level0<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
+#' ind_nominal_catch_tunaatlasiotc_level0<-extract_dataset(con,list_metadata_datasets(con,identifier="indian_ocean_nominal_catch_1950_01_01_2015_01_01_tunaatlasIOTC_2017_level0"))
 #' head(ind_nominal_catch_tunaatlasiotc_level0)
 #'
 #' ## Raise georeferenced catch to total catch. Raise by {gear, flag, species, year, source_authority, unit}

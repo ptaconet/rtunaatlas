@@ -31,7 +31,8 @@
 #' @family access data 
 #' @examples
 #' 
-#'  con=db_connection_sardara_world()
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #'  
 #'  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
 #' dataset_metadata<-list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")

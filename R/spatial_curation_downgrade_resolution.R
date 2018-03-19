@@ -21,10 +21,10 @@
 #'
 #' @examples
 #' 
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #' 
-#' # Extract a df_input from Sardara World database
-#' con=db_connection_sardara_world()
-#' dataset_metadata<-list_metadata_datasets(con,dataset_name="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
+#' dataset_metadata<-list_metadata_datasets(con,identifier="atlantic_ocean_catch_1950_01_01_2016_01_01_tunaatlasICCAT_2017_level0__noSchool")
 #' df<-extract_dataset(con,dataset_metadata)
 #' 
 #' # Disaggregate data with resolutions superior to 5° on the corresponding 5° resolution grid, by dividing the catch equally on the overlappings \code{resolution} quadrants:

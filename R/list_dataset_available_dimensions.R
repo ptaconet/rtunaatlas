@@ -37,11 +37,12 @@
 #' 
 #' @examples
 #' 
-#' # List the available dimensions in the dataset "indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal":
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #' 
-#' dataset_metadata<-dbGetQuery(db_connection_sardara_world(),"SELECT * from metadata.metadata WHERE dataset_name='indian_ocean_effort_1970_01_01_2015_08_01_tunaatlasIOTC_2017_level0_coastal'")
-#' 
-#' list_dataset_available_dimensions(db_connection_sardara_world(),dataset_metadata)
+#' # List the available dimensions in the dataset "global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1":
+#' dataset_metadata(con,identifier="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1"))
+#' list_dataset_available_dimensions(db_connection_tunaatlas_world(),dataset_metadata)
 #' 
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 #'

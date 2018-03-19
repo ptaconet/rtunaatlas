@@ -23,11 +23,11 @@
 #' @family visualize data
 #' @examples
 #' 
-#' # Connect to Sardara DB
-#' con <- db_connection_tunaatlas_world()
+#' # Connect to Tuna atlas database
+#' con<-db_connection_tunaatlas_world()
 #'
 #' # Extract IOTC (Indian Ocean) georeferenced catch time series of catches from Sardara DB, in 5° resolution
-#' ind_catch_tunaatlasird_level2<-extract_dataset(con,list_metadata_datasets(con,dataset_name="indian_ocean_catch_5deg_1m_1952_11_01_2016_01_01_tunaatlasIRD_level2"))
+#' ind_catch_tunaatlasird_level2<-extract_dataset(con,list_metadata_datasets(con,identifier="indian_ocean_catch_5deg_1m_1952_11_01_2016_01_01_tunaatlasIRD_level2"))
 #' head(ind_catch_tunaatlasird_level2)
 #'
 #' # filter the data to keep only catches on log schools in 2014:
