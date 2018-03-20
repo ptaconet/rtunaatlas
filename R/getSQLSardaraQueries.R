@@ -142,9 +142,9 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   
     SQL$query_CSV<-paste0("SELECT 
 sub1.codesource as src_code,
-sub1.codesource as src_label,
+--sub1.label as src_label,
                         sub2.codetarget as trg_code,
-                        sub2.codetarget as trg_label,
+                        --sub2.codetarget as trg_label,
                         sub1.db_tablesource as src_codingsystem,
                         sub2.db_tabletarget as trg_codingsystem
                         FROM
