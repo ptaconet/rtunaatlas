@@ -99,7 +99,7 @@ list_metadata_codelists<-function(con,identifier=NULL,source_authority=NULL,dime
     where_clause<-paste0(where_clause," and split_part(table_name, '.', 1) IN ('",dimension,"')")
   }
   
-  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where lineage is not null and dataset_type='codelist' ",where_clause," order by source,identifier",sep=))
+  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_type='codelist' ",where_clause," order by source,identifier",sep=))
   
   if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
@@ -127,7 +127,7 @@ list_metadata_codelists_mapping<-function(con,identifier=NULL,source_authority=N
     where_clause<-paste0(where_clause," and split_part(table_name, '.', 1) IN ('",dimension,"')")
   }
   
-  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='mapping' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_type='mapping' ",where_clause," order by source,identifier",sep=))
   
   if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
@@ -167,7 +167,7 @@ list_metadata_raw_datasets<-function(con,identifier=NULL,source_authority=NULL,v
     where_clause<-paste0(where_clause," and identifier LIKE '%_level",level_of_correction,"%'")
   }
   
-  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_lineage is not null and table_type='raw_dataset' ",where_clause," order by dataset_origin_institution,table_name",sep=))
+  metadata_datasets<-dbGetQuery(con,paste("SELECT * from metadata.metadata where dataset_type='raw_dataset' ",where_clause," order by source,identifier",sep=))
   
   if (nrow(metadata_datasets)==0) {cat(paste0("There is no dataset that corresponds to your query"))}
   
