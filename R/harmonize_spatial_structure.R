@@ -231,8 +231,8 @@ harmo_spatial_4<-function(df_input, colname_latitude,colname_longitude,colname_s
 harmo_spatial_5<-function(df_input, colname_latitude,colname_longitude,SquareSize,CodeSquareSize){
   
   # Calculate CWP quadrant in column "quadrant"
-  indice.quad.2 <- which(df_input[,colname_longitude]<=0)
-  indice.quad.3 <- which(df_input[,colname_longitude]>0) 
+  indice.quad.3 <- which(df_input[,colname_longitude]<=0)
+  indice.quad.2 <- which(df_input[,colname_longitude]>0) 
   
   df_input$quadrant<-9
   df_input[indice.quad.2,"quadrant"]<-2
