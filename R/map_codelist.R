@@ -24,7 +24,7 @@
 #' \item{"trg_code": }{The target codes for the dimension to map}
 #' }
 #' 
-#' Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+#' Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to "UNK".  
 #' If \code{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
 #' If \code{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 #' 
@@ -90,6 +90,9 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
     mutate(sum_mapped_unmapped = ifelse(is.na(df_input[,dimension_to_map]), "sum_value_not_mapped", "sum_value_mapped")) %>% 
     group_by(sum_mapped_unmapped,unit) %>% 
     summarise(sum_value_by_dimension = sum(value))
+  
+  # Replace NA by "UNK"
+  df_input[,dimension_to_map][which(is.na(df_input[,dimension_to_map]))]="UNK"
   
   stats_data_not_mapped<-dcast(stats_data_not_mapped,unit~sum_mapped_unmapped, sum)
   if (!("sum_value_not_mapped" %in% colnames(stats_data_not_mapped))) {
