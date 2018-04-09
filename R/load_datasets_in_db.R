@@ -123,11 +123,9 @@ load_raw_dataset_in_db<- function(
   
   for (i in 1:nrow(db_df_inputlike_dimensions_parameters)){
     
-    options(warn=-1)
-    if (length(unique(df_to_load[,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]]))==1 & unique(df_to_load[,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]])=="ALL"){
+    if (length(unique(df_to_load[,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]]))==1 & df_to_load[1,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]]=="ALL"){
       df_to_load[,db_df_inputlike_dimensions_parameters$db_pkattribute_colname[i]]=0
       } else {
-    options(warn=0)
     #Retrieve the name of the code list to use
     index<-which(df_codelists_input$dimension==db_df_inputlike_dimensions_parameters$dimension[i])
     db_df_inputstouse<-df_codelists_input$code_list_identifier[index]
