@@ -90,10 +90,11 @@
 #' @author Paul Taconet, \email{paul.taconet@@ird.fr}
 
 
-convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input, codelist_geoidentifiers_conversion_factors){
+convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input=NULL, codelist_geoidentifiers_conversion_factors=NULL){
   
   cat(paste0("\n converting units and measures"))
   
+  columns_df_input=colnames(df_input)
   df_input<-data.table(df_input)
   
   units_source<-unique(df_conversion_factor$unit)
@@ -165,7 +166,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     
   }
   
-  
+  if ("geographic_identifier" %in% colnames(df_conversion_factor)){
   # assign conv_factor_df_geo_id=0 to the concerned data . 0 is for when there is no spatial stratification in the factors of conversion
   data_zone_0<-df_conversion_factor[which(df_conversion_factor$conv_factor_df_geo_id==0),]
   colnames(data_zone_0)[which(names(data_zone_0) == "conv_factor_df_geo_id")] <- "zone0"
@@ -174,7 +175,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   df_input$conv_factor_df_geo_id[which(!is.na(df_input$zone0))]<-"0"
   df_input<-df_input[, !(colnames(df_input) %in% c("zone0","unit_target"))]
-  
+  }
   
   
   # finally merge dataset with factors of conversion
@@ -220,7 +221,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   df_input$unit[index.not_na.conv_factor]<-df_input$unit_target[index.not_na.conv_factor]
   
   # We remove useless columns
-  df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
+  #df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
+  df_input<-df_input[, columns_df_input]
   
   #dataset_with_units_to_convert<-dataset_with_units_to_convert[, !(colnames(dataset_with_units_to_convert) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   
