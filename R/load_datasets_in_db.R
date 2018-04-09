@@ -146,8 +146,7 @@ load_raw_dataset_in_db<- function(
     index.na<-which(is.na(df_to_load[,db_df_inputlike_dimensions_parameters$db_pkattribute_colname[i]]))
     
     
-    #if (length(index.na)>0){
-    if (!(is.null(index.na))){
+    if (length(index.na)>0){
       missingCodesInDB<-unique(df_to_load[index.na,db_df_inputlike_dimensions_parameters$csv_formatted_dimension_colname[i]])
     } else {
       missingCodesInDB<-NULL
@@ -173,8 +172,9 @@ load_raw_dataset_in_db<- function(
   # These are the codes that are missing in the tables within the DB. The tables of the DB have to be filled with these values before the dataset is uploaded in the DB.
   missingCodes_dataframe<- data.frame(TablesToUpdateInDB,missingCodesInTableInDB)
   missingCodes_dataframe<-missingCodes_dataframe[! (missingCodes_dataframe$missingCodesInTableInDB %in% c("ALL","UNK")),]
+  if (nrow(missingCodes_dataframe)>0){
   missingCodes_dataframe<-missingCodes_dataframe[!is.na(missingCodes_dataframe$missingCodesInTableInDB),]
-  
+  }
   
   if (nrow(missingCodes_dataframe)>0){
     print(missingCodes_dataframe)
