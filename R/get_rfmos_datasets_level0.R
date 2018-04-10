@@ -123,6 +123,8 @@ get_rfmos_datasets_level0<-function(rfmo,
   # Deal with special case of IATTC PS
   if (rfmo=="IATTC"){
     
+    df_level0<-unique(df_level0)
+    
     ## IATTC PS catch-and-effort are stratified as following:
     # - 1 dataset for tunas, stratified by type of school (but not flag)
     # - 1 dataset for tunas, stratified by flag (but not type of school)
