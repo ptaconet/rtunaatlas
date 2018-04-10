@@ -76,7 +76,7 @@ format_time_db_format<-function(df_input){
   
   df_input$time_start<-as.Date(paste(df_input[,"Year"],"-",df_input[,"MonthStart"],"-01",sep=""))
   # "months" is a function from the lubridate library
-  df_input$time_end<-df_input$time_start+months(df_input[,"Period"])
+  df_input$time_end<-df_input$time_start+months(df_input[,"Period"])-days(1)
   
   df_input$time_start<-as.character(df_input$time_start)  
   df_input$time_end<-as.character(df_input$time_end)
