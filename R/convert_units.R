@@ -130,6 +130,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
       df_input<-merge(df_input,data.table(correspondance_geo_identifiers_input_df_conv_fact_df))
       
     }
+    
   }
   
   if ("time_start" %in% colnames(df_conversion_factor)){
@@ -166,7 +167,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     
   }
   
-  if ("geographic_identifier" %in% colnames(df_conversion_factor)){
+ 
+  if ( "conv_factor_df_geo_id" %in% colnames(df_conversion_factor)) {
   # assign conv_factor_df_geo_id=0 to the concerned data . 0 is for when there is no spatial stratification in the factors of conversion
   data_zone_0<-df_conversion_factor[which(df_conversion_factor$conv_factor_df_geo_id==0),]
   colnames(data_zone_0)[which(names(data_zone_0) == "conv_factor_df_geo_id")] <- "zone0"
@@ -175,8 +177,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   df_input$conv_factor_df_geo_id[which(!is.na(df_input$zone0))]<-"0"
   df_input<-df_input[, !(colnames(df_input) %in% c("zone0","unit_target"))]
-  }
   
+}
   
   # finally merge dataset with factors of conversion
   
