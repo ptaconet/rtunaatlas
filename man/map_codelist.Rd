@@ -32,7 +32,7 @@ The data frames of fact and code list mapping must be properly structured. The d
 \item{"trg_code": }{The target codes for the dimension to map}
 }
 
-Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to NA.  
+Some codes might not be mapped, because no correspondance exists between the source code(s) and the target code(s). In the output dataset of the function map_codelist, these unmapped codes are set to "UNK".  
 If \code{keep_src_code} is set to FALSE, the source coding system column will be dropped and the target coding system column will be named out dimension_to_map. 
 If \code{keep_src_code} is set to TRUE, the source coding system column will be kept. In that case, the source coding system column will conserve its original name (dimension_to_map), and the target coding system column will be named "dimension_to_map"_mapping (e.g. gear_mapping)
 }
@@ -62,10 +62,12 @@ con<-db_connection_tunaatlas_world()
 }
 \seealso{
 Other process data: \code{\link{convert_units}},
+  \code{\link{create_calendar}}, \code{\link{create_grid}},
   \code{\link{get_rfmos_datasets_level0}},
   \code{\link{raise_datasets_by_dimension}},
   \code{\link{raise_get_rf}},
   \code{\link{raise_incomplete_dataset_to_total_dataset}},
+  \code{\link{rasterize_geo_timeseries}},
   \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
   \code{\link{spatial_curation_reallocate_data}},

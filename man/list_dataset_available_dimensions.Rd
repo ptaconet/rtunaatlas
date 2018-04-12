@@ -35,7 +35,7 @@ flag	\tab time_start	\tab time_end	  \tab geographic_identifier	\tab gear	\tab s
 	\tab 1992-12-01	\tab 1993-01-01	\tab 240140	\tab LL	\tab YFT	\tab 0.12
  }
 
-In the above table, the dimension "flag" as not got any values. Hence, for this table the dimension "flag" is considered not to be available. The dimensions that will be returned by the function l\code{list_dataset_available_dimensions} applied on this dataset are: time, area, gear, species
+In the above table, the dimension "flag" as not got any values. Hence, for this table the dimension "flag" is considered not to be available. The dimensions that will be returned by the function \code{list_dataset_available_dimensions} applied on this dataset are: time, area, gear, species
 }
 \examples{
 

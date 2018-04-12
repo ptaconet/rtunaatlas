@@ -39,7 +39,7 @@ Get a list of queries to execute to manage the datasets available in Sardara (ex
 con<-db_connection_tunaatlas_world()
  
  # retrieve metadata row of dataset global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1
-dataset_metadata<-list_metadata_datasets(con,dataset_name="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
+dataset_metadata<-list_metadata_datasets(con,identifier="global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1")
 queries<-getSQLSardaraQueries(con,dataset_metadata)
 
 # retrieve data.frame of global_catch_5deg_1m_1950_01_01_2016_01_01_tunaatlasIRD_level1

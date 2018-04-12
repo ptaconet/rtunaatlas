@@ -176,10 +176,12 @@ dbDisconnect(con)
 }
 \seealso{
 Other process data: \code{\link{convert_units}},
+  \code{\link{create_calendar}}, \code{\link{create_grid}},
   \code{\link{get_rfmos_datasets_level0}},
   \code{\link{map_codelist}},
   \code{\link{raise_datasets_by_dimension}},
   \code{\link{raise_get_rf}},
+  \code{\link{rasterize_geo_timeseries}},
   \code{\link{spatial_curation_downgrade_resolution}},
   \code{\link{spatial_curation_intersect_areas}},
   \code{\link{spatial_curation_reallocate_data}},
