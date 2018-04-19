@@ -78,7 +78,7 @@ rasterize_geo_timeseries <- function(df_input,
   
   ### Join dataset and calendar
   ## initialisation
-  dataset_faketime_s_e <- data.table(dataset_table, time_start=as_date(dataset_table$date), time_end=as_date(dataset_table$date))
+  dataset_faketime_s_e <- data.table(dataset_table, time_start=as.Date(dataset_table$date), time_end=as.Date(dataset_table$date))
   setkey(calendar, time_start, time_end) # is used in the function : foverlaps
   ## select the index calendar for each "time" of data
   index <- foverlaps(x=dataset_faketime_s_e,y=calendar, by.x = c("time_start","time_end"),by.y = c("time_start","time_end"), type="within", nomatch=0, which = T)
