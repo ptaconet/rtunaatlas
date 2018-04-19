@@ -44,12 +44,12 @@
 
 
 rasterize_geo_timeseries <- function(df_input,
-                                         intersection_layer,
+                                     intersection_layer,
                                      calendar,
-                                         data_crs="+init=epsg:4326 +proj=longlat +datum=WGS84" ,
-                                         aggregate_data=TRUE,
-                                         spatial_association_method="equaldistribution",
-                                         buffer=10){
+                                     data_crs="+init=epsg:4326 +proj=longlat +datum=WGS84" ,
+                                     aggregate_data=TRUE,
+                                     spatial_association_method="equaldistribution",
+                                     buffer=10){
   
   ######################## Initialisation
   ### Convert data in a table (processing faster)
@@ -63,11 +63,11 @@ rasterize_geo_timeseries <- function(df_input,
   
   # Determine data type (point or line (i.e. trajectory))
   if ("id_trajectory" %in% colnames(df_input)){
-  type="line"
-  data_crs_proj <- "+init=epsg:3395"
-  intersection_layer <- spTransform(intersection_layer , CRS(data_crs_proj) )
+    type="line"
+    data_crs_proj <- "+init=epsg:3395"
+    intersection_layer <- spTransform(intersection_layer , CRS(data_crs_proj) )
   } else {
-  type="point"
+    type="point"
   }
   
   ### aggragation parameters
@@ -95,7 +95,7 @@ rasterize_geo_timeseries <- function(df_input,
   } else {
     intersection_layer_type=NULL
   }
-
+  
   ### Initialisation of final data
   output_data_detail <- NULL
   compteur=0
@@ -158,7 +158,10 @@ rasterize_geo_timeseries <- function(df_input,
           
           ### extract WKT or label from polygons
           id_poly <- sapply(polygons@polygons,slot, "ID")
-          if(is.null(intersection_layer_type)){
+          if(!is.null(intersection_layer_type)){ # case irregular polygons
+            wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
+            poly <- data.table(id_poly,polygons@data$geographic_identifier,wkt)
+          } else { # case grid
             sp_transform_poly <- spTransform(polygons,CRS(data_crs))
             wkt <- writeWKT(sp_transform_poly, byid = T)
             if (spatial_association_method=="cwp"){ 
@@ -167,9 +170,8 @@ rasterize_geo_timeseries <- function(df_input,
               wkt <- cbind(wkt,dist_0_centr_poly,coord_centroid_geom)
             }
             poly <- data.table(id_poly,wkt,wkt)
-            wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
-            poly <- data.table(id_poly,polygons@data$geographic_identifier,wkt)
           }
+          
           names(poly) <- c("id_geom","geographic_identifier", "geom_wkt",
                            if(spatial_association_method=="cwp"){c("dist_0_centr_poly","lon_cent_geom", "lat_cent_geom")})
           
@@ -324,8 +326,8 @@ rasterize_geo_timeseries <- function(df_input,
           ######################## Create lines trajectories
           ### Create the geometry "line" for each object : Line-class will be used in Lines-class
           trajectories <- list()
-           coord <- lapply(list_data_by_time, "[", j=c("lon","lat"), with=F)
-           #coord <- lapply(list_data_by_time, "[", c("lon","lat"))
+          coord <- lapply(list_data_by_time, "[", j=c("lon","lat"), with=F)
+          #coord <- lapply(list_data_by_time, "[", c("lon","lat"))
           list_line <- lapply(coord, Line)
           ### create the geometry "lines" for each object: Lines-class will be used in SpatialLines
           ### the loup is obligatory to create the IDs
@@ -449,7 +451,7 @@ rasterize_geo_timeseries <- function(df_input,
         }
         
       }
-
+      
     }
     
     
@@ -499,4 +501,3 @@ rasterize_geo_timeseries <- function(df_input,
   return(output_data)
   
 }
-  
