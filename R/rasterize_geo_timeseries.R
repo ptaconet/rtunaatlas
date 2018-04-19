@@ -111,7 +111,7 @@ rasterize_geo_timeseries <- function(df_input,
     ## create a "fake" column to separate the dataset into 100 parts
     n <- 100
     nr <- nrow(dataset_calendar)
-    dataset_calendar<-split(dataset_calendar, rep(1:ceiling(nr/n), each=n, length.out=nr))
+    dataset_calendar<-split(dataset_calendar, rep(1:ceiling(nr/n), each=ceiling(nr/n), length.out=nr))
     
     for (i in 1:length(dataset_calendar)){
       dataset_calendar[[i]]$splt<-i
