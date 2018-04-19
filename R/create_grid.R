@@ -28,7 +28,7 @@
 #' 
 #' @import sp
 #' 
-#' @author Chloé Dalleau, \email{dalleau.chloe@@hotmail.fr}
+#' @author Chloé Dalleau, \email{dalleau.chloe@@hotmail.fr}; modified by Paul Taconet, \email{paul.taconet@@ird.fr}
 #'   
 
   create_grid <- function(latmin=-90,latmax=90,lonmin=-180,lonmax=180,resolution,crs="+init=epsg:4326 +proj=longlat +datum=WGS84",centred=T){

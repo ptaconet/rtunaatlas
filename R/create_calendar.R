@@ -28,7 +28,7 @@
 #' 
 #' @import lubridate
 #' 
-#' @author Chloé Dalleau, \email{dalleau.chloe@@hotmail.fr}
+#' @author Chloé Dalleau, \email{dalleau.chloe@@hotmail.fr}; modified by Paul Taconet, \email{paul.taconet@@ird.fr}
 #'   
 
 create_calendar <- function(firstdate,finaldate,resolution,unit){

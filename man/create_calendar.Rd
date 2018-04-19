@@ -47,5 +47,5 @@ Other process data: \code{\link{convert_units}},
   \code{\link{spatial_curation_upgrade_resolution}}
 }
 \author{
-Chloé Dalleau, \email{dalleau.chloe@hotmail.fr}
+Chloé Dalleau, \email{dalleau.chloe@hotmail.fr}; modified by Paul Taconet, \email{paul.taconet@ird.fr}
 }
