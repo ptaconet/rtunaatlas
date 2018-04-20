@@ -480,7 +480,7 @@ rasterize_geo_timeseries <- function(df_input,
       ndistance <- (output_data_agg[,"distance_value"]-min(output_data_agg[,"distance_value"]))/(max(output_data_agg[,"distance_value"])-min(output_data_agg[,"distance_value"]))
       colnames(ndistance)<-"ndistance_value"
       nsurface<- (output_data_agg[,"surface_value"]-min(output_data_agg[,"surface_value"]))/(max(output_data_agg[,"surface_value"])-min(output_data_agg[,"surface_value"]))
-      colnames(nsurface)<-"nurface_value"
+      colnames(nsurface)<-"nsurface_value"
       ## Bind all data
       
       output_data <- data.table(output_data_agg[,list_dimensions_output_modify, with=FALSE], output_data_agg[,"distance_value"],
