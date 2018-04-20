@@ -164,12 +164,12 @@ rasterize_geo_timeseries <- function(df_input,
           } else { # case grid
             sp_transform_poly <- spTransform(polygons,CRS(data_crs))
             wkt <- writeWKT(sp_transform_poly, byid = T)
+            poly <- data.table(id_poly,wkt,wkt)
             if (spatial_association_method=="cwp"){ 
               dist_0_centr_poly <- data.table(spDistsN1(gCentroid(sp_transform_poly, byid=TRUE),c(0,0),longlat=T))
               coord_centroid_geom <- data.table(gCentroid(sp_transform_poly, byid=TRUE)@coords)
-              wkt <- cbind(wkt,dist_0_centr_poly,coord_centroid_geom)
+              poly <- data.table(id_poly,wkt,wkt,dist_0_centr_poly,coord_centroid_geom)
             }
-            poly <- data.table(id_poly,wkt,wkt)
           }
           
           names(poly) <- c("id_geom","geographic_identifier", "geom_wkt",
