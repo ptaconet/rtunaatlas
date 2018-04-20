@@ -289,7 +289,7 @@ rasterize_geo_timeseries <- function(df_input,
       cat("\n Aggregation of data ... ")
       # list of dimensions
       list_dimensions_output_modify <- c(list_dimensions_output,"time_start","time_end","geographic_identifier","geom_wkt")
-      output_data_agg <- output_data_detail %>% select_(.dots=c(list_dimensions_output_modify,"value")) %>% group_by_(.dots=list_dimensions_output_modify) %>% dplyr::summarise_all (funs(n(),sum,mean,sd,min,max)) %>% setNames( c(list_dimensions_output_modify, "number_value","sum_value","average_value","standard_deviation_value","minimum_value","maximum_value")) 
+      output_data_agg <- output_data_detail %>% select_(.dots=c(list_dimensions_output_modify,"value")) %>% group_by_(.dots=list_dimensions_output_modify) %>% dplyr::summarise_all (funs(n(),sum,mean,sd,min,max)) %>% setNames( c(list_dimensions_output_modify, "n_value","sum_value","mean_value","sd_value","min_value","max_value")) 
       output_data <- data.frame(output_data_agg) 
       cat("\n Aggregation of data OK ")
       
@@ -478,9 +478,9 @@ rasterize_geo_timeseries <- function(df_input,
       output_data_agg <- data.table(output_data_agg)
       ### Calculate normalize data
       ndistance <- (output_data_agg[,"distance_value"]-min(output_data_agg[,"distance_value"]))/(max(output_data_agg[,"distance_value"])-min(output_data_agg[,"distance_value"]))
-      colnames(ndistance)<-"normalized_distance_value"
+      colnames(ndistance)<-"ndistance_value"
       nsurface<- (output_data_agg[,"surface_value"]-min(output_data_agg[,"surface_value"]))/(max(output_data_agg[,"surface_value"])-min(output_data_agg[,"surface_value"]))
-      colnames(nsurface)<-"normalized_surface_value"
+      colnames(nsurface)<-"nurface_value"
       ## Bind all data
       
       output_data <- data.table(output_data_agg[,list_dimensions_output_modify, with=FALSE], output_data_agg[,"distance_value"],
