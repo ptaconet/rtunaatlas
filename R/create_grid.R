@@ -40,15 +40,15 @@
     if (lonmin== -180){lonmin=lonmin+resolution}
     if (lonmax== 180){lonmax=lonmax-resolution}
     ## treatment
-    cellsdimlat <-  ceiling(abs(latmax-latmin)/resolution)
-    cellsdimlon <-  ceiling(abs((lonmax-lonmin)/resolution))
+    cellsdimlat <-  ceiling(abs(latmax-latmin)/resolution)+1
+    cellsdimlon <-  ceiling(abs((lonmax-lonmin)/resolution))+1
     ## create a centered grid 
     if (centred==T){
-      smallest_lon <- ceiling(lonmin/resolution)*resolution + resolution/2
-      smallest_lat <- ceiling(latmin/resolution)*resolution + resolution/2
+      smallest_lon <- ceiling(lonmin/resolution)*resolution + resolution/2 - 1
+      smallest_lat <- ceiling(latmin/resolution)*resolution + resolution/2 - 1
     } else {
-      smallest_lon <- lonmin + resolution/2
-      smallest_lat <- latmin + resolution/2
+      smallest_lon <- lonmin + resolution/2 - 1
+      smallest_lat <- latmin + resolution/2 - 1
     }
     grid = GridTopology(cellcentre.offset=c(smallest_lon,smallest_lat), cellsize=c(resolution,resolution), cells.dim=c(cellsdimlon,cellsdimlat))
     sp_zone <- as.SpatialPolygons.GridTopology(grid, proj4string = CRS(crs))
