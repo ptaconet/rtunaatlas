@@ -320,13 +320,13 @@ load_raw_dataset_in_db<- function(
     # Replace NA by O. In the db, 0 = unknown
     df_to_load<-replace(df_to_load, is.na(df_to_load), 0)
     
-    cat("Data ready to be loaded\n")
+    cat("Loading the dataset in the database...\n")
     
     # Upload file to database
     
     rs<-FUNUploadDatasetToTableInDB(con,df_to_load,df_metadata$database_table_name)
     
-    cat("Data loaded\n")
+    cat("Data loaded in the DB\n")
     
     
     ## Update some metadata elements
