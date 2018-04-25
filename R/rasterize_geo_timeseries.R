@@ -147,8 +147,12 @@ rasterize_geo_timeseries <- function(df_input,
         # get wkt of intersection layer
         id_poly <- sapply(polygons@polygons,slot, "ID")
         if(!is.null(intersection_layer_type)){ # case irregular polygons
-          wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
-          poly <- data.table(id_poly,as.character(polygons@data$geographic_identifier),wkt)
+          if (spatial_association_method=="cwp"){
+            stop("CWP reallocation method can't be used on non-gridded areas. Please select random or equaldistribtion methods.")
+          } else {
+            wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
+            poly <- data.table(id_poly,as.character(polygons@data$geographic_identifier),wkt)
+          }
         } else { # case grid
           sp_transform_poly <- spTransform(polygons,CRS(data_crs))
           wkt <- writeWKT(sp_transform_poly, byid = T)
@@ -179,47 +183,52 @@ rasterize_geo_timeseries <- function(df_input,
         duplicated_data <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_duplicated),]
         output_data_detail_id <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_unique),]
         
-        if(spatial_association_method=="equaldistribution"){
+        if(spatial_association_method=="equaldistribution" & nrow(output_data_detail_id)>0){
           output_data_detail_id$size<-1
         }
         
         ### Select the traitement for points on polygon boundary
-        for ( id in id_duplicated) {
-          subset_duplicated_data <- subset(duplicated_data, duplicated_data$id_point == id)
-          switch (spatial_association_method,
-                  "random" = {
-                    id_select=data.table(rand=runif(dim(subset_duplicated_data)[1], min = 0, max = 1), keep.rownames = T)
-                    select_data <- subset_duplicated_data[which(id_select$rand==max(id_select)),] 
-                  },
-                  "equaldistribution" = {
-                    size <- dim(subset_duplicated_data)[1]
-                    select_data <- subset_duplicated_data
-                    select_data$size <- size ## value is calculated afterwards
-                  }, 
-                  "cwp" = {
-                    if (is.null(intersection_layer_type)){
-                      ## reste à tester lat ==0 et/ou lon ==0
-                      lat <- subset_duplicated_data$lat[1]
-                      lon <- subset_duplicated_data$lon[1]
-                      if (lat==0 ){
-                        select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lon_cent_geom)==max(abs(subset_duplicated_data$lon_cent_geom)) & subset_duplicated_data$lat_cent_geom>0 ),]
-                      } else if (lon==0 ){
-                        select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lat_cent_geom)==max(abs(subset_duplicated_data$lat_cent_geom)) & subset_duplicated_data$lon_cent_geom>0) ,]
-                      } else if (lon==0 & lat ==0){
-                        select_data <- subset_duplicated_data[which(subset_duplicated_data$lat_cent_geom>0 & subset_duplicated_data$lon_cent_geom>0),]
+        select_data_duplicated<-NULL
+        if (length(id_duplicated)>0){
+          for ( id in id_duplicated) {
+            subset_duplicated_data <- subset(duplicated_data, duplicated_data$id_point == id)
+            switch (spatial_association_method,
+                    "random" = {
+                      id_select=data.table(rand=runif(dim(subset_duplicated_data)[1], min = 0, max = 1), keep.rownames = T)
+                      select_data <- subset_duplicated_data[which(id_select$rand==max(id_select)),] 
+                    },
+                    "equaldistribution" = {
+                      size <- dim(subset_duplicated_data)[1]
+                      select_data <- subset_duplicated_data
+                      select_data$size <- size ## value is calculated afterwards
+                    }, 
+                    "cwp" = {
+                      if (is.null(intersection_layer_type)){
+                        ## reste à tester lat ==0 et/ou lon ==0
+                        lat <- subset_duplicated_data$lat[1]
+                        lon <- subset_duplicated_data$lon[1]
+                        if (lat==0 ){
+                          select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lon_cent_geom)==max(abs(subset_duplicated_data$lon_cent_geom)) & subset_duplicated_data$lat_cent_geom>0 ),]
+                        } else if (lon==0 ){
+                          select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lat_cent_geom)==max(abs(subset_duplicated_data$lat_cent_geom)) & subset_duplicated_data$lon_cent_geom>0) ,]
+                        } else if (lon==0 & lat ==0){
+                          select_data <- subset_duplicated_data[which(subset_duplicated_data$lat_cent_geom>0 & subset_duplicated_data$lon_cent_geom>0),]
+                        } else {
+                          select_data <- subset_duplicated_data[which(subset_duplicated_data$dist_0_centr_poly==max(subset_duplicated_data$dist_0_centr_poly)),]
+                        }
                       } else {
-                        select_data <- subset_duplicated_data[which(subset_duplicated_data$dist_0_centr_poly==max(subset_duplicated_data$dist_0_centr_poly)),]
+                        stop("CWP can't be used on irregular spatial zone. Please to select random or equaldistribtion methods.")
                       }
-                    } else {
-                      stop("CWP can't be used on irregular spatial zone. Please to select random or equaldistribtion methods.")
                     }
-                  }
-          )
-          
-          ## Store the data selected by the method
-          output_data_detail_id <- bind_rows(output_data_detail_id,select_data)
-        }
-      } else { }
+            )
+            
+            select_data_duplicated<-bind_rows(select_data_duplicated,select_data)
+          }
+        } 
+        ## Store the data selected by the method
+        output_data_detail_id <- bind_rows(output_data_detail_id,select_data_duplicated)
+      }
+      else { }
       
       compteur = compteur +1
       cat(paste0("\n", compteur, " % at ", Sys.time(), " ... "))
