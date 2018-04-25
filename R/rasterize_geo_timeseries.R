@@ -25,6 +25,8 @@
 #' 
 #' intersection_layer: type sp SpatialPolygonsDataFrame
 #' 
+#' The input data that do not intersect any polygon of the intersection_layer are marked as 'no_geo_intersection' in the column 'geographic_identifier' of the output dataset
+#' 
 #' @family process data
 #' 
 #' @examples
@@ -70,7 +72,7 @@ rasterize_geo_timeseries <- function(df_input,
     type="point"
   }
   
-  ### aggragation parameters
+  ### aggregation parameters
   list_dimensions_output = setdiff(colnames(df_input),c("value","date","lat","lon"))
   #var_aggregated_value = "value"
   #fact_name = agg_parameters$fact_name           ### A voir la réelle utilité pour fads et effort. Pourrait être effectué en dehors de la fonction?
@@ -103,169 +105,140 @@ rasterize_geo_timeseries <- function(df_input,
   
   if (type=="point"){
     
-    # ## error :
-    # Error in RGEOSBinPredFunc(spgeom1, spgeom2, byid, func) :
-    # rgeos_binpredfunc_prepared: maximum returned dense matrix size exceeded
-    # separate data in some parts
+    ######################## Create spatial point composed of the unique combination of coordinates
+    sp_points<-unique(dataset_calendar[,c("lon","lat")])
     
-    ## create a "fake" column to separate the dataset into 100 parts
     n <- 100
-    nr <- nrow(dataset_calendar)
-    dataset_calendar<-split(dataset_calendar, rep(1:ceiling(nr/n), each=ceiling(nr/n), length.out=nr))
+    nr <- nrow(sp_points)
+    sp_points<-split(sp_points, rep(1:n, each=floor(nr/n), length.out=nr))
     
-    for (i in 1:length(dataset_calendar)){
-      dataset_calendar[[i]]$splt<-i
+    for (i in 1:length(sp_points)){
+      sp_points[[i]]$splt<-i
     }
-    dataset_calendar<-data.frame(Reduce(rbind, dataset_calendar))
+    sp_points<-data.frame(Reduce(rbind, sp_points))
     
-    unique_id = unique(dataset_calendar$splt)
+    unique_id = unique(sp_points$splt)
+    
+    sp_points_on_intersect_layer<-NULL
     
     for (id_subdata in unique_id){
       
-      dataset <- subset(dataset_calendar,dataset_calendar$splt==id_subdata)
+      sp_points_sub<-subset(sp_points,sp_points$splt==id_subdata)
+      sp_points_sub<-SpatialPoints(sp_points_sub,proj4string = CRS(data_crs))
       
-      ######################## Create spatial point
-      sp_points <- SpatialPointsDataFrame(dataset[,c("lon","lat")], dataset,proj4string = CRS(data_crs))
-      
-      ######################## Select polygones which are covered by geolocalisation
-      ### select polygons covered by geolocalisation
-      join_poly <- overGeomGeom(intersection_layer,gEnvelope(sp_points))
+      ######################## Select the polygons that are covered by the points
+      join_poly <- overGeomGeom(intersection_layer,gEnvelope(sp_points_sub))
       id_polygons <- which(!is.na(join_poly))
       polygons <- intersection_layer[id_polygons,]
       
-      # if polygons=EEZ, intersection between data and polygons can be NULL
       if (length(polygons)>0){
-        ######################## Intersection between points and polygons
-        intersection <- gIntersection(sp_points,polygons,byid=T, drop_lower_td = T)
         
-        # NOTE : id of a spatial polygon
-        # intersect_buffer[i]@polygons[[1]]@ID
+        # make intersection
+        intersection <- gIntersection(sp_points_sub,polygons,byid=T, drop_lower_td = T)
         
-        ## if polygons=ZEE, data extent can intersect polygons but not real geolocation data
-        if(!is.null(intersection)){
-          ######################## Create data.table without data aggregation 
-          ### Initialisation
-          ### extract dimensions data ID, other dimensions and variable
-          sp_dim_data <- str_replace(rownames(intersection@coords), " " , fixed("."))
-          sp_dim_data <- str_split_fixed(sp_dim_data, fixed("."),2)
-          sp_dim_data <- data.table(sp_dim_data)
-          colnames(sp_dim_data) <- c("id_point","id_geom")
-          
-          all_dim_data <- data.table(id_point=rownames(sp_points@data),sp_points@data)#, sp_points@coords)
-          
-          ### Merge spatial data ID and dimensions
-          sp_data <- merge(sp_dim_data,all_dim_data, by="id_point")
-          
-          ### extract WKT or label from polygons
-          id_poly <- sapply(polygons@polygons,slot, "ID")
-          if(!is.null(intersection_layer_type)){ # case irregular polygons
-            wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
-            poly <- data.table(id_poly,polygons@data$geographic_identifier,wkt)
-          } else { # case grid
-            sp_transform_poly <- spTransform(polygons,CRS(data_crs))
-            wkt <- writeWKT(sp_transform_poly, byid = T)
-            poly <- data.table(id_poly,wkt,wkt)
-            if (spatial_association_method=="cwp"){ 
-              dist_0_centr_poly <- data.table(spDistsN1(gCentroid(sp_transform_poly, byid=TRUE),c(0,0),longlat=T))
-              coord_centroid_geom <- data.table(gCentroid(sp_transform_poly, byid=TRUE)@coords)
-              poly <- data.table(id_poly,wkt,wkt,dist_0_centr_poly,coord_centroid_geom)
-            }
+        intersection<-data.frame(intersection)
+        intersection$id_geom<-row.names(intersection)
+        intersection$id_geom <- str_replace(intersection$id_geom, " " , fixed("."))
+        intersection$id_point <- str_split_fixed(intersection$id_geom, fixed("."),2)[,1]
+        intersection$id_geom <- str_split_fixed(intersection$id_geom, fixed("."),2)[,2]
+        colnames(intersection) <- c("lon","lat","id_geom","id_point")
+        
+        
+        # get wkt of intersection layer
+        id_poly <- sapply(polygons@polygons,slot, "ID")
+        if(!is.null(intersection_layer_type)){ # case irregular polygons
+          wkt <- writeWKT(spTransform(gEnvelope(polygons, byid=TRUE, id = NULL),CRS(data_crs)), byid = T)
+          poly <- data.table(id_poly,as.character(polygons@data$geographic_identifier),wkt)
+        } else { # case grid
+          sp_transform_poly <- spTransform(polygons,CRS(data_crs))
+          wkt <- writeWKT(sp_transform_poly, byid = T)
+          poly <- data.table(id_poly,wkt,wkt)
+          if (spatial_association_method=="cwp"){ 
+            dist_0_centr_poly <- data.table(spDistsN1(gCentroid(sp_transform_poly, byid=TRUE),c(0,0),longlat=T))
+            coord_centroid_geom <- data.table(gCentroid(sp_transform_poly, byid=TRUE)@coords)
+            poly <- data.table(id_poly,wkt,wkt,dist_0_centr_poly,coord_centroid_geom)
           }
-          
-          names(poly) <- c("id_geom","geographic_identifier", "geom_wkt",
-                           if(spatial_association_method=="cwp"){c("dist_0_centr_poly","lon_cent_geom", "lat_cent_geom")})
-          
-          ### Merge spatial data, dimensions and variable
-          output_data_detail_id_with_duplicated <- merge(sp_data,poly, by="id_geom")
-          output_data_detail_id_with_duplicated$id_point <- as.numeric(output_data_detail_id_with_duplicated$id_point)
-          
-          ### Extract the duplicated geolocalisation (points on polygon boundary)
-          table_number_rep <- table(as.factor(output_data_detail_id_with_duplicated$id_point))
-          ## Extract id
-          # id_duplicated <- as.numeric(which(table_number_rep>1))
-          id_duplicated <- names(which(table_number_rep>1))
-          # id_unique <- as.numeric(which(table_number_rep==1))
-          id_unique <- names(which(table_number_rep==1))
-          
-          ## Extract data
-          duplicated_data <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_duplicated),]
-          output_data_detail_id <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_unique),]
-          
-          ## Store non duplicate data
-          output_data_detail <- bind_rows(output_data_detail,output_data_detail_id )
-          
-          ### Select the traitement for points on polygon boundary
-          for ( id in id_duplicated) {
-            subset_duplicated_data <- subset(duplicated_data, duplicated_data$id_point == id)
-            switch (spatial_association_method,
-                    "random" = {
-                      id_select=data.table(rand=runif(dim(subset_duplicated_data)[1], min = 0, max = 1), keep.rownames = T)
-                      select_data <- subset_duplicated_data[id_select$rand==max(id_select),] 
-                    },
-                    "equaldistribution" = {
-                      size <- dim(subset_duplicated_data)[1]
-                      select_data <- subset_duplicated_data
-                      select_data$value <- select_data[,"value", with=F]/size
-                    }, 
-                    "cwp" = {
-                      if (is.null(intersection_layer_type)){
-                        ## reste à tester lat ==0 et/ou lon ==0
-                        lat <- subset_duplicated_data$lat[1]
-                        lon <- subset_duplicated_data$lon[1]
-                        if (lat==0 ){
-                          select_data <- subset_duplicated_data[abs(subset_duplicated_data$lon_cent_geom)==max(abs(subset_duplicated_data$lon_cent_geom)) & subset_duplicated_data$lat_cent_geom>0 ,]
-                        } else if (lon==0 ){
-                          select_data <- subset_duplicated_data[abs(subset_duplicated_data$lat_cent_geom)==max(abs(subset_duplicated_data$lat_cent_geom)) & subset_duplicated_data$lon_cent_geom>0 ,]
-                        } else if (lon==0 & lat ==0){
-                          select_data <- subset_duplicated_data[subset_duplicated_data$lat_cent_geom>0 & subset_duplicated_data$lon_cent_geom>0,]
-                        } else {
-                          select_data <- subset_duplicated_data[subset_duplicated_data$dist_0_centr_poly==max(subset_duplicated_data$dist_0_centr_poly)]
-                        }
-                      } else {
-                        stop("CWP can't be used on irregular spatial zone. Please to select random or equaldistribtion methods.")
-                      }
-                    }
-            )
-            
-            ## Store the data selected by the method
-            output_data_detail <- bind_rows(output_data_detail,select_data )
-          }
-          
-          compteur = compteur +1
-          cat(paste0("\n", compteur, " % at ", Sys.time(), " ... "))
-          
-          ### bbox
-          if (compteur>1){
-            bbox <- gUnion(bbox,polygons)
-            bbox <- gEnvelope(bbox)
-          } else {
-            bbox <- gEnvelope(polygons)
-          }
-          
-        } else {
-          compteur = compteur +1
-          cat("No intersection between the subset ",id_subdata," and spatial zone")
         }
         
-      } else {
-        compteur = compteur +1
-        cat("No intersection between the subset ",id_subdata," and spatial zone")
-      }
+        names(poly) <- c("id_geom","geographic_identifier", "geom_wkt",
+                         if(spatial_association_method=="cwp"){c("dist_0_centr_poly","lon_cent_geom", "lat_cent_geom")})
+        
+        output_data_detail_id_with_duplicated <- merge(intersection,poly, by="id_geom")
+        
+        output_data_detail_id_with_duplicated$id_point <- as.numeric(output_data_detail_id_with_duplicated$id_point)
+        
+        ### Extract the duplicated geolocalisation (points on polygon boundary)
+        table_number_rep <- table(as.factor(output_data_detail_id_with_duplicated$id_point))
+        ## Extract id
+        # id_duplicated <- as.numeric(which(table_number_rep>1))
+        id_duplicated <- names(which(table_number_rep>1))
+        # id_unique <- as.numeric(which(table_number_rep==1))
+        id_unique <- names(which(table_number_rep==1))
+        
+        ## Extract data
+        duplicated_data <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_duplicated),]
+        output_data_detail_id <- output_data_detail_id_with_duplicated[which(output_data_detail_id_with_duplicated$id_point %in% id_unique),]
+        
+        if(spatial_association_method=="equaldistribution"){
+          output_data_detail_id$size<-1
+        }
+        
+        ### Select the traitement for points on polygon boundary
+        for ( id in id_duplicated) {
+          subset_duplicated_data <- subset(duplicated_data, duplicated_data$id_point == id)
+          switch (spatial_association_method,
+                  "random" = {
+                    id_select=data.table(rand=runif(dim(subset_duplicated_data)[1], min = 0, max = 1), keep.rownames = T)
+                    select_data <- subset_duplicated_data[which(id_select$rand==max(id_select)),] 
+                  },
+                  "equaldistribution" = {
+                    size <- dim(subset_duplicated_data)[1]
+                    select_data <- subset_duplicated_data
+                    select_data$size <- size ## value is calculated afterwards
+                  }, 
+                  "cwp" = {
+                    if (is.null(intersection_layer_type)){
+                      ## reste à tester lat ==0 et/ou lon ==0
+                      lat <- subset_duplicated_data$lat[1]
+                      lon <- subset_duplicated_data$lon[1]
+                      if (lat==0 ){
+                        select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lon_cent_geom)==max(abs(subset_duplicated_data$lon_cent_geom)) & subset_duplicated_data$lat_cent_geom>0 ),]
+                      } else if (lon==0 ){
+                        select_data <- subset_duplicated_data[which(abs(subset_duplicated_data$lat_cent_geom)==max(abs(subset_duplicated_data$lat_cent_geom)) & subset_duplicated_data$lon_cent_geom>0) ,]
+                      } else if (lon==0 & lat ==0){
+                        select_data <- subset_duplicated_data[which(subset_duplicated_data$lat_cent_geom>0 & subset_duplicated_data$lon_cent_geom>0),]
+                      } else {
+                        select_data <- subset_duplicated_data[which(subset_duplicated_data$dist_0_centr_poly==max(subset_duplicated_data$dist_0_centr_poly)),]
+                      }
+                    } else {
+                      stop("CWP can't be used on irregular spatial zone. Please to select random or equaldistribtion methods.")
+                    }
+                  }
+          )
+          
+          ## Store the data selected by the method
+          output_data_detail_id <- bind_rows(output_data_detail_id,select_data)
+        }
+      } else { }
+      
+      compteur = compteur +1
+      cat(paste0("\n", compteur, " % at ", Sys.time(), " ... "))
+      
+      sp_points_on_intersect_layer<-bind_rows(sp_points_on_intersect_layer,output_data_detail_id)
       
     }
     
-    cat("\n Spatial treatment OK ")
+    dataset_calendar<-left_join(dataset_calendar,sp_points_on_intersect_layer,by=c("lat","lon"))
+    ## hereunder "no_geo_intersection" are the data that do not spatially intersect any polygon of intersection_layer
+    dataset_calendar <- dataset_calendar %>% mutate(geographic_identifier = if_else(is.na(geographic_identifier), "no_geo_intersection", geographic_identifier))
+    dataset_calendar <- dataset_calendar %>% mutate(geom_wkt = if_else(is.na(geom_wkt), "no_geo_intersection", geom_wkt))
     
-    
-    ## Select the wanted dimenions
-    list_remove_dim <- c(if(spatial_association_method=="cwp"){c("dist_0_centr_poly","lon_cent_geom","lat_cent_geom")},c("id_point","id_geom"))
-    if (dim(output_data_detail)[1]<1){
-      warnings("The intersection between the data and the intersection layer is empty")
-    } else {
-      output_data_detail <- output_data_detail[,-list_remove_dim, with=F]
+    if (spatial_association_method=="equaldistribution"){
+      dataset_calendar <- dataset_calendar %>% mutate(size = if_else(is.na(size), 1, size))
+      dataset_calendar$value<-dataset_calendar$value/dataset_calendar$size
     }
     
-    output_data_detail$splt<-NULL
+    output_data_detail<-dataset_calendar[,c(colnames(df_input),"time_start","time_end","geographic_identifier","geom_wkt")]
     
     output_data_detail$geographic_identifier<-as.character(output_data_detail$geographic_identifier)
     output_data_detail$time_start<-as.character(output_data_detail$time_start)
