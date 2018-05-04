@@ -22,7 +22,7 @@ create_grid(latmin,latmax,lonmin,lonmax,resolution,crs,centred)
 \item{centred}{boolean TRUE for a grid centred on zero. default is TRUE}
 }
 \value{
-A SpatialPolygon object (package : sp) based on input parameters and composed by square polygons.
+A sf object (package : sf) based on input parameters and composed by square polygons.
 }
 \description{
 Create a continious (regular) geospatial grid
