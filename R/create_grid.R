@@ -14,7 +14,7 @@
 #' @param crs character string a character string of projection arguments; the arguments must be entered exactly as in the PROJ.4 documentation.
 #' @param centred boolean TRUE for a grid centred on zero. default is TRUE
 #'
-#' @return A SpatialPolygon object (package : sp) based on input parameters and composed by square polygons.
+#' @return A sf object (package : sf) based on input parameters and composed by square polygons.
 #' 
 #' @details 
 #' 
@@ -26,7 +26,7 @@
 #' 
 #' grid <- create_grid(latmin=-90,latmax=90,lonmin=-180,lonmax=80,resolution=1,centred=T)
 #' 
-#' @import sp
+#' @import sp sf
 #' 
 #' @author Chloé Dalleau, \email{dalleau.chloe@@hotmail.fr}; modified by Paul Taconet, \email{paul.taconet@@ird.fr}
 #'   
@@ -52,6 +52,7 @@
     }
     grid = GridTopology(cellcentre.offset=c(smallest_lon,smallest_lat), cellsize=c(resolution,resolution), cells.dim=c(cellsdimlon,cellsdimlat))
     sp_zone <- as.SpatialPolygons.GridTopology(grid, proj4string = CRS(crs))
+    intersection_layer<-st_as_sf(sp_zone)
     
     return(sp_zone)
   }
