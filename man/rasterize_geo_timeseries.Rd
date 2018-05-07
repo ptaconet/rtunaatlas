@@ -7,7 +7,9 @@
 
 }
 \arguments{
-\item{intersection_layer}{sp polygon}
+\item{df_input}{}
+
+\item{intersection_layer}{sf polygon}
 
 \item{calendar}{}
 
@@ -23,6 +25,8 @@ if df_input is a trajectory, must have 2 additional columns: id_object and id_tr
 calendar must have columns: time_start and time_end
 
 intersection_layer: type sp SpatialPolygonsDataFrame
+
+The input data that do not intersect any polygon of the intersection_layer are marked as 'no_geo_intersection' in the column 'geographic_identifier' of the output dataset
 }
 \examples{
 
