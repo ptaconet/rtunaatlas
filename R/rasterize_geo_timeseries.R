@@ -156,7 +156,7 @@ rasterize_geo_timeseries <- function(df_input,
       
     } else {
       ## store data without aggregation but associate by time and by space
-      output_data <- data.frame(output_data_detail)
+      output_data <- data.frame(dataset_calendar)
     }
     
     
