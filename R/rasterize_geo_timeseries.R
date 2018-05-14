@@ -252,6 +252,9 @@ rasterize_geo_timeseries <- function(df_input,
     output_data_detail$ndistance_value <- (output_data_detail$distance_value-min(output_data_detail$distance_value))/(max(output_data_detail$distance_value)-min(output_data_detail$distance_value))
     output_data_detail$nsurface_value <- (output_data_detail$surface_value-min(output_data_detail$surface_value))/(max(output_data_detail$surface_value)-min(output_data_detail$surface_value))
     
+    output_data_detail$geographic_identifier<-as.character(output_data_detail$geographic_identifier)
+    output_data_detail$time_start<-as.character(output_data_detail$time_start)
+    output_data_detail$time_end<-as.character(output_data_detail$time_end)
     
     ######################## Aggregation of data
     if (aggregate_data==T){
