@@ -94,9 +94,11 @@ rasterize_geo_timeseries <- function(df_input,
   
   if ("geographic_identifier" %in% colnames(intersection_layer)){
     intersection_layer$geom_wkt<-NA
+    intersection_layer_type="irregular_polygon"
   } else {
     intersection_layer$geom_wkt<-st_as_text(intersection_layer$geometry)
     intersection_layer$geographic_identifier<-intersection_layer$geom_wkt
+    intersection_layer_type="grid"
   }
   
   
@@ -109,6 +111,43 @@ rasterize_geo_timeseries <- function(df_input,
     
     
     points_on_poly<-st_join(sf_points,intersection_layer, join = st_intersects,left = TRUE)
+    
+    ## For the points that are NA, we add 0.01° to lon and lat if the points are in a grid
+    
+    points_on_poly_na<-points_on_poly %>% filter(is.na(geom_wkt))
+    
+    if (intersection_layer_type=="grid" & nrow(points_on_poly_na)>0){
+      
+      points_on_poly_not_na<-points_on_poly %>% filter(!(is.na(geom_wkt)))
+      points_on_poly_not_na$lon=st_coordinates(points_on_poly_not_na)[,1]
+      points_on_poly_not_na$lat=st_coordinates(points_on_poly_not_na)[,2]
+      points_on_poly_not_na$lon_new=points_on_poly_not_na$lon
+      points_on_poly_not_na$lat_new=points_on_poly_not_na$lat
+      points_on_poly_not_na<-unique(points_on_poly_not_na[c("lon","lat","lon_new","lat_new")])
+      
+      points_on_poly_na$lon=st_coordinates(points_on_poly_na)[,1]
+      points_on_poly_na$lat=st_coordinates(points_on_poly_na)[,2]
+      points_on_poly_na$lon_new=points_on_poly_na$lon+0.01
+      points_on_poly_na$lat_new=points_on_poly_na$lat+0.01
+      points_on_poly_na<-unique(points_on_poly_na[c("lon","lat","lon_new","lat_new")])
+      
+      point_on_poly_new_coord<-rbind(points_on_poly_not_na,points_on_poly_na)
+      
+      dataset_calendar<-left_join(dataset_calendar,point_on_poly_new_coord)
+      dataset_calendar$lat<-dataset_calendar$lat_new
+      dataset_calendar$lon<-dataset_calendar$lon_new
+      
+      dataset_calendar$lat_new<-NULL
+      dataset_calendar$lon_new<-NULL
+      dataset_calendar$geometry<-NULL
+      
+      sf_points<-unique(dataset_calendar[,c("lon","lat")])
+      
+      sf_points = st_as_sf(sf_points, coords = c("lon", "lat"), crs = 4326, agr = "constant")
+      
+      points_on_poly<-st_join(sf_points,intersection_layer, join = st_intersects,left = TRUE)
+      
+    }
     
     points_on_poly$lon=st_coordinates(points_on_poly)[,1]
     points_on_poly$lat=st_coordinates(points_on_poly)[,2]
@@ -123,6 +162,12 @@ rasterize_geo_timeseries <- function(df_input,
     points_on_poly <- left_join(points_on_poly,points_on_poly_number_of_points)
     
     dataset_calendar<-left_join(dataset_calendar,points_on_poly)
+    
+    
+    if (intersection_layer_type=="grid"){
+      dataset_calendar <- dataset_calendar %>% filter (!(is.na(geographic_identifier)))
+    }
+    
     
     dataset_calendar$value=dataset_calendar$value/dataset_calendar$n
     
@@ -170,24 +215,24 @@ rasterize_geo_timeseries <- function(df_input,
     
     dataset_calendar <- left_join(dataset_calendar,traj2) %>% filter (n>1) %>% select(-n)
     
-    cat("\n Creating sf points from lon and lat coordinates ... ")
+    cat(paste0("\n",Sys.time(),": Creating sf points from lon and lat coordinates ... "))
     traj_sf<-st_as_sf(dataset_calendar, coords = c("lon", "lat"), crs = 4326, agr = "constant")
     
     traj_sf <- traj_sf %>% arrange_(.dots=c("id_object","id_trajectory","date",setdiff(list_dimensions_output,c("id_object","id_trajectory"))))
     
-    cat("\n Creating trajectories as sf linestrings ... ")
+    cat(paste0("\n",Sys.time(),": Creating trajectories as sf linestrings ... "))
     lines <- traj_sf  %>% group_by_(.dots=c(list_dimensions_output,"time_start","time_end")) %>% summarize(a = 1,do_union=FALSE) %>% st_cast("LINESTRING") %>% select(-a) %>% st_transform(3395) %>% arrange_(.dots=c("id_object","id_trajectory",setdiff(list_dimensions_output,c("id_object","id_trajectory")),"time_start"))
     
-    cat("\n Creating the buffer around the trajectories ... ")
+    cat(paste0("\n",Sys.time(),": Creating the buffer around the trajectories ... "))
     lines_buffer <- lines  %>% st_buffer(dist = buffer*1000, nQuadSegs = 30)
     
-    cat("\n Creating the spatial intersection with the intersection layer for the calculation of the distances intersected... ")
+    cat(paste0("\n",Sys.time(),": Creating the spatial intersection with the intersection layer for the calculation of the distances intersected... "))
     int_dist = st_intersection(lines, intersection_layer)
     
-    cat("\n Creating the spatial intersection with the intersection layer for the calculation of the surfaces intersected... ")
+    cat(paste0("\n",Sys.time(),": Creating the spatial intersection with the intersection layer for the calculation of the surfaces intersected... "))
     int_surf = st_intersection(lines_buffer, intersection_layer)
     
-    cat("\n Measuring length and surface of each line segment... ")
+    cat(paste0("\n",Sys.time(),": Measuring length and surface of each line segment... "))
     int_dist$distance_value = st_length(int_dist) 
     int_surf$surface_value = st_area(int_surf)
     
