@@ -67,6 +67,9 @@ rasterize_geo_timeseries <- function(df_input,
   if ("id_trajectory" %in% colnames(df_input)){
     type="line"
     data_crs_proj <- "+init=epsg:3395"
+    if (!("geographic_identifier" %in% colnames(intersection_layer))){ # if intersection layer is a grid
+      intersection_layer$geom_wkt_4326=st_as_text(intersection_layer$geometry)
+    }
     intersection_layer <- intersection_layer %>% st_transform(3395)
   } else {
     type="point"
@@ -251,6 +254,13 @@ rasterize_geo_timeseries <- function(df_input,
     ### Calulate normalize data
     output_data_detail$ndistance_value <- (output_data_detail$distance_value-min(output_data_detail$distance_value))/(max(output_data_detail$distance_value)-min(output_data_detail$distance_value))
     output_data_detail$nsurface_value <- (output_data_detail$surface_value-min(output_data_detail$surface_value))/(max(output_data_detail$surface_value)-min(output_data_detail$surface_value))
+    
+    # re-transforming to EPSG 4326
+    if (intersection_layer_type=="grid"){
+      output_data_detail$geom_wkt<-output_data_detail$geom_wkt_4326
+      output_data_detail$geographic_identifier<-output_data_detail$geom_wkt
+      output_data_detail$geom_wkt_4326=NULL
+    }
     
     output_data_detail$geographic_identifier<-as.character(output_data_detail$geographic_identifier)
     output_data_detail$time_start<-as.character(output_data_detail$time_start)
