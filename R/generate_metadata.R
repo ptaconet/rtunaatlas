@@ -106,6 +106,8 @@ metadata_file<-generate_metadata_from_splitted_columns(metadata_file,"date","dat
 
 ## relation
 metadata_file<-generate_metadata_from_splitted_columns(metadata_file,"relation","relation")
+metadata_file$relation=gsub("=","@",metadata_file$relation)
+
 
 ## contacts_and_roles (all except processor in a first stage, and then processor which depends on the number of lineage steps)
 names(metadata_file)[names(metadata_file) == "contact_processor"] <- "contact2_processor"
