@@ -79,7 +79,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   SQL$query_materialized_view_sardara=NULL
 
   #lineage
-  SQL$lineage <- paste("SELECT md_mp.*, md.table_name, md.view_name, md.table_type, md.dataset_name, md.dataset_title FROM metadata.metadata_mapping md_mp, metadata.metadata md WHERE md_mp.metadata_mapping_id_from IN ('",static_metadata_id,"')  AND  metadata_mapping_id_from=md.id_metadata;;",sep="")
+  SQL$lineage <- paste("SELECT md_mp.*, md.database_table_name, md.database_view_name, md.dataset_type, md.identifier, md.title FROM metadata.metadata_mapping md_mp, metadata.metadata md WHERE md_mp.metadata_mapping_id_from IN ('",static_metadata_id,"')  AND  metadata_mapping_id_from=md.id_metadata;",sep="")
 
   #dynamic keyword list
   #institution
@@ -231,15 +231,15 @@ sub1.codesource as src_code,
     
     
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
-      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
+      columns_csv_wms_wfs<-strsplit(paste(db_dimensions_parameters$sql_select_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
+      columns_netcdf<-strsplit(paste(db_dimensions_parameters$sql_select_netcdf_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
+      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,strsplit(paste(db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_view[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]])
       join_clause<-" LEFT JOIN area.area_labels USING (id_area) "
       where_clause<-NULL
       tab_name <- static_metadata_table_view_name
     } else {  # else we recreate the query that outputs the data.frame
-      columns_csv_wms_wfs<-db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
-      columns_netcdf<-db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
+      columns_csv_wms_wfs<-strsplit(paste(db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
+      columns_netcdf<-strsplit(paste(db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
       columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       ## where clause
@@ -248,19 +248,19 @@ sub1.codesource as src_code,
       }
     
     
-    select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=" ",sep="") 
-    select_query_netcdf<-paste(columns_netcdf,collapse=" ",sep="") 
-    select_query_csv_wms_wfs_with_labels<-paste(columns_csv_wms_wfs_with_labels,collapse=" ",sep="") 
+    select_query_csv_wms_wfs<-paste(columns_csv_wms_wfs,collapse=",",sep="") 
+    select_query_netcdf<-paste(columns_netcdf,collapse=",",sep="") 
+    select_query_csv_wms_wfs_with_labels<-paste(columns_csv_wms_wfs_with_labels,collapse=",",sep="") 
 
     # we remove commas that should not be here
-    select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
-    select_query_csv_wms_wfs<-gsub(",$", "", select_query_csv_wms_wfs)
+    #select_query_csv_wms_wfs<-substr(select_query_csv_wms_wfs, 1, nchar(select_query_csv_wms_wfs)-1)
+    #select_query_csv_wms_wfs<-gsub(",$", "", select_query_csv_wms_wfs)
     
-    select_query_netcdf<-substr(select_query_netcdf, 1, nchar(select_query_netcdf)-1)
-    select_query_netcdf<-gsub(",$", "", select_query_netcdf)
+    #select_query_netcdf<-substr(select_query_netcdf, 1, nchar(select_query_netcdf)-1)
+    #select_query_netcdf<-gsub(",$", "", select_query_netcdf)
     
-    select_query_csv_wms_wfs_with_labels<-substr(select_query_csv_wms_wfs_with_labels, 1, nchar(select_query_csv_wms_wfs_with_labels)-1)
-    select_query_csv_wms_wfs_with_labels<-gsub(",$", "", select_query_csv_wms_wfs_with_labels)
+    #select_query_csv_wms_wfs_with_labels<-substr(select_query_csv_wms_wfs_with_labels, 1, nchar(select_query_csv_wms_wfs_with_labels)-1)
+    #select_query_csv_wms_wfs_with_labels<-gsub(",$", "", select_query_csv_wms_wfs_with_labels)
 
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
@@ -268,6 +268,7 @@ sub1.codesource as src_code,
     columns_wms_wfs_where_clause<-setdiff(columns_csv_wms_wfs, c("time_start","time_end"))
     where_query_wms_wfs<-NULL
     for (i in 1:length(columns_wms_wfs_where_clause)){
+      columns_wms_wfs_where_clause[i]<-gsub(",","",columns_wms_wfs_where_clause[i])
       where_query_wms_wfs<-paste(where_query_wms_wfs,paste0(columns_wms_wfs_where_clause[i]," IN regexp_split_to_table(regexp_replace('%",columns_wms_wfs_where_clause[i],"%',' ', '+', 'g'),E'\\\\+') )"),sep=" AND ")
     }
     # add time dimensions
@@ -284,7 +285,7 @@ sub1.codesource as src_code,
     
     
     # write the queries
-    if (grepl("nominal_catch",static_metadata_dataset_name) | grepl("eez",static_metadata_dataset_name)){
+    if (grepl("nominal_catch",static_metadata_dataset_name) | grepl("eez",static_metadata_dataset_name)){  # TO MAKE MORE GENERIC (any very complex geometry)
       #logger.info("This dataset is a raw_dataset STORING NOMINAL CATCH !  ######################")
       geo_attributes<-",st_astext(ST_Envelope(geom)) as the_geom"
       geo_attributes_NetCDF<-",area_labels.source_label as geographic_identifier_label,st_astext(ST_Envelope(geom)) as geom_wkt"
@@ -349,8 +350,10 @@ sub1.codesource as src_code,
     
     #logger.info("Writing SQL Queries for SPATIAL AND TEMPORAL COVERAGES, SRID, FEATURES COUNT  ######################")
      SQL$query_dynamic_metadata_count_features <-  paste("SELECT count(*) FROM ",static_metadata_table_name," c WHERE c.id_metadata = ",static_metadata_id,";", sep="")
-     SQL$query_dynamic_metadata_spatial_Extent <- paste("SELECT ST_XMin(ST_SetSRID(ST_Extent(geom),4326)) as xmin, ST_YMin(ST_SetSRID(ST_Extent(geom),4326)) AS ymin, ST_XMax(ST_SetSRID(ST_Extent(geom),4326)) AS xmax, ST_Ymax(ST_SetSRID(ST_Extent(geom),4326)) AS ymax FROM ",static_metadata_table_name," c LEFT JOIN area.area_labels USING (id_area) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
-     SQL$query_dynamic_metadata_temporal_Extent <- paste("SELECT MIN(time.time_start) AS start_date, MAX(time.time_end) AS end_date FROM ",static_metadata_table_name," c LEFT JOIN time.time USING (id_time) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
+     #SQL$query_dynamic_metadata_spatial_Extent <- paste("SELECT ST_XMin(ST_SetSRID(ST_Extent(geom),4326)) as xmin, ST_YMin(ST_SetSRID(ST_Extent(geom),4326)) AS ymin, ST_XMax(ST_SetSRID(ST_Extent(geom),4326)) AS xmax, ST_Ymax(ST_SetSRID(ST_Extent(geom),4326)) AS ymax FROM ",static_metadata_table_name," c LEFT JOIN area.area_labels USING (id_area) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
+     #SQL$query_dynamic_metadata_temporal_Extent <- paste("SELECT MIN(time.time_start) AS start_date, MAX(time.time_end) AS end_date FROM ",static_metadata_table_name," c LEFT JOIN time.time USING (id_time) WHERE c.id_metadata = ",static_metadata_id,";", sep="")
+     SQL$query_dynamic_metadata_spatial_Extent <- paste("SELECT spatial_coverage FROM metadata.metadata WHERE id_metadata = ",static_metadata_id,";", sep="")
+     SQL$query_dynamic_metadata_temporal_Extent <- paste("SELECT temporal_coverage FROM metadata.metadata WHERE id_metadata = ",static_metadata_id,";", sep="")
      SQL$query_dynamic_metadata_get_SRID <-  paste("SELECT ST_SRID(geom) AS SRID FROM ",static_metadata_table_name," c LEFT JOIN area.area_labels USING (id_area)  WHERE c.id_metadata = ",static_metadata_id," LIMIT 1;", sep="")
     
     #logger.info("Running SQL Queries for SPATIAL AND TEMPORAL COVERAGES, SRID, FEATURES COUNT  ######################")
