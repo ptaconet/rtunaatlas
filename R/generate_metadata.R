@@ -40,7 +40,7 @@ if (metadata_file$dataset_type=="raw_dataset"){
   metadata_file$year_end<-substr(dataset_time_end,1,4)
   
   ### temporal_coverage
-  metadata_file$temporal_coverage<-paste0("start=",dataset_time_start,";end=",dataset_time_end,";")
+  metadata_file$temporal_coverage<-paste0("start=",dataset_time_start, "00:00:00Z",";end=",dataset_time_end,"  00:00:00Z")
 
 }
 
