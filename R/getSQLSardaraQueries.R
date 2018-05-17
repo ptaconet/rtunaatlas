@@ -240,7 +240,7 @@ sub1.codesource as src_code,
     } else {  # else we recreate the query that outputs the data.frame
       columns_csv_wms_wfs<-strsplit(paste(db_dimensions_parameters$sql_select_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
       columns_netcdf<-strsplit(paste(db_dimensions_parameters$sql_select_netcdf_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]]
-      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)])
+      columns_csv_wms_wfs_with_labels<-c(columns_csv_wms_wfs,strsplit(paste(db_dimensions_parameters$sql_select_labels_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)],collapse = ''),split=",")[[1]])
       join_clause<-db_dimensions_parameters$sql_join_csv_wms_wfs_from_fact_table[which(db_dimensions_parameters$dimension %in% dataset_available_dimensions)]
       ## where clause
       where_clause<-paste0("WHERE ",where_clause_gear,where_clause_species,"tab.id_metadata=",static_metadata_id)
