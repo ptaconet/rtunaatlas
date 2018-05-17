@@ -84,6 +84,13 @@ load_raw_dataset_in_db<- function(
   # Set df_inputs to use
   df_codelists_input<-df_codelists_input[which(df_codelists_input$dimension %in% dimensions),]
   
+  # convert columns that are not character to character and ensure that the column "value" is a numeric
+  cols<-setdiff(colnames(df_to_load),"value")
+  for (i in 1:length(cols)){
+    if (typeof(df_to_load[,cols[i]])!="character"){
+      df_to_load[,cols[i]]<-as.character(df_to_load[,cols[i]])
+    }
+  }
   df_to_load$value<-as.numeric(df_to_load$value)
   
   #### First we deal with all the dimensions that are "real" code lists: area,catchtype,catchunit,effortunit,flag,gear,schooltype,species,sex,ocean
