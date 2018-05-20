@@ -133,7 +133,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
       # TO BE DONE => ADD SQL QUERIES FOR KEYWORDS ...
       
     }
-  
+    SQL$query_CSV_with_labels=SQL$query_CSV
   }else if (static_metadata_table_type=='mapping'){
   
     #logger.info("Setting SQL queries specific to MAPPING")
@@ -172,7 +172,8 @@ sub1.codesource as src_code,
   
   
     SQL$query_wfs_wms <- SQL$query_CSV
-  
+    SQL$query_CSV_with_labels=SQL$query_CSV
+    
   }else if (static_metadata_table_type=='raw_dataset'){
   
     ##logger.info("Setting SQL queries specific to RAW_DATASET")
