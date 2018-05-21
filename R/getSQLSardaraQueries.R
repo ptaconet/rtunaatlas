@@ -270,14 +270,14 @@ sub1.codesource as src_code,
     where_query_wms_wfs<-NULL
     for (i in 1:length(columns_wms_wfs_where_clause)){
       columns_wms_wfs_where_clause[i]<-gsub(",","",columns_wms_wfs_where_clause[i])
-      where_query_wms_wfs<-paste(where_query_wms_wfs,paste0(columns_wms_wfs_where_clause[i]," IN regexp_split_to_table(regexp_replace('%",columns_wms_wfs_where_clause[i],"%',' ', '+', 'g'),E'\\\\+') )"),sep=" AND ")
+      where_query_wms_wfs<-paste(where_query_wms_wfs,paste0(columns_wms_wfs_where_clause[i]," IN ( SELECT regexp_split_to_table(regexp_replace('%",columns_wms_wfs_where_clause[i],"%',' ', '+', 'g'),E'\\\\+') )"),sep=" AND ")
     }
     # add time dimensions
     if (any(columns_csv_wms_wfs=="time_start")){
     where_query_wms_wfs<-paste0(where_query_wms_wfs," AND time_start>='%time_start%' AND time_end<='%time_end%' ")
     }
     # remove first "AND" at the beginning of the where clause
-    where_query_wms_wfs<-substring(where_query_wms_wfs, 5)
+    where_query_wms_wfs<-substring(where_query_wms_wfs, 6)
     
     # add types of data to columns_csv_wms_wfs (for further use as parameter of the function publish_wms_wfs in the script write_data_access_ogc_wms_wfs to determine the regexp)
     #columns_wms_wfs_where_clause<-data.frame(columns_wms_wfs_where_clause)
