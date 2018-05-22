@@ -121,8 +121,8 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
       table_geometry_information<-dbGetQuery(con,paste0("select * from geometry_columns where f_table_schema='area' and f_table_name='",substring(static_metadata_table_name, 6),"'"))
       #SQL$query_wfs_wms<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, ",table_geometry_information$f_geometry_column," as the_geom ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
       #SQL$query_CSV<-paste("SELECT ",code_label_column_name$code_column[1]," as code,",code_label_column_name$english_label_column[1]," as label, st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt ",other_columns_column_names,"  FROM ",static_metadata_table_name,sep="")
-      SQL$query_wfs_wms<-paste("SELECT ",all_column_names,",",table_geometry_information$f_geometry_column," as the_geom  FROM ",static_metadata_table_name,sep="")
-      SQL$query_CSV<-paste("SELECT ",all_column_names,",","st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt  FROM ",static_metadata_table_name,sep="")
+      SQL$query_wfs_wms<-paste0("SELECT ",all_column_names,",",table_geometry_information$f_geometry_column," as the_geom FROM ",static_metadata_table_name)
+      SQL$query_CSV<-paste0("SELECT ",all_column_names,",","st_astext(",table_geometry_information$f_geometry_column,") as geom_wkt FROM ",static_metadata_table_name)
       
       
     } else {
