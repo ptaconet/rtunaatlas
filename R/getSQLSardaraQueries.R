@@ -270,7 +270,10 @@ sub1.codesource as src_code,
     where_query_wms_wfs<-NULL
     for (i in 1:length(columns_wms_wfs_where_clause)){
       columns_wms_wfs_where_clause[i]<-gsub(",","",columns_wms_wfs_where_clause[i])
-      where_query_wms_wfs<-paste(where_query_wms_wfs,paste0(columns_wms_wfs_where_clause[i]," IN ( SELECT regexp_split_to_table(regexp_replace('%",columns_wms_wfs_where_clause[i],"%',' ', '+', 'g'),E'\\\\+') )"),sep=" AND ")
+      if (columns_wms_wfs_where_clause[i] %in% c("month","year","quarter")){
+      cast_numeric<-"::numeric"
+    } else { cast_numeric<-NULL }
+      where_query_wms_wfs<-paste(where_query_wms_wfs,paste0(columns_wms_wfs_where_clause[i]," IN ( SELECT regexp_split_to_table(regexp_replace('%",columns_wms_wfs_where_clause[i],"%',' ', '+', 'g'),E'\\\\+')",cast_numeric," )"),sep=" AND ")
     }
     # add time dimensions
     if (any(columns_csv_wms_wfs=="time_start")){
