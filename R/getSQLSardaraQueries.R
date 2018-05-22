@@ -317,7 +317,7 @@ sub1.codesource as src_code,
       if (area_column_is_wkt==TRUE){ 
         select_query_csv_wms_wfs=gsub(",geographic_identifier","",select_query_csv_wms_wfs)
         }
-    SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
+    SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",value,tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
     SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) ",sep="")
     } else {
       SQL$query_wfs_wms <- "You must create a table or a materialized view out of the dataset prior to the creation of the WMS/WFS"
