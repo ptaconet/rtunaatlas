@@ -267,6 +267,12 @@ sub1.codesource as src_code,
     
     # create WHERE clause for queries wms/wfs
     columns_wms_wfs_where_clause<-setdiff(columns_csv_wms_wfs, c("time_start","time_end"))
+    # remove geographic_identifier if it is wkt
+    area_column_is_wkt=FALSE
+    if (dbGetQuery(con,paste0("select distinct(tablesource_area) from fact_tables.catch tab join area.area tab_link on tab_link.id_area=tab.id_area where tab.id_area<>0 and tab.id_metadata=",dataset_metadata$id_metadata))$tablesource_area=="area_wkt"){
+      area_column_is_wkt=TRUE
+      columns_wms_wfs_where_clause<-setdiff(columns_wms_wfs_where_clause,"geographic_identifier")
+    }
     where_query_wms_wfs<-NULL
     for (i in 1:length(columns_wms_wfs_where_clause)){
       columns_wms_wfs_where_clause[i]<-gsub(",","",columns_wms_wfs_where_clause[i])
@@ -308,6 +314,9 @@ sub1.codesource as src_code,
     SQL$query_NetCDF <- paste ("SELECT ",select_query_netcdf,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
+      if (area_column_is_wkt==TRUE){ 
+        select_query_csv_wms_wfs=gsub(",geographic_identifier","",select_query_csv_wms_wfs)
+        }
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
     SQL$query_wfs_wms_aggregated_layer <- paste("SELECT value,tab_geom.codesource_area as geographic_identifier,tab_geom.geom as the_geom from ( SELECT CASE '%aggregation_method%' WHEN 'sum' THEN sum(value) WHEN 'avg' THEN sum(value)/(select DATE_PART('year', '%time_end%'::date) - DATE_PART('year', '%time_start%'::date) ) END as value,id_area FROM ",static_metadata_table_view_name," WHERE ",where_query_wms_wfs,"  group by id_area) tab   LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) ",sep="")
     } else {
