@@ -297,7 +297,7 @@ sub1.codesource as src_code,
     # write the queries
     if (grepl("nominal_catch",static_metadata_dataset_name) | grepl("eez",static_metadata_dataset_name)){  # TO MAKE MORE GENERIC (any very complex geometry)
       #logger.info("This dataset is a raw_dataset STORING NOMINAL CATCH !  ######################")
-      geo_attributes<-",st_astext(ST_Envelope(geom)) as the_geom"
+      geo_attributes<-",st_astext(ST_Envelope(geom)) as geom_wkt"
       geo_attributes_NetCDF<-",area_labels.source_label as geographic_identifier_label,st_astext(ST_Envelope(geom)) as geom_wkt"
     }else{
       #logger.info("This dataset is a raw_dataset ######################")   
