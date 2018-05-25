@@ -83,7 +83,7 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
 
 
   ##logger.info(SQL$query_dynamic_list_keywords_institutions)
-  SQL$query_dynamic_list_keywords_institutions <-paste("
+  SQL$query_dynamic_list_keywords <-paste("
   (WITH id_metadata_genealogy AS (
   SELECT ",static_metadata_id," UNION SELECT metadata_mapping_id_to
   FROM metadata.metadata_mapping
@@ -324,7 +324,6 @@ sub1.codesource as src_code,
     
     #logger.info("Writing SQL Queries for KEYWORDS")
     
-    SQL$query_dynamic_list_keywords<-NULL
     dataset_available_dimensions<-setdiff(dataset_available_dimensions,c("time","area"))
     # other columns (all the labels)
     if (area_column_is_wkt==FALSE){
