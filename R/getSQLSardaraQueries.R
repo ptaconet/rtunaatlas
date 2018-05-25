@@ -81,10 +81,10 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   #lineage
   SQL$lineage <- paste("SELECT md_mp.*, md.database_table_name, md.database_view_name, md.dataset_type, md.identifier, md.title FROM metadata.metadata_mapping md_mp, metadata.metadata md WHERE md_mp.metadata_mapping_id_from IN ('",static_metadata_id,"')  AND  metadata_mapping_id_from=md.id_metadata;",sep="")
 
-  #dynamic keyword list
-  #institution
+
+  ##logger.info(SQL$query_dynamic_list_keywords_institutions)
   SQL$query_dynamic_list_keywords_institutions <-paste("
-  WITH id_metadata_genealogy AS (
+  (WITH id_metadata_genealogy AS (
   SELECT ",static_metadata_id," UNION SELECT metadata_mapping_id_to
   FROM metadata.metadata_mapping
   WHERE metadata_mapping_id_from=",static_metadata_id,"
@@ -93,11 +93,9 @@ getSQLSardaraQueries <- function(con, dataset_metadata){
   FROM metadata.metadata  
   WHERE id_metadata IN 
   (SELECT * FROM id_metadata_genealogy)
-   order by keyword ;",sep="")
-
-  ##logger.info(SQL$query_dynamic_list_keywords_institutions)
-  dynamic_metadata_Keywords_institutions <- dbGetQuery(con, SQL$query_dynamic_list_keywords_institutions)
-
+   ) ",sep="")
+  
+  
   #sql queries depending on dataset_type
   if (static_metadata_table_type=='codelist'){
   
@@ -326,40 +324,52 @@ sub1.codesource as src_code,
     
     #logger.info("Writing SQL Queries for KEYWORDS")
     
-    if (any(dataset_available_dimensions == "species")){
-    SQL$query_dynamic_list_keywords_species <- paste("SELECT DISTINCT asfis_scientific_name AS keyword, 'ASFIS' AS thesaurus FROM ",static_metadata_table_name," JOIN species.species_labels USING (id_species) WHERE id_metadata= ",static_metadata_id,";",sep="")
+    SQL$query_dynamic_list_keywords<-NULL
+    dataset_available_dimensions<-setdiff(dataset_available_dimensions,c("time","area"))
+    # other columns (all the labels)
+    if (area_column_is_wkt==FALSE){
+      dataset_available_dimensions<-c(dataset_available_dimensions,"geographic_identifier")
+    }
+    for (i in 1:length(dataset_available_dimensions)){
+      SQL$query_dynamic_list_keywords<-paste0(SQL$query_dynamic_list_keywords," UNION (SELECT distinct ",dataset_available_dimensions[i],"_label as keyword, '",toupper(dataset_available_dimensions[i]),"' as thesaurus from ",dataset_metadata$database_view_name," where ",dataset_available_dimensions[i],"_label is not null )")
+    }
+    
+    SQL$query_dynamic_list_keywords<-paste0(SQL$query_dynamic_list_keywords, " order by thesaurus,keyword")
+    
+    #if (any(dataset_available_dimensions == "species")){
+    #SQL$query_dynamic_list_keywords_species <- paste("SELECT DISTINCT asfis_scientific_name AS keyword, 'ASFIS' AS thesaurus FROM ",static_metadata_table_name," JOIN species.species_labels USING (id_species) WHERE id_metadata= ",static_metadata_id,";",sep="")
     #logger.info(paste("SQL Query to get dynamic keywords for species: \n", SQL$query_dynamic_list_keywords_species," \n", sep=" "))
     #logger.info("Running SQL Queries to get dynamic metadata keywords for species  ######################")
     #SQL$dynamic_metadata_Keywords_species <- dbGetQuery(con, SQL$query_dynamic_list_keywords_species)
-    } #else { SQL$dynamic_metadata_Keywords_species = NULL }
+    #} #else { SQL$dynamic_metadata_Keywords_species = NULL }
     
-    if (any(dataset_available_dimensions == "gear")){
-    SQL$query_dynamic_list_keywords_fishing_gears<-paste("SELECT DISTINCT isscfg_gear_categories AS keyword, 'ISSCFG' AS thesaurus FROM ",static_metadata_table_name," JOIN gear.gear_labels USING (id_gear) WHERE id_metadata= ",static_metadata_id,";",sep="")
+  #if (any(dataset_available_dimensions == "gear")){
+  #SQL$query_dynamic_list_keywords_fishing_gears<-paste("SELECT DISTINCT isscfg_gear_categories AS keyword, 'ISSCFG' AS thesaurus FROM ",static_metadata_table_name," JOIN gear.gear_labels USING (id_gear) WHERE id_metadata= ",static_metadata_id,";",sep="")
     #logger.info(paste("SQL Query to get dynamic keywords for gear: \n", SQL$query_dynamic_list_keywords_fishing_gears," \n", sep=" "))
     #logger.info("Running SQL Queries to get dynamic metadata keywords for gear  ######################")
     #SQL$dynamic_metadata_Keywords_fishing_gears <- dbGetQuery(con, SQL$query_dynamic_list_keywords_fishing_gears)
-    } #else { SQL$dynamic_metadata_Keywords_fishing_gears = NULL }
+  #} #else { SQL$dynamic_metadata_Keywords_fishing_gears = NULL }
     
-    if (any(dataset_available_dimensions == "flag")){
-    SQL$query_dynamic_list_keywords_Fleets <-paste("SELECT DISTINCT cwp_name AS keyword, 'FAO_COUNTRY_OR_AREA_CODE' AS thesaurus FROM ",static_metadata_table_name," JOIN flag.flag_labels USING (id_flag) WHERE id_metadata= ",static_metadata_id,";",sep="")
+  #if (any(dataset_available_dimensions == "flag")){
+  #SQL$query_dynamic_list_keywords_Fleets <-paste("SELECT DISTINCT cwp_name AS keyword, 'FAO_COUNTRY_OR_AREA_CODE' AS thesaurus FROM ",static_metadata_table_name," JOIN flag.flag_labels USING (id_flag) WHERE id_metadata= ",static_metadata_id,";",sep="")
     #logger.info(paste("SQL Query to get dynamic keywords for flag: \n", SQL$query_dynamic_list_keywords_Fleets," \n", sep=" "))
     #logger.info("Running SQL Queries to get dynamic metadata keywords for flag  ######################")
     #SQL$dynamic_metadata_Keywords_fishing_fleet <- dbGetQuery(con, SQL$query_dynamic_list_keywords_Fleets)
-    } #else { SQL$dynamic_metadata_Keywords_fishing_fleet = NULL }
+    #} #else { SQL$dynamic_metadata_Keywords_fishing_fleet = NULL }
     
-    if (any(dataset_available_dimensions == "schooltype")){
-    SQL$query_dynamic_list_keywords_schooltype <-paste("SELECT DISTINCT schooltype_tunaatlas_label AS keyword, 'SCHOOLTYPE' AS thesaurus FROM ",static_metadata_table_name," JOIN schooltype.schooltype_labels USING (id_schooltype) WHERE id_metadata= ",static_metadata_id,";",sep="")
+#if (any(dataset_available_dimensions == "schooltype")){
+#SQL$query_dynamic_list_keywords_schooltype <-paste("SELECT DISTINCT schooltype_tunaatlas_label AS keyword, 'SCHOOLTYPE' AS thesaurus FROM ",static_metadata_table_name," JOIN schooltype.schooltype_labels USING (id_schooltype) WHERE id_metadata= ",static_metadata_id,";",sep="")
     #logger.info(paste("SQL Query to get dynamic keywords for schooltype: \n", SQL$query_dynamic_list_keywords_schooltype," \n", sep=" "))
     #logger.info("Running SQL Queries to get dynamic metadata keywords for schooltype  ######################")
     #SQL$dynamic_metadata_Keywords_schooltype <- dbGetQuery(con, SQL$query_dynamic_list_keywords_schooltype)
-    } #else { SQL$dynamic_metadata_Keywords_schooltype = NULL }
+#} #else { SQL$dynamic_metadata_Keywords_schooltype = NULL }
     
-    if (any(dataset_available_dimensions == "unit") & static_metadata_table_name=='fact_tables.effort'){
-       SQL$query_dynamic_list_keywords_effortunit <-paste("SELECT DISTINCT effortunit_rfmo_english_label AS keyword, 'FISHING_EFFORT_UNIT' AS thesaurus FROM ",static_metadata_table_name," JOIN unit.unit_labels USING (id_unit) WHERE id_metadata= ",static_metadata_id,";",sep="")
+#if (any(dataset_available_dimensions == "unit") & static_metadata_table_name=='fact_tables.effort'){
+#SQL$query_dynamic_list_keywords_effortunit <-paste("SELECT DISTINCT effortunit_rfmo_english_label AS keyword, 'FISHING_EFFORT_UNIT' AS thesaurus FROM ",static_metadata_table_name," JOIN unit.unit_labels USING (id_unit) WHERE id_metadata= ",static_metadata_id,";",sep="")
       #logger.info(paste("SQL Query to get dynamic keywords for effortunit: \n", SQL$query_dynamic_list_keywords_effortunit," \n", sep=" "))
       #logger.info("Running SQL Queries to get dynamic metadata keywords for effortunit  ######################")
        #SQL$dynamic_metadata_Keywords_effortunit <- dbGetQuery(con, SQL$query_dynamic_list_keywords_effortunit)
-     } #else { SQL$dynamic_metadata_Keywords_effortunit = NULL }
+#} #else { SQL$dynamic_metadata_Keywords_effortunit = NULL }
     
     #logger.info("Writing SQL Queries for SPATIAL AND TEMPORAL COVERAGES, SRID, FEATURES COUNT  ######################")
      SQL$query_dynamic_metadata_count_features <-  paste("SELECT count(*) FROM ",static_metadata_table_name," c WHERE c.id_metadata = ",static_metadata_id,";", sep="")
