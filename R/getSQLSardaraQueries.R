@@ -335,7 +335,7 @@ sub1.codesource as src_code,
     
     #logger.info("Writing SQL Queries for KEYWORDS")
     
-    dataset_available_dimensions<-setdiff(dataset_available_dimensions,c("time","area"))
+    dataset_available_dimensions<-setdiff(dataset_available_dimensions,c("time","area","sizeclass"))
     # other columns (all the labels)
     if (area_column_is_wkt==FALSE){
       dataset_available_dimensions<-c(dataset_available_dimensions,"geographic_identifier")
