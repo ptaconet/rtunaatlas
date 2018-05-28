@@ -275,10 +275,10 @@ sub1.codesource as src_code,
                                                       ORDER BY a.attnum"))
     
     columns_wms_wfs_where_clause<-setdiff(columns_csv_wms_wfs, c("time_start","time_end"))
+    
     # remove geographic_identifier if it is wkt
-    area_column_is_wkt=FALSE
-    if (dbGetQuery(con,paste0("select distinct(tablesource_area) from ",dataset_metadata$database_table_name," tab join area.area tab_link on tab_link.id_area=tab.id_area where tab.id_area<>0 and tab.id_metadata=",dataset_metadata$id_metadata))$tablesource_area=="area_wkt"){
-      area_column_is_wkt=TRUE
+    geo_identifier_column<-dbGetQuery(con,paste0("select distinct(tablesource_area) from ",dataset_metadata$database_table_name," tab join area.area tab_link on tab_link.id_area=tab.id_area where tab.id_area<>0 and tab.id_metadata=",dataset_metadata$id_metadata))$tablesource_area=="area_wkt")$tablesource_area
+    if (geo_identifier_column=="area_wkt"){
       columns_wms_wfs_where_clause<-setdiff(columns_wms_wfs_where_clause,"geographic_identifier")
     }
     where_query_wms_wfs<-NULL
@@ -323,7 +323,7 @@ sub1.codesource as src_code,
     SQL$query_NetCDF <- paste ("SELECT ",select_query_netcdf,geo_attributes_NetCDF,",value FROM ",tab_name, join_clause, where_clause ,sep=" ")
 
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
-      if (area_column_is_wkt==TRUE){ 
+      if (geo_identifier_column=="area_wkt"){ 
         select_query_csv_wms_wfs=gsub(",geographic_identifier","",select_query_csv_wms_wfs)
         }
     SQL$query_wfs_wms <- paste("SELECT ",select_query_csv_wms_wfs,",longitude,latitude,value,tab_geom.geom as the_geom FROM ",static_metadata_table_view_name," LEFT OUTER JOIN area.area_labels tab_geom USING (id_area) WHERE ",where_query_wms_wfs,sep="")
@@ -337,7 +337,7 @@ sub1.codesource as src_code,
     
     dataset_available_dimensions<-setdiff(dataset_available_dimensions,c("time","area","sizeclass"))
     # other columns (all the labels)
-    if (area_column_is_wkt==FALSE){
+    if (!(geo_identifier_column %in% c("area_wkt","areas_tuna_rfmos_task2","cwp_grid"))){
       dataset_available_dimensions<-c(dataset_available_dimensions,"geographic_identifier")
     }
     for (i in 1:length(dataset_available_dimensions)){
