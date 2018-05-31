@@ -341,7 +341,7 @@ sub1.codesource as src_code,
       dataset_available_dimensions<-c(dataset_available_dimensions,"geographic_identifier")
     }
     for (i in 1:length(dataset_available_dimensions)){
-      SQL$query_dynamic_list_keywords<-paste0(SQL$query_dynamic_list_keywords," UNION (SELECT distinct ",dataset_available_dimensions[i],"_label as keyword, '",toupper(dataset_available_dimensions[i]),"' as thesaurus from ",dataset_metadata$database_view_name," where ",dataset_available_dimensions[i],"_label is not null and  ",dataset_available_dimensions[i],"_label<>'''')")
+      SQL$query_dynamic_list_keywords<-paste0(SQL$query_dynamic_list_keywords," UNION (SELECT distinct ",dataset_available_dimensions[i],"_label as keyword, '",toupper(dataset_available_dimensions[i]),"' as thesaurus from ",dataset_metadata$database_view_name," where ",dataset_available_dimensions[i],"_label is not null and  ",dataset_available_dimensions[i],"_label<>'''' and  ",dataset_available_dimensions[i],"_label<>'')")
     }
     
     SQL$query_dynamic_list_keywords<-paste0(SQL$query_dynamic_list_keywords, " order by thesaurus,keyword")
