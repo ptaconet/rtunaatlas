@@ -261,8 +261,9 @@ sub1.codesource as src_code,
 
     join_clause<-paste(join_clause,collapse=" ",sep="") 
     
-    # create WHERE clause for queries wms/wfs
+    geo_identifier_column<-dbGetQuery(con,paste0("select distinct(tablesource_area) from ",dataset_metadata$database_table_name," tab join area.area tab_link on tab_link.id_area=tab.id_area where tab.id_area<>0 and tab.id_metadata=",dataset_metadata$id_metadata))$tablesource_area
     
+    # create WHERE clause for queries wms/wfs
     # Get the columns of the view of the raw_dataset
     if (tolower(static_metadata_table_view_name) %in% tables_views_materializedviews){
       column_names_and_types_dataset<-dbGetQuery(con,paste0("SELECT a.attname,pg_catalog.format_type(a.atttypid, a.atttypmod)
@@ -277,7 +278,6 @@ sub1.codesource as src_code,
     columns_wms_wfs_where_clause<-setdiff(columns_csv_wms_wfs, c("time_start","time_end"))
     
     # remove geographic_identifier if it is wkt or cwp grid
-    geo_identifier_column<-dbGetQuery(con,paste0("select distinct(tablesource_area) from ",dataset_metadata$database_table_name," tab join area.area tab_link on tab_link.id_area=tab.id_area where tab.id_area<>0 and tab.id_metadata=",dataset_metadata$id_metadata))$tablesource_area
     if (geo_identifier_column %in% c("area_wkt","cwp_grid","areas_tuna_rfmos_task2")){
       columns_wms_wfs_where_clause<-setdiff(columns_wms_wfs_where_clause,"geographic_identifier")
     }
