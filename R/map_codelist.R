@@ -94,7 +94,7 @@ map_codelist<-function(df_input,df_mapping,dimension_to_map,keep_src_code=FALSE)
   # Replace NA by "UNK"
   df_input[,dimension_to_map][which(is.na(df_input[,dimension_to_map]))]="UNK"
   
-  stats_data_not_mapped<-dcast(stats_data_not_mapped,unit~sum_mapped_unmapped, sum)
+  stats_data_not_mapped<-dcast(setDT(stats_data_not_mapped),unit~sum_mapped_unmapped, sum)
   if (!("sum_value_not_mapped" %in% colnames(stats_data_not_mapped))) {
     stats_data_not_mapped$sum_value_not_mapped=0
   } 
