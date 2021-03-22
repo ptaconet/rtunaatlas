@@ -227,6 +227,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   # We remove useless columns
   #df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
+  #@juldebar
   #df_input<-df_input[, columns_df_input]
   df_input<-df_input  %>% select(all_of(columns_df_input))
   
