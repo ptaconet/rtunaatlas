@@ -176,8 +176,11 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   df_input<-left_join(df_input,data_zone_0)
   
   df_input$conv_factor_df_geo_id[which(!is.na(df_input$zone0))]<-"0"
-  df_input<-df_input[, !(colnames(df_input) %in% c("zone0","unit_target"))]
-  
+  # df_input<-df_input[, !(colnames(df_input) %in% c("zone0","unit_target"))]
+    # @juldebar
+    df_input<-df_input  %>% select(-zone0,-unit_target)
+    # @juldebar
+    class(df_input$value) <- "numeric"
 }
   
   # finally merge dataset with factors of conversion
@@ -224,14 +227,15 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   # We remove useless columns
   #df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
-  df_input<-df_input[, columns_df_input]
+  #df_input<-df_input[, columns_df_input]
+  df_input<-df_input  %>% select(all_of(columns_df_input))
   
   #dataset_with_units_to_convert<-dataset_with_units_to_convert[, !(colnames(dataset_with_units_to_convert) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   
   sum_after_conversion<-df_input %>%
     #filter(unit %in% units_source) %>%
     group_by(unit) %>%
-    summarise(sum_value_after_conversion = sum(value ))
+    summarise(sum_value_after_conversion = sum(value))
   
   
   # create table of stats
