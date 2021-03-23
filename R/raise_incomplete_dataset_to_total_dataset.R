@@ -193,6 +193,7 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   
   
   # data that exist in total catches but do not exist in georef catches
+  cat("data that exist in total catches but do not exist in georef catches")
   sum_df_total_do_not_exist_in_df_incomplete<- left_join(df_input_total,df_rf) %>% 
     filter(!is.na(sum_value_df_input_incomplete)) %>%
     group_by(unit) %>%
@@ -207,6 +208,7 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   df_rf <- df_rf[!is.infinite(df_rf$rf),]
   
   # apply the raising factors
+  cat("apply the raising factors")
   df_input_incomplete<-left_join(df_input_incomplete,df_rf,by=x_raising_dimensions)
   
   sum_df_incomplete_do_not_exist_in_df_total<-df_input_incomplete %>%
@@ -249,6 +251,7 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   dataset_to_return<-dataset_to_return[colnames_input_dataset]
   
   # remove column "year" if exists
+  cat("remove column year if exists")
   dataset_to_return$year<-NULL
   
   sum_df_incomplete_after_raising <- dataset_to_return %>% 
