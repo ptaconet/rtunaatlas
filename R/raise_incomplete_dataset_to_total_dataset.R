@@ -171,10 +171,14 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
                                  decrease_when_rf_inferior_to_one=TRUE,
                                  threshold_rf=NULL){
   
+  cat(" Executing raise_incomplete_dataset_to_total_dataset function ")
+
   df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
   df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
   
   # check if columns of x_raising_dimensions exist in the datasets
+  cat("check if columns of x_raising_dimensions exist in the datasets")
+
   if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
   colnames_input_dataset<-colnames(df_input_incomplete)
