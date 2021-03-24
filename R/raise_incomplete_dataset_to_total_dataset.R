@@ -203,7 +203,6 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     group_by(unit) %>%
     summarise(sum_df_total_do_not_exist_in_df_incomplete=sum(value))
   
-  cat(" issue ? \n")
 
   ## Remove NAs and infinite from the raising factors. NAs are when data exist in partial dataset but do not exist in total dataset, or reversely
   index.na.rf<-which(is.na(df_rf$rf))
@@ -211,17 +210,20 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   df_rf <- df_rf[-index.na.rf, ]
   }
   df_rf <- df_rf[!is.infinite(df_rf$rf),]
-    cat(" no  issue ? \n")
 
   # apply the raising factors
   cat("apply the raising factors\n")
   df_input_incomplete<-left_join(df_input_incomplete,df_rf,by=x_raising_dimensions)
   
+  cat(" issue ? \n")
+
   sum_df_incomplete_do_not_exist_in_df_total<-df_input_incomplete %>%
     filter(is.na(sum_value_df_input_total)) %>%
     group_by(unit) %>%
     summarise(sum_df_incomplete_do_not_exist_in_df_total=sum(value))
   
+  cat(" no  issue ! \n")
+
   
   # When there is no raising factor for a given stratum, we keep the original value (ie value not raised)
   df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
