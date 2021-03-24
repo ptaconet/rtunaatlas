@@ -215,19 +215,22 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   cat("apply the raising factors\n")
   df_input_incomplete<-left_join(df_input_incomplete,df_rf,by=x_raising_dimensions)
   
-  cat(" issue ? \n")
 
   sum_df_incomplete_do_not_exist_in_df_total<-df_input_incomplete %>%
     filter(is.na(sum_value_df_input_total)) %>%
     group_by(unit) %>%
     summarise(sum_df_incomplete_do_not_exist_in_df_total=sum(value))
   
-  cat(" no  issue ! \n")
 
-  
+    cat(" 1 issue ? \n")
+
   # When there is no raising factor for a given stratum, we keep the original value (ie value not raised)
   df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
+    cat(" no  issue ! \n")
+
   
+      cat(" 2 issue ? \n")
+
   # When there is a raising factor for a given stratum, we multiply the original value by the raising factor to get the raised value
   if (decrease_when_rf_inferior_to_one==TRUE){
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
@@ -251,6 +254,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   # df_georef_inf_total = strata for which sum of georef catches < sum of total catch (wich is normal)
   #df_georef_inf_total<-df_input_incomplete[which(df_input_incomplete$rf > 1.1),]
   
+  
+  cat(" Adapt dataset structure ? \n")
+
   # Keep the good columns for the dataset raised to return
   dataset_to_return<-df_input_incomplete
   
