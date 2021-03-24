@@ -222,14 +222,14 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     summarise(sum_df_incomplete_do_not_exist_in_df_total=sum(value))
   
 
-    cat(" 1 issue ? \n")
+    cat(" Assign original value if no raising factor available \n")
 
   # When there is no raising factor for a given stratum, we keep the original value (ie value not raised)
   df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
     cat(" no  issue ! \n")
 
   
-      cat(" 2 issue ? \n")
+      cat(" test parameter decrease_when_rf_inferior_to_one \n")
 
   # When there is a raising factor for a given stratum, we multiply the original value by the raising factor to get the raised value
   if (decrease_when_rf_inferior_to_one==TRUE){
@@ -239,6 +239,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]) & df_input_incomplete[,"rf"]>=1)
     df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
   }
+  
+        cat(" test threshold_rf \n")
+
   
   if (!is.null(threshold_rf)){
     ## Remove the catches for which the rf threshold is above the threshold set by the user
@@ -255,7 +258,7 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   #df_georef_inf_total<-df_input_incomplete[which(df_input_incomplete$rf > 1.1),]
   
   
-  cat(" Adapt dataset structure ? \n")
+  cat(" Adapt dataset structure \n")
 
   # Keep the good columns for the dataset raised to return
   dataset_to_return<-df_input_incomplete
