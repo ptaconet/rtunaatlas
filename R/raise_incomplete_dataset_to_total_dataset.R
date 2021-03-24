@@ -171,13 +171,13 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
                                  decrease_when_rf_inferior_to_one=TRUE,
                                  threshold_rf=NULL){
   
-  cat(" Executing raise_incomplete_dataset_to_total_dataset function ")
+  cat(" Executing raise_incomplete_dataset_to_total_dataset function \n ")
 
   df_input_incomplete$year<-as.numeric(substr(df_input_incomplete$time_start, 0, 4))
   df_input_total$year<-as.numeric(substr(df_input_total$time_start, 0, 4))
   
   # check if columns of x_raising_dimensions exist in the datasets
-  cat("check if columns of x_raising_dimensions exist in the datasets")
+  cat("check if columns of x_raising_dimensions exist in the datasets \n ")
 
   if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
@@ -197,22 +197,24 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   
   
   # data that exist in total catches but do not exist in georef catches
-  cat("data that exist in total catches but do not exist in georef catches")
+  cat("data that exist in total catches but do not exist in georef catches \n")
   sum_df_total_do_not_exist_in_df_incomplete<- left_join(df_input_total,df_rf) %>% 
     filter(!is.na(sum_value_df_input_incomplete)) %>%
     group_by(unit) %>%
     summarise(sum_df_total_do_not_exist_in_df_incomplete=sum(value))
   
-  
+  cat(" issue ? \n")
+
   ## Remove NAs and infinite from the raising factors. NAs are when data exist in partial dataset but do not exist in total dataset, or reversely
   index.na.rf<-which(is.na(df_rf$rf))
   if(length(index.na.rf)>0){
   df_rf <- df_rf[-index.na.rf, ]
   }
   df_rf <- df_rf[!is.infinite(df_rf$rf),]
-  
+    cat(" no  issue ? \n")
+
   # apply the raising factors
-  cat("apply the raising factors")
+  cat("apply the raising factors\n")
   df_input_incomplete<-left_join(df_input_incomplete,df_rf,by=x_raising_dimensions)
   
   sum_df_incomplete_do_not_exist_in_df_total<-df_input_incomplete %>%
