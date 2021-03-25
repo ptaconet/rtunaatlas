@@ -236,10 +236,13 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
   # When there is a raising factor for a given stratum, we multiply the original value by the raising factor to get the raised value
   if (decrease_when_rf_inferior_to_one==TRUE){
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
-    df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    #@patch juldebar
+    replace <- df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
   } else {
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]) & df_input_incomplete[,"rf"]>=1)
-    df_input_incomplete$value_raised[index.rfNotNa]<-df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    replace <- df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
   }
   
         cat(" test threshold_rf \n")
