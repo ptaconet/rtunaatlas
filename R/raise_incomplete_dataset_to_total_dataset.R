@@ -225,7 +225,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     cat(" Assign original value if no raising factor available \n")
 
   # When there is no raising factor for a given stratum, we keep the original value (ie value not raised)
-  df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
+  #@juldebar patch ?
+  #df_input_incomplete$value_raised<-df_input_incomplete[,"value"]
+  df_input_incomplete$value_raised<-df_input_incomplete$value
     cat(" no  issue ! \n")
 
   
