@@ -165,11 +165,11 @@
 
 
 raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
-                                 df_input_total,
-                                 df_rf,
-                                 x_raising_dimensions,
-                                 decrease_when_rf_inferior_to_one=TRUE,
-                                 threshold_rf=NULL){
+                                                    df_input_total,
+                                                    df_rf,
+                                                    x_raising_dimensions,
+                                                    decrease_when_rf_inferior_to_one=TRUE,
+                                                    threshold_rf=NULL){
   
   cat(" Executing raise_incomplete_dataset_to_total_dataset function \n ")
 
