@@ -108,7 +108,7 @@ raise_get_rf<-function(
   DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input_incomplete
   
   cat(paste0("raise_get_rf function has",nrwow(DFPartialInfo_rf),"rows \n"))
-  
+  write.csv(x = DFPartialInfo_rf, path=tempdir(), file = "DFPartialInfo_rf.csv")
   
   return(DFPartialInfo_rf)
   
