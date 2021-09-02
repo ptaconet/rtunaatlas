@@ -91,12 +91,10 @@ raise_get_rf<-function(
   if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
   # georefcatches_in_stratum_flagknown
-  DFPartialInfo_ByEachRaisingDimension<-group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>%
-    summarise(value = sum(value))
+  DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
   
   # totalcatches_in_stratum_flagknown
-  DFTotalInfo_ByEachRaisingDimension<-group_by_(df_input_total,.dots=x_raising_dimensions) %>%
-    summarise(value = sum(value))
+  DFTotalInfo_ByEachRaisingDimension<-group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
   
   # rf is the sum of total catches in the strata divided by the sum of partial catches in the strata
   DFPartialInfo_rf<-merge(DFPartialInfo_ByEachRaisingDimension,
@@ -108,6 +106,9 @@ raise_get_rf<-function(
   colnames(DFPartialInfo_rf)[which(colnames(DFPartialInfo_rf)=="value.y")]<-"sum_value_df_input_total"
   
   DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input_incomplete
+  
+  cat(paste0("raise_get_rf function has",nrwow(DFPartialInfo_rf),"rows \n"))
+  
   
   return(DFPartialInfo_rf)
   
