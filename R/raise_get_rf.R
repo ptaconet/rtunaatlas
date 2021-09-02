@@ -109,8 +109,8 @@ raise_get_rf<-function(
   
   cat(paste0("raise_get_rf function has",nrow(DFPartialInfo_rf),"rows \n"))
   cat(paste0(" write csv file to check   \n"))
-  
-  write.csv(x = DFPartialInfo_rf, file = "/tmp/DFPartialInfo_rf.csv")
+  filename <- paste0("/tmp/DFPartialInfo_rf_",gsub(Sys.time(),pattern = " ", replacement = "_"),".csv")
+  write.csv(x = DFPartialInfo_rf, file = filename)
   
   return(DFPartialInfo_rf)
   
