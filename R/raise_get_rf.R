@@ -93,7 +93,9 @@ raise_get_rf<-function(
   # unique(df_input_incomplete$gear)
   # class(df_input_incomplete$gear)
   
-  df_input_total$gear <- as.numeric(as.character(df_input_total$gear))
+  df_input_total$gear <- sub(as.character(df_input_total$gear),pattern = "0",replacement = "")
+  df_input_incomplete$gear <- sub(as.character(df_input_incomplete$gear),pattern = "0",replacement = "")
+  
   df_input_total$value <- as.numeric(as.character(df_input_total$value))
   # nrow(df_input_total)
   # unique(df_input_total$fishingfleet)
