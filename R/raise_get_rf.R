@@ -152,10 +152,10 @@ raise_get_rf<-function(
   # toto <- DFPartialInfo_rf %>% filter(sum_value_df_input_incomplete >0,sum_value_df_input_total >0)
   # toto 
   
-  cat(paste0("raise_get_rf function has",nrow(DFPartialInfo_rf),"rows \n"))
-  cat(paste0(" write csv file to check   \n"))
-  filename <- paste0("/tmp/DFPartialInfo_rf_",gsub(Sys.time(),pattern = " ", replacement = "_"),".csv")
-  write.csv(x = DFPartialInfo_rf, file = filename)
+  # cat(paste0("raise_get_rf function has",nrow(DFPartialInfo_rf),"rows \n"))
+  # cat(paste0(" write csv file to check   \n"))
+  # filename <- paste0("/tmp/DFPartialInfo_rf_",gsub(Sys.time(),pattern = " ", replacement = "_"),".csv")
+  # write.csv(x = DFPartialInfo_rf, file = filename)
   
   return(DFPartialInfo_rf)
   
