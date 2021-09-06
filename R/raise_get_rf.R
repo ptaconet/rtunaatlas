@@ -113,7 +113,7 @@ raise_get_rf<-function(
   
   # georefcatches_in_stratum_flagknown
   # DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
-  DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(gear=as.numeric(as.character(gear)),species=as.character(species),source_authority=as.character(source_authority))
+  DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(species=as.character(species),source_authority=as.character(source_authority))
   
   # nrow(DFPartialInfo_ByEachRaisingDimension)
   # unique(DFPartialInfo_ByEachRaisingDimension$gear)
@@ -121,7 +121,7 @@ raise_get_rf<-function(
   # totalcatches_in_stratum_flagknown
   # DFTotalInfo_ByEachRaisingDimension<-group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
   #@juldebar => check the conversion of gear codes as numeric which removes "UNK" code and turn it into NA
-  DFTotalInfo_ByEachRaisingDimension<- group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(gear=as.numeric(as.character(gear)), species=as.character(species),source_authority=as.character(source_authority))
+  DFTotalInfo_ByEachRaisingDimension<- group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(species=as.character(species),source_authority=as.character(source_authority))
   # colnames(DFTotalInfo_ByEachRaisingDimension)
   # class(DFTotalInfo_ByEachRaisingDimension$fishingfleet)
   
