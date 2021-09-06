@@ -93,10 +93,10 @@ raise_get_rf<-function(
   # unique(df_input_incomplete$gear)
   # class(df_input_incomplete$gear)
   
-  df_input_total$gear <- sub(as.character(df_input_total$gear),pattern = "0",replacement = "")
-  df_input_incomplete$gear <- sub(as.character(df_input_incomplete$gear),pattern = "0",replacement = "")
+  # df_input_total$gear <- sub(as.character(df_input_total$gear),pattern = "0",replacement = "")
+  # df_input_incomplete$gear <- sub(as.character(df_input_incomplete$gear),pattern = "0",replacement = "")
   
-  df_input_total$value <- as.numeric(as.character(df_input_total$value))
+  # df_input_total$value <- as.numeric(as.character(df_input_total$value))
   # nrow(df_input_total)
   # unique(df_input_total$fishingfleet)
   # unique(df_input_total$gear)
@@ -152,7 +152,7 @@ raise_get_rf<-function(
   DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input_incomplete
   
   # toto <- DFPartialInfo_rf %>% filter(sum_value_df_input_incomplete >0,sum_value_df_input_total >0)
-  # toto 
+  # toto
   
   # cat(paste0("raise_get_rf function has",nrow(DFPartialInfo_rf),"rows \n"))
   # cat(paste0(" write csv file to check   \n"))
