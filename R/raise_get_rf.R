@@ -94,6 +94,7 @@ raise_get_rf<-function(
   # class(df_input_incomplete$gear)
   
   df_input_total$gear <- as.numeric(as.character(df_input_total$gear))
+  df_input_total$value <- as.numeric(as.character(df_input_total$value))
   # nrow(df_input_total)
   # unique(df_input_total$fishingfleet)
   # unique(df_input_total$gear)
@@ -105,17 +106,12 @@ raise_get_rf<-function(
   
   
   
-  
-  
-  
-  
-  
   # check if columns of x_raising_dimensions exist in the datasets
   if (length(setdiff(x_raising_dimensions,colnames(df_input_incomplete)))!=0 | length(setdiff(x_raising_dimensions,colnames(df_input_total)))!=0){stop("one of the dataframes as input does not have the dimensions set in the dimensions to consider for the raising")}
   
   # georefcatches_in_stratum_flagknown
   # DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
-  DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(species=as.character(species),source_authority=as.character(source_authority))
+  DFPartialInfo_ByEachRaisingDimension<- group_by_(df_input_incomplete,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(gear=as.numeric(as.character(gear)),species=as.character(species),source_authority=as.character(source_authority))
   
   # nrow(DFPartialInfo_ByEachRaisingDimension)
   # unique(DFPartialInfo_ByEachRaisingDimension$gear)
@@ -124,11 +120,14 @@ raise_get_rf<-function(
   # DFTotalInfo_ByEachRaisingDimension<-group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value))
   #@juldebar => check the conversion of gear codes as numeric which removes "UNK" code and turn it into NA
   DFTotalInfo_ByEachRaisingDimension<- group_by_(df_input_total,.dots=x_raising_dimensions) %>% summarise(value = sum(value)) %>% mutate(gear=as.numeric(as.character(gear)), species=as.character(species),source_authority=as.character(source_authority))
+  # colnames(DFTotalInfo_ByEachRaisingDimension)
+  # class(DFTotalInfo_ByEachRaisingDimension$fishingfleet)
   
   if("fishingfleet" %in% x_raising_dimensions){
-    DFPartialInfo_ByEachRaisingDimension<- DFPartialInfo_ByEachRaisingDimension %>% mutate(fishingfleet=as.character(fishingfleet))
-    DFTotalInfo_ByEachRaisingDimension<- DFTotalInfo_ByEachRaisingDimension %>% mutate(fishingfleet=as.character(fishingfleet))
+    DFPartialInfo_ByEachRaisingDimension <- DFPartialInfo_ByEachRaisingDimension %>% mutate(fishingfleet=as.character(fishingfleet))
+    DFTotalInfo_ByEachRaisingDimension <- DFTotalInfo_ByEachRaisingDimension %>% mutate(fishingfleet=as.character(fishingfleet))
     }
+  # class(DFTotalInfo_ByEachRaisingDimension$fishingfleet)
   
   # nrow(DFTotalInfo_ByEachRaisingDimension)
   # unique(DFTotalInfo_ByEachRaisingDimension$gear)
@@ -136,7 +135,7 @@ raise_get_rf<-function(
   
   # @juldebar => check if data types enable now comparisons (return values)
   # intersect(as.numeric(unique(DFPartialInfo_ByEachRaisingDimension$gear)),as.numeric(as.character(unique(DFTotalInfo_ByEachRaisingDimension$gear))))
-  intersect((DFPartialInfo_ByEachRaisingDimension$gear),unique(DFTotalInfo_ByEachRaisingDimension$gear))
+  # intersect((DFPartialInfo_ByEachRaisingDimension$gear),unique(DFTotalInfo_ByEachRaisingDimension$gear))
   
   # rf is the sum of total catches in the strata divided by the sum of partial catches in the strata
   DFPartialInfo_rf<-merge(DFPartialInfo_ByEachRaisingDimension,
