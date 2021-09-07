@@ -20,16 +20,15 @@ FUN_catches_ICCAT_CE<-function(RFMO_CE,RFMO_CE_species_colnames){
   }
   
   RFMO_CE<-data.table(RFMO_CE)
-  RFMO_CE<-melt(RFMO_CE, id.vars=setdiff(colnames(RFMO_CE),RFMO_CE_species_colnames)) 
+  # @juldebar => use dpplyr gather instead (to avoid crashes) ?
+  # melt / gather species columns in key value pairs and remove 0 and NA values 
+  RFMO_CE<-melt(RFMO_CE, id.vars=setdiff(colnames(RFMO_CE),RFMO_CE_species_colnames))   %>% filter( ! value %in% 0 ) %>% filter( ! is.na(value)) %>% mutate(variable = as.character(variable)) 
+  
+  #@juldebar => the line below was crashing my R sesssion : I switched it with lines above to use as data frame conversion at the end
   RFMO_CE<-as.data.frame(RFMO_CE)
-  
-  # remove 0 and NA values 
-  RFMO_CE <- RFMO_CE  %>% 
-    filter( ! value %in% 0 ) %>%
-    filter( ! is.na(value)) 
-  
-  RFMO_CE$variable<-as.character(RFMO_CE$variable)
-  
+  # class(RFMO_CE)
+  # nrow(RFMO_CE)
+  # head(RFMO_CE)
   
   return(RFMO_CE)
   
