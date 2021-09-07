@@ -231,8 +231,8 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     cat(" no  issue ! \n")
 
   
-      cat(" test parameter decrease_when_rf_inferior_to_one \n")
 
+  cat(" test parameter decrease_when_rf_inferior_to_one \n")
   # When there is a raising factor for a given stratum, we multiply the original value by the raising factor to get the raised value
   if (decrease_when_rf_inferior_to_one==TRUE){
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
@@ -245,9 +245,9 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
   }
   
-        cat(" test threshold_rf \n")
+        
 
-  
+  cat(" test threshold_rf \n")
   if (!is.null(threshold_rf)){
     ## Remove the catches for which the rf threshold is above the threshold set by the user
     # For instance, if RF=10, 10 % of the total catches are available in the CE file for this stratum. The data is therefore considered as bad quality and is removed
