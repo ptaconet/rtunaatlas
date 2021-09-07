@@ -238,10 +238,12 @@ raise_incomplete_dataset_to_total_dataset<-function(df_input_incomplete,
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]))
     #@patch juldebar
     replace <- df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    # df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
     df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
   } else {
     index.rfNotNa<-which(!is.na(df_input_incomplete[,"rf"]) & df_input_incomplete[,"rf"]>=1)
     replace <- df_input_incomplete[index.rfNotNa,"value"]*df_input_incomplete[index.rfNotNa,"rf"]
+    # df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
     df_input_incomplete$value_raised[index.rfNotNa]<-replace$value
   }
   
