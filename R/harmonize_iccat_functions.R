@@ -194,12 +194,12 @@ catches_pivot_ICCAT$Gear<-catches_pivot_ICCAT$GearCode
 
 #Year and period
 # @juldebar => this function takes forever
-cat("Harmonization of time dimension values")
+cat("Harmonization of time dimension values \n")
 catches_pivot_ICCAT<-harmo_time_1(catches_pivot_ICCAT, "YearC", "TimePeriodID")
 
 # Area (AreaType,AreaCWPgrid,AreaName)
 # @juldebar => this function takes forever
-cat("Harmonization of spatial dimension values")
+cat("Harmonization of spatial dimension values \n")
 catches_pivot_ICCAT<-harmo_spatial_1(catches_pivot_ICCAT,"Lon","Lat","QuadID","SquareTypeCode",NULL)
 
 #School
