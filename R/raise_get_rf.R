@@ -107,7 +107,7 @@ raise_get_rf<-function(
   
   DFPartialInfo_rf$rf<-DFPartialInfo_rf$sum_value_df_input_total/DFPartialInfo_rf$sum_value_df_input_incomplete
   
-  cat(paste0("raise_get_rf function has",nrwow(DFPartialInfo_rf),"rows \n"))
+  cat(paste0("raise_get_rf file output DFPartialInfo_rf has",nrow(DFPartialInfo_rf),"rows \n"))
   
   
   return(DFPartialInfo_rf)
