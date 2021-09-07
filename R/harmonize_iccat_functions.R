@@ -193,9 +193,13 @@ catches_pivot_ICCAT$Ocean<-"ATL"
 catches_pivot_ICCAT$Gear<-catches_pivot_ICCAT$GearCode
 
 #Year and period
+# @juldebar => this function takes forever
+cat("Harmonization of time dimension values")
 catches_pivot_ICCAT<-harmo_time_1(catches_pivot_ICCAT, "YearC", "TimePeriodID")
 
 # Area (AreaType,AreaCWPgrid,AreaName)
+# @juldebar => this function takes forever
+cat("Harmonization of spatial dimension values")
 catches_pivot_ICCAT<-harmo_spatial_1(catches_pivot_ICCAT,"Lon","Lat","QuadID","SquareTypeCode",NULL)
 
 #School
@@ -224,15 +228,17 @@ rm(catches_pivot_ICCAT)
 
 
 #remove whitespaces on columns that should not have withespace
-catches[,c("AreaName","Flag")]<-as.data.frame(apply(catches[,c("AreaName","Flag")],2,function(x){gsub(" *$","",x)}),stringsAsFactors=FALSE)
+# @juldebar => change "Flag" label to "FishingFleet"
+catches[,c("AreaName","FishingFleet")]<-as.data.frame(apply(catches[,c("AreaName","FishingFleet")],2,function(x){gsub(" *$","",x)}),stringsAsFactors=FALSE)
 
 # remove 0 and NA values 
 catches <- catches  %>% 
   filter( ! Catch %in% 0 ) %>%
   filter( ! is.na(Catch)) 
 
+# @juldebar => change "Flag" label to "FishingFleet"
 catches <- catches %>% 
-  group_by(Flag,Gear,time_start,time_end,AreaName,School,Species,CatchType,CatchUnits) %>% 
+  group_by(FishingFleet,Gear,time_start,time_end,AreaName,School,Species,CatchType,CatchUnits) %>% 
   summarise(Catch = sum(Catch))
 catches<-as.data.frame(catches)
 
