@@ -92,7 +92,12 @@
 
 convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifiers_df_input=NULL, codelist_geoidentifiers_conversion_factors=NULL){
   
-  cat(paste0("\n converting units and measures"))
+  cat(paste0("\n BEGIN tunaatlas::convert_units() => converting units and measures"))
+  
+  df_input_init=df_input
+  df_conversion_factor_init=df_conversion_factor
+  df_input=df_input_init
+  df_conversion_factor=df_conversion_factor_init
   
   columns_df_input=colnames(df_input)
   df_input<-data.table(df_input)
@@ -109,13 +114,17 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     if (codelist_geoidentifiers_df_input==codelist_geoidentifiers_conversion_factors){
       df_input$conv_factor_df_geo_id<-df_input$geographic_identifier
     } else {  # else we intersect input_dataset_geo_codelist_sardara and codelist_geoidentifiers_conversion_factors to assign to each geographic_identifier of input dataset a geographic_identifier of conversion factor dataset
+      
+      cat(paste0("\n List the different geographic identifiers in the gridded catch file \n"))
       dataset_distinct_geographic_identifier<-unique(df_input$geographic_identifier)  
       dataset_distinct_geographic_identifier<-paste(unique(dataset_distinct_geographic_identifier), collapse = '\',\'')
       
+      cat(paste0("\n List the different geographic identifiers in the conversion factors file \n"))
       conversion_factors_distinct_geographic_identifier<-unique(df_conversion_factor$conv_factor_df_geo_id)  
       conversion_factors_distinct_geographic_identifier<-paste(unique(conversion_factors_distinct_geographic_identifier), collapse = '\',\'')
       
       
+      cat(paste0("\n Link the two kinds of geographic identifiers by using a ST_Contains spatial relationship in Postgis \n"))
       correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,paste("select
                                                                                  u1.codesource_area as geographic_identifier,
                                                                                  u2.codesource_area as conv_factor_df_geo_id
@@ -132,7 +141,10 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     }
     
   }
+  # head(df_input)
   
+  
+  cat(paste0("\n Link the two kinds of temporal periods by using a home made function ? \n"))
   if ("time_start" %in% colnames(df_conversion_factor)){
     ## deal with time: 
     # assign to each time of input dataset a time of conversion factor dataset
@@ -166,8 +178,12 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     df_input<-left_join(df_input,combination_times_input_dataset)
     
   }
+  # nrow(df_input)
+  # head(df_input)
+  # unique(df_input$conv_factor_df_geo_id)
   
- 
+  
+  cat(paste0("\n assign conv_factor_df_geo_id=0 to the concerned data . \n"))
   if ( "conv_factor_df_geo_id" %in% colnames(df_conversion_factor)) {
   # assign conv_factor_df_geo_id=0 to the concerned data . 0 is for when there is no spatial stratification in the factors of conversion
   data_zone_0<-df_conversion_factor[which(df_conversion_factor$conv_factor_df_geo_id==0),]
@@ -178,7 +194,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   df_input$conv_factor_df_geo_id[which(!is.na(df_input$zone0))]<-"0"
   # df_input<-df_input[, !(colnames(df_input) %in% c("zone0","unit_target"))]
     # @juldebar
-    df_input<-df_input  %>% select(-zone0,-unit_target)
+    df_input<-df_input  %>% dplyr::select(-zone0,-unit_target)
     # @juldebar
     class(df_input$value) <- "numeric"
 }
@@ -192,9 +208,10 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     #filter(unit %in% units_source) %>%
     group_by(unit) %>%
     summarise(sum_value_before_conversion = sum(value ))
+  cat(paste0("\n sum_before_conversion is : ",sum_before_conversion$sum_value_before_conversion," ", sum_before_conversion$unit," \n"))
   
   
-  
+  # @juldebar check result here which is null...
   stats_before_conversion<-df_input %>%
     #rename(unit_source = unit) %>%
     group_by(unit,unit_target) %>%
@@ -229,7 +246,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   #df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   #@juldebar
   #df_input<-df_input[, columns_df_input]
-  df_input<-df_input  %>% select(all_of(columns_df_input))
+  df_input<-df_input  %>% dplyr::select(all_of(columns_df_input))
   
   #dataset_with_units_to_convert<-dataset_with_units_to_convert[, !(colnames(dataset_with_units_to_convert) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   
@@ -238,24 +255,18 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     group_by(unit) %>%
     summarise(sum_value_after_conversion = sum(value))
   
+  cat(paste0("\n sum_after_conversion is : ",sum_after_conversion$sum_value_before_conversion," ", sum_after_conversion$unit," \n"))
+  
   
   # create table of stats
   
-  
-  
   stats<-merge(stats_before_conversion,stats_after_conversion)
-  
-  
-  
-  
   
   stats %>% group_by(unit)%>%
     summarise(sum_unit_source_before_conversion=sum(sum_unit_source_before_conversion))
   
   stats %>% group_by(unit_target)%>%
     summarise(sum_unit_target_after_conversion=sum(sum_unit_target_after_conversion))
-  
-  
   
   
   #stats_after_conversion<-df_input %>% 
