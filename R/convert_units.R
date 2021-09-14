@@ -132,11 +132,13 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
                area.area_labels u1,
                area.area_labels u2
              WHERE 
-               u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') 
-               AND u1.tablesource_area='",codelist_geoidentifiers_df_input,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"') 
+               u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' 
+               AND u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') 
+               AND u1.tablesource_area='",codelist_geoidentifiers_df_input,"' 
+               AND u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"') 
                AND ST_Contains(u2.geom, u1.geom)",
             sep="")
-      cat("\n run query: ",query,"\n")
+      # cat("\n run query: ",query,"\n")
       correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,query)
       
       
