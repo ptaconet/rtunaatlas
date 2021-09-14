@@ -138,9 +138,12 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
                AND u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"') 
                AND ST_Contains(u2.geom, u1.geom)",
             sep="")
+      
       # cat("\n run query: ",query,"\n")
       correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,query)
-      
+      fileConn<-file("/tmp/query.sql")
+      writeLines(query, fileConn)
+      close(fileConn)
       
       df_input<-merge(df_input,data.table(correspondance_geo_identifiers_input_df_conv_fact_df))
       
@@ -208,8 +211,16 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   # finally merge dataset with factors of conversion
   
-  df_input<-left_join(df_input,df_conversion_factor)
-  
+
+  if(nrow(df_input)==nrow(left_join(df_input,df_conversion_factor) %>% filter(is.na(conversion_factor)))){
+    if(length(intersect(unique(df_conversion_factor$gear),unique(df_input$gear)))==0){
+      df_conversion_factor_no_gear <- df_conversion_factor %>% group_by_at(setdiff(colnames(df_conversion_factor),"gear")) %>% summarise(conversion_factor=mean(conversion_factor))
+      df_input<- left_join(df_input,df_conversion_factor_no_gear)
+    }
+  }else{
+    df_input<-left_join(df_input,df_conversion_factor)  %>% filter(unit=='NO')
+    # df_input<- df_input %>% select(-gear) %>% left_join(df_conversion_factor)
+  }
   
   sum_before_conversion<-df_input %>%
     #filter(unit %in% units_source) %>%
