@@ -264,6 +264,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   stats<-merge(stats_before_conversion,stats_after_conversion)
   
+  
   # @juldebar => commenting lines below since not used to generate the output
   # stats %>% group_by(unit)%>%
   #   summarise(sum_unit_source_before_conversion=sum(sum_unit_source_before_conversion))
