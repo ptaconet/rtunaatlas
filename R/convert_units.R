@@ -125,15 +125,19 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
       
       
       cat(paste0("\n Link the two kinds of geographic identifiers by using a ST_Contains spatial relationship in Postgis \n"))
-      correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,paste("select
-                                                                                 u1.codesource_area as geographic_identifier,
-                                                                                 u2.codesource_area as conv_factor_df_geo_id
-                                                                                 from
-                                                                                 area.area_labels u1,
-                                                                                 area.area_labels u2
-                                                                                 where
-                                                                                 u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') and u1.tablesource_area='",codelist_geoidentifiers_df_input,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"')
-                                                                                 and ST_Contains(u2.geom, u1.geom)",sep=""))
+      query <- paste("SELECT 
+               u1.codesource_area as geographic_identifier,
+               u2.codesource_area as conv_factor_df_geo_id
+             FROM
+               area.area_labels u1,
+               area.area_labels u2
+             WHERE 
+               u2.tablesource_area='",codelist_geoidentifiers_conversion_factors,"' and u2.codesource_area IN ('",conversion_factors_distinct_geographic_identifier,"') 
+               AND u1.tablesource_area='",codelist_geoidentifiers_df_input,"' and u1.codesource_area IN ('",dataset_distinct_geographic_identifier,"') 
+               AND ST_Contains(u2.geom, u1.geom)",
+            sep="")
+      cat("\n run query: ",query,"\n")
+      correspondance_geo_identifiers_input_df_conv_fact_df<-dbGetQuery(con,query)
       
       
       df_input<-merge(df_input,data.table(correspondance_geo_identifiers_input_df_conv_fact_df))
@@ -248,11 +252,11 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   #df_input<-df_input[, !(colnames(df_input) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   #@juldebar
   #df_input<-df_input[, columns_df_input]
-  df_input<-df_input  %>% dplyr::select(all_of(columns_df_input))
+  df_input <- df_input  %>% dplyr::select(all_of(columns_df_input))
   
   #dataset_with_units_to_convert<-dataset_with_units_to_convert[, !(colnames(dataset_with_units_to_convert) %in% c("conv_factor_df_geo_id","conv_factor_df_time_start","conv_factor_df_time_end","unit_target","conversion_factor"))]
   
-  sum_after_conversion<-df_input %>%
+  sum_after_conversion <- df_input %>%
     #filter(unit %in% units_source) %>%
     group_by(unit) %>%
     summarise(sum_value_after_conversion = sum(value))
