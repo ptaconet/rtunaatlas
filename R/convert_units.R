@@ -94,10 +94,10 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   cat(paste0("\n BEGIN tunaatlas::convert_units() => converting units and measures"))
   
-  df_input_init=df_input
-  df_conversion_factor_init=df_conversion_factor
-  df_input=df_input_init
-  df_conversion_factor=df_conversion_factor_init
+  # df_input_init=df_input
+  # df_conversion_factor_init=df_conversion_factor
+  # df_input=df_input_init
+  # df_conversion_factor=df_conversion_factor_init
   
   columns_df_input=colnames(df_input)
   df_input<-data.table(df_input)
@@ -180,6 +180,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   }
   # nrow(df_input)
   # head(df_input)
+  # colnames(df_input)
   # unique(df_input$conv_factor_df_geo_id)
   
   
@@ -207,7 +208,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   sum_before_conversion<-df_input %>%
     #filter(unit %in% units_source) %>%
     group_by(unit) %>%
-    summarise(sum_value_before_conversion = sum(value ))
+    summarise(sum_value_before_conversion = sum(value))
+  
   cat(paste0("\n sum_before_conversion is : ",sum_before_conversion$sum_value_before_conversion," ", sum_before_conversion$unit," \n"))
   
   
@@ -255,7 +257,7 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     group_by(unit) %>%
     summarise(sum_value_after_conversion = sum(value))
   
-  cat(paste0("\n sum_after_conversion is : ",sum_after_conversion$sum_value_before_conversion," ", sum_after_conversion$unit," \n"))
+  cat(paste0("\n sum_after_conversion is : ",sum_after_conversion$sum_value_after_conversion," ", sum_after_conversion$unit," \n"))
   
   
   # create table of stats
