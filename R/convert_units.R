@@ -211,7 +211,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
   
   # finally merge dataset with factors of conversion
   
-
+  #@juldebar => important change here by introducing a condition to manage data that have no corresponding dimension for gears (all 1 deg) and were not converted before (using here the average conversion factor for same strata without gears)
+  #@juldebar => this change only works for 1deg at this stage. To improve it, we should split the wholde dataset in tow parts: data with or without conversion factors and process them separately
   if(nrow(df_input)==nrow(left_join(df_input,df_conversion_factor) %>% filter(is.na(conversion_factor)))){
     if(length(intersect(unique(df_conversion_factor$gear),unique(df_input$gear)))==0){
       df_conversion_factor_no_gear <- df_conversion_factor %>% group_by_at(setdiff(colnames(df_conversion_factor),"gear")) %>% summarise(conversion_factor=mean(conversion_factor))
@@ -221,6 +222,10 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
     # df_input<-left_join(df_input,df_conversion_factor) %>% filter(unit=='NO')
     df_input<-left_join(df_input,df_conversion_factor)
     # df_input<- df_input %>% select(-gear) %>% left_join(df_conversion_factor)
+    # df_input_ok<-left_join(df_input,df_conversion_factor) %>% filter(!is.na(conversion_factor))
+    # df_input_missing<-left_join(df_input,df_conversion_factor) %>% filter(is.na(conversion_factor))
+    # df_conversion_factor_no_gear <- df_conversion_factor %>% group_by_at(setdiff(colnames(df_conversion_factor),"gear")) %>% summarise(conversion_factor=mean(conversion_factor))
+    # df_input_missing<- left_join(df_input,df_conversion_factor_no_gear)
   }
   
   sum_before_conversion<-df_input %>%
