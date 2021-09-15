@@ -218,7 +218,8 @@ convert_units<-function(con,df_input, df_conversion_factor, codelist_geoidentifi
       df_input<- left_join(df_input,df_conversion_factor_no_gear)
     }
   }else{
-    df_input<-left_join(df_input,df_conversion_factor)  %>% filter(unit=='NO')
+    # df_input<-left_join(df_input,df_conversion_factor) %>% filter(unit=='NO')
+    df_input<-left_join(df_input,df_conversion_factor)
     # df_input<- df_input %>% select(-gear) %>% left_join(df_conversion_factor)
   }
   
